@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest Editor - Bobrashov</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: #fff; font-family: Georgia, serif; padding: 2rem; max-width: 700px; margin: 0 auto; line-height: 1.6; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .title { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .subtitle { opacity: 0.8; font-style: italic; }
+        .nav { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #333; }
+        .nav a { color: #ccc; text-decoration: none; margin: 0 1rem; }
+        .nav a:hover { color: #fff; }
+        .editor { background: #111; border: 1px solid #333; padding: 2rem; margin-bottom: 2rem; }
+        .form-row { margin-bottom: 1.5rem; }
+        .label { display: block; margin-bottom: 0.5rem; opacity: 0.9; }
+        .input, .textarea { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 0.7rem; font-family: inherit; }
+        .input:focus, .textarea:focus { outline: none; border-color: #666; }
+        .textarea { height: 80px; resize: vertical; }
+        .form-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
+        .btn { background: transparent; border: 1px solid #666; color: #fff; padding: 0.7rem 1.2rem; cursor: pointer; font-family: inherit; }
+        .btn:hover { background: #333; }
+        .btn.primary { background: #333; border-color: #999; }
+        .quest-list { margin-bottom: 2rem; }
+        .quest-item { background: #111; border: 1px solid #333; padding: 1rem; margin-bottom: 1rem; }
+        .quest-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .quest-name { font-size: 1.1rem; }
+        .quest-xp { background: #333; padding: 0.2rem 0.5rem; font-size: 0.8rem; }
+        .quest-desc { opacity: 0.8; font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .quest-target { opacity: 0.7; font-size: 0.9rem; }
+        .quest-actions { display: flex; gap: 0.5rem; }
+        .btn-small { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+        .btn-danger { border-color: #644; color: #faa; }
+        .btn-danger:hover { background: #422; }
+        .empty { text-align: center; opacity: 0.6; padding: 2rem; }
+        .defaults { margin-bottom: 2rem; }
+        .default-quest { background: #0a0a0a; border: 1px solid #2a2a2a; padding: 1rem; margin-bottom: 0.5rem; cursor: pointer; }
+        .default-quest:hover { border-color: #444; }
+        @media (max-width: 600px) { body { padding: 1rem; } .title { font-size: 2rem; } .form-grid { grid-template-columns: 1fr; } .quest-actions { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="daily-quests.html">← Back to Quests</a>
+        <a href="index.html">Home</a>
+    </nav>
+
+    <header class="header">
+        <h1 class="title">Quest Editor</h1>
+        <p class="subtitle">Craft your personal challenges</p>
+    </header>
+
+    <section class="defaults">
+        <h2 style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">Quick Templates</h2>
+        <div class="default-quest" onclick="useTemplate('Physical Training', '15 Push-ups', 50, 'Strengthen your body, strengthen your mind.')">
+            <strong>Physical Training</strong> • 15 Push-ups • +50 XP
+        </div>
+        <div class="default-quest" onclick="useTemplate('Mental Focus', '20 Min Reading', 30, 'Feed your mind with knowledge.')">
+            <strong>Mental Focus</strong> • 20 Min Reading • +30 XP
+        </div>
+        <div class="default-quest" onclick="useTemplate('Inner Peace', '10 Min Meditation', 25, 'Center your thoughts through stillness.')">
+            <strong>Inner Peace</strong> • 10 Min Meditation • +25 XP
+        </div>
+        <div class="default-quest" onclick="useTemplate('Creative Work', '1 Hour Writing', 40, 'Express your thoughts through words.')">
+            <strong>Creative Work</strong> • 1 Hour Writing • +40 XP
+        </div>
+    </section>
+
+    <section class="editor">
+        <h2 style="margin-bottom: 1.5rem;">Create New Quest</h2>
+        <div class="form-row">
+            <label class="label">Quest Name</label>
+            <input type="text" class="input" id="questName" placeholder="e.g., Morning Run">
+        </div>
+        <div class="form-row">
+            <label class="label">Description</label>
+            <textarea class="textarea" id="questDesc" placeholder="What is this quest about?"></textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-grid">
+                <div>
+                    <label class="label">Target (what to achieve)</label>
+                    <input type="text" class="input" id="questTarget" placeholder="e.g., 30 minutes, 20 reps">
+                </div>
+                <div>
+                    <label class="label">Base XP Reward</label>
+                    <input type="number" class="input" id="questXP" value="25" min="5" max="100">
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <button class="btn primary" onclick="addQuest()">Add Quest</button>
+            <button class="btn" onclick="clearForm()">Clear</button>
+        </div>
+    </section>
+
+    <section class="quest-list">
+        <h2 style="margin-bottom: 1.5rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">Your Custom Quests</h2>
+        <div id="questList"></div>
+    </section>
+
+    <script>
+        let customQuests = [];
+        
+        function load() {
+            let saved = localStorage.getItem('bq-custom');
+            if (saved) customQuests = JSON.parse(saved);
+            updateList();
+        }
+        
+        function save() {
+            localStorage.setItem('bq-custom', JSON.stringify(customQuests));
+        }
+        
+        function addQuest() {
+            let name = document.getElementById('questName').value.trim();
+            let desc = document.getElementById('questDesc').value.trim();
+            let target = document.getElementById('questTarget').value.trim();
+            let xp = parseInt(document.getElementById('questXP').value) || 25;
+            
+            if (!name || !target) {
+                alert('Please fill in quest name and target');
+                return;
+            }
+            
+            let quest = {
+                id: Date.now(),
+                name: name,
+                desc: desc || 'Complete this daily challenge.',
+                target: target,
+                xp: xp
+            };
+            
+            customQuests.push(quest);
+            save();
+            updateList();
+            clearForm();
+        }
+        
+        function deleteQuest(id) {
+            if (confirm('Delete this quest?')) {
+                customQuests = customQuests.filter(q => q.id !== id);
+                save();
+                updateList();
+            }
+        }
+        
+        function editQuest(id) {
+            let quest = customQuests.find(q => q.id === id);
+            if (quest) {
+                document.getElementById('questName').value = quest.name;
+                document.getElementById('questDesc').value = quest.desc;
+                document.getElementById('questTarget').value = quest.target;
+                document.getElementById('questXP').value = quest.xp;
+                deleteQuest(id);
+            }
+        }
+        
+        function useTemplate(name, target, xp, desc) {
+            document.getElementById('questName').value = name;
+            document.getElementById('questDesc').value = desc;
+            document.getElementById('questTarget').value = target;
+            document.getElementById('questXP').value = xp;
+        }
+        
+        function clearForm() {
+            document.getElementById('questName').value = '';
+            document.getElementById('questDesc').value = '';
+            document.getElementById('questTarget').value = '';
+            document.getElementById('questXP').value = '25';
+        }
+        
+        function updateList() {
+            let list = document.getElementById('questList');
+            if (customQuests.length === 0) {
+                list.innerHTML = '<div class="empty">No custom quests yet.<br>Use templates above or create your own.</div>';
+                return;
+            }
+            
+            list.innerHTML = customQuests.map(quest => `
+                <div class="quest-item">
+                    <div class="quest-item-header">
+                        <span class="quest-name">${quest.name}</span>
+                        <span class="quest-xp">+${quest.xp} XP</span>
+                    </div>
+                    <div class="quest-desc">${quest.desc}</div>
+                    <div class="quest-target">Target: ${quest.target}</div>
+                    <div class="quest-actions" style="margin-top: 0.5rem;">
+                        <button class="btn btn-small" onclick="editQuest(${quest.id})">Edit</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteQuest(${quest.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        load();
+    </script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Bobrashov</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Georgia, serif;
+            line-height: 1.7;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .nav {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+        
+        .nav a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 1rem;
+        }
+        
+        .nav a:hover, .nav a.current {
+            color: #fff;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .post {
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid #222;
+        }
+        
+        .post:last-child {
+            border-bottom: none;
+        }
+        
+        .post-header {
+            margin-bottom: 2rem;
+        }
+        
+        .post-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+        
+        .post-title a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .post-title a:hover {
+            opacity: 0.8;
+        }
+        
+        .post-meta {
+            opacity: 0.6;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .post-excerpt {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+        
+        .post-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .post-content blockquote {
+            border-left: 3px solid #333;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .read-more {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .read-more:hover {
+            color: #fff;
+            opacity: 1;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 3rem 0;
+            opacity: 0.3;
+        }
+        
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .title { font-size: 2rem; }
+            .post-title { font-size: 1.6rem; }
+        }
+    </style>
+</head><body>
+    <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="blog.html" class="current">Blog</a>
+    </nav>
+
+    <header class="header">
+        <h1 class="title">Blog</h1>
+        <p class="subtitle">Thoughts on code, craft, and digital minimalism</p>
+    </header>
+
+    <main>
+        <article class="post">
+            <header class="post-header">
+                <h2 class="post-title">
+                    <a href="post-digital-restraint.html">The Lost Art of Digital Restraint</a>
+                </h2>
+                <div class="post-meta">August 5, 2024 • 8 min read</div>
+            </header>
+            <div class="post-content">
+                <p class="post-excerpt">
+                    In an age of bloated frameworks and endless dependencies, there's profound beauty 
+                    in crafting experiences that respect both bandwidth and attention.
+                </p>
+                <p>
+                    We've lost our way in the digital wilderness. What began as a revolution in human 
+                    communication has become a monument to excess. The average webpage today weighs 
+                    more than the entire game of Doom—a masterpiece of engineering that fit on a 
+                    3.5" floppy disk and entertained millions.
+                </p>
+                <blockquote>
+                    "Perfection is achieved, not when there is nothing more to add, but when there 
+                    is nothing left to take away." — Antoine de Saint-Exupéry
+                </blockquote>
+                <p>
+                    This principle, once applied to aircraft design, holds profound truth for digital 
+                    craftsmen. Every line of code, every pixel, every network request should earn its 
+                    place through purpose, not presumption.
+                </p>
+                <a href="post-digital-restraint.html" class="read-more">→ Continue reading</a>
+            </div>
+        </article>
+
+        <div class="divider">◆</div>
+
+        <article class="post">
+            <header class="post-header">
+                <h2 class="post-title">
+                    <a href="#post2">TCP Packets and Web Philosophy</a>
+                </h2>
+                <div class="post-meta">July 28, 2024 • 6 min read</div>
+            </header>
+            <div class="post-content">
+                <p class="post-excerpt">
+                    What happens when your entire website fits in a single network request? 
+                    A meditation on speed, simplicity, and the essence of digital communication.
+                </p>
+                <p>
+                    There's something almost mystical about the moment when your creation becomes 
+                    small enough to travel as a single TCP packet. Like a haiku capturing the 
+                    essence of spring in seventeen syllables, a sub-14KB website distills an 
+                    entire digital presence into its purest form.
+                </p>
+                <p>
+                    Consider the journey: your thoughts, transformed into HTML, compressed into bytes, 
+                    wrapped in headers, and shot through fiber optic cables at the speed of light. 
+                    In milliseconds, your digital soul reaches another human consciousness across 
+                    continents and time zones.
+                </p>
+                <a href="#post2" class="read-more">→ Continue reading</a>
+            </div>
+        </article>
+
+        <div class="divider">◆</div>
+
+        <article class="post">
+            <header class="post-header">
+                <h2 class="post-title">
+                    <a href="#post3">Monospace Meditations</a>
+                </h2>
+                <div class="post-meta">July 20, 2024 • 5 min read</div>
+            </header>
+            <div class="post-content">
+                <p class="post-excerpt">
+                    Why the terminal remains the purest interface for thought. On command lines, 
+                    consciousness, and the poetry of plain text.
+                </p>
+                <p>
+                    In the beginning was the command line. Before windows, before icons, before 
+                    the tyranny of the mouse, there was the cursor—blinking patiently, waiting 
+                    for human intention to take form in precise, unambiguous commands.
+                </p>
+                <p>
+                    The terminal strips away pretense. No gradients, no animations, no visual 
+                    flourishes to distract from the essential dialogue between human and machine. 
+                    Each character carries equal weight, each space deliberate, each line a 
+                    complete thought expressed in the most direct medium possible.
+                </p>
+                <a href="#post3" class="read-more">→ Continue reading</a>
+            </div>
+        </article>
+
+        <div class="divider">◆</div>
+
+        <article class="post">
+            <header class="post-header">
+                <h2 class="post-title">
+                    <a href="#post4">The Aesthetics of Constraint</a>
+                </h2>
+                <div class="post-meta">July 12, 2024 • 7 min read</div>
+            </header>
+            <div class="post-content">
+                <p class="post-excerpt">
+                    How limitations become liberation, and why the most elegant solutions emerge 
+                    from the tightest constraints.
+                </p>
+                <p>
+                    Jazz musicians understand something that web developers have forgotten: 
+                    the power of constraint to unleash creativity. Give Miles Davis infinite 
+                    possibilities, and he might spend forever searching. Give him four chords 
+                    and a deadline, and he'll create Kind of Blue.
+                </p>
+                <p>
+                    The 14KB challenge isn't arbitrary masochism—it's a forcing function for 
+                    excellence. When every byte matters, when every choice must be justified, 
+                    when bloat becomes impossible, magic happens.
+                </p>
+                <a href="#post4" class="read-more">→ Continue reading</a>
+            </div>
+        </article>
+
+        <div class="divider">◆</div>
+
+        <article class="post">
+            <header class="post-header">
+                <h2 class="post-title">
+                    <a href="#post5">Digital Archaeology</a>
+                </h2>
+                <div class="post-meta">July 3, 2024 • 9 min read</div>
+            </header>
+            <div class="post-content">
+                <p class="post-excerpt">
+                    Excavating the forgotten wisdom of early web design, and what modern 
+                    developers can learn from HTML 3.2.
+                </p>
+                <p>
+                    Sometimes progress is circular. In our rush toward the future, we've abandoned 
+                    techniques that solved problems we didn't know we'd have again. The early web, 
+                    constrained by 56k modems and primitive browsers, developed an aesthetic of 
+                    restraint that seems almost revolutionary today.
+                </p>
+                <p>
+                    These forgotten craftsmen understood that every element must justify its 
+                    existence. Tables weren't for layout—they were for tabular data. Images 
+                    weren't decoration—they were content. Every tag, every attribute, every 
+                    decision carried weight because bandwidth was precious and attention was finite.
+                </p>
+                <a href="#post5" class="read-more">→ Continue reading</a>
+            </div>
+        </article>
+    </main>
+</body>
+</html>
