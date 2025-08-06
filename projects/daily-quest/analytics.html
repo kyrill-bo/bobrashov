@@ -29,9 +29,6 @@
         .insight{margin-bottom:1rem;padding:1rem;background:var(--bg);border-radius:8px;border-left:4px solid var(--p)}
         .it{font-weight:bold;margin-bottom:.5rem;color:var(--p)}
         .ix{font-size:.9rem;opacity:.8}
-        .export{text-align:center;margin-top:2rem}
-        .eb{background:var(--p);color:var(--card);border:none;padding:.8rem 1.5rem;border-radius:6px;cursor:pointer;margin:.5rem;font-size:.9rem;transition:all .3s}
-        .eb:hover{background:var(--s)}
         .trend{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
         .tl{font-size:.9rem;opacity:.8}
         .tv{font-size:1.2rem;font-weight:bold;color:var(--p)}
@@ -82,12 +79,6 @@
             <h3 class="ct">💡 Einblicke & Empfehlungen</h3>
             <div id="il"></div>
         </div>
-    </div>
-    <div class="export">
-        <h3 class="ct">📁 Daten exportieren</h3>
-        <button class="eb" onclick="ex('json')">JSON</button>
-        <button class="eb" onclick="ex('csv')">CSV</button>
-        <button class="eb" onclick="ex('md')">Markdown</button>
     </div>
     <script>
         let ad={};
@@ -166,15 +157,6 @@
             if(br>0)ins.push({title:"📅 Bester Tag",text:`Dein produktivster Tag ist ${dns[bd]} mit einer Abschlussrate von ${Math.round(br*100)}%.`});
             return ins;
         }
-        function ex(f){
-            const data={...ad,analytics:ca(),insights:ai()};
-            if(f==='json'){dl(JSON.stringify(data,null,2),'statistiken.json','application/json');}
-            else if(f==='csv'){let csv='Datum,Abgeschlossene Quests,Gesamtquests,XP Verdient,Abschlussrate\n';Object.entries(ad.dailyProgress).forEach(([d,data])=>{csv+=`${d},${data.questsCompleted},${data.totalQuests},${data.xpEarned||0},${Math.round((data.questsCompleted/data.totalQuests)*100)}%\n`;});dl(csv,'statistiken.csv','text/csv');}
-            else if(f==='md'){
-                const{totalXP:tx,avgXP:ax,completionRate:cr,perfectDays:pd}=ca();let md=`# Statistik-Bericht\n\n## Übersicht\n- Gesamt-XP: ${tx}\n- Durchschnitts-XP/Tag: ${ax}\n- Abschlussrate: ${cr}%\n- Perfekte Tage: ${pd}\n\n## Einblicke\n`;ai().forEach(i=>md+=`### ${i.title}\n${i.text}\n\n`);dl(md,'statistiken.md','text/markdown');
-            }
-        }
-        function dl(c,fn,mt){const b=new Blob([c],{type:mt});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);}
         function init(){ld();us();gh();gw();gt();gi();}
         init();setInterval(init,300000);
     </script>
