@@ -5,65 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quest Shop - Bobrashov</title>
     <style>
-        :root{--p:#666;--s:#999;--bg:#000;--card:#111;--txt:#fff;--border:#333;--gold:#ffd700;--green:#4a8;--red:#f44}
-        [data-theme="light"]{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd;--gold:#FF8F00;--green:#2E7D32;--red:#C62828}
+        :root{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
         [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
-        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee;--gold:#BF6000;--green:#1B5E20;--red:#B71C1C}
-        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB;--gold:#F57F17;--green:#00695C;--red:#C62828}
-        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9;--gold:#F57F17;--green:#2E7D32;--red:#C62828}
-        
+        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
+        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
+        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:900px;margin:0 auto;line-height:1.6;transition:all .3s}
-        .header{text-align:center;margin-bottom:3rem}
-        .title{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}
-        .subtitle{opacity:.8;font-style:italic}
-        .nav{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-        .nav a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
-        .nav a:hover{color:var(--p);opacity:1}
-        
-        .balance{text-align:center;background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:2rem;border-radius:10px}
-        .balance-amount{font-size:2.5rem;color:var(--gold);margin-bottom:.5rem}
-        .balance-label{opacity:.8}
-        
-        .category-tabs{display:flex;justify-content:center;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
-        .tab{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.6rem 1rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s}
-        .tab:hover,.tab.active{background:var(--p);color:var(--card)}
-        
-        .category-info{background:var(--card);border:1px solid var(--border);padding:1rem;margin-bottom:2rem;border-radius:8px;text-align:center}
-        .category-title{font-size:1.2rem;margin-bottom:.5rem;color:var(--p)}
-        .category-desc{opacity:.8;font-size:.9rem}
-        
-        .shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-bottom:2rem}
-        .shop-item{background:var(--card);border:1px solid var(--border);padding:1.5rem;border-radius:10px;transition:all .3s;position:relative}
-        .shop-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
-        .shop-item.purchased{opacity:.6;border-color:var(--green)}
-        .shop-item.locked{opacity:.4;border-color:var(--red)}
-        .shop-item.on-cooldown{border-color:var(--s)}
-        
-        .shop-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-        .shop-item-name{font-size:1.2rem;color:var(--p)}
-        .shop-item-price{background:var(--gold);color:var(--card);padding:.3rem .6rem;font-size:.9rem;border-radius:12px;font-weight:bold}
-        .shop-item-desc{opacity:.8;font-size:.9rem;margin-bottom:1rem}
-        .shop-item-category{opacity:.6;font-size:.8rem;margin-bottom:1rem}
-        
-        .shop-item-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;font-size:.8rem;opacity:.7}
-        .cooldown-info{color:var(--s)}
-        .unlock-req{color:var(--red)}
-        
-        .btn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.7rem 1.2rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s}
-        .btn:hover{background:var(--p);color:var(--card)}
-        .btn.primary{background:var(--p);border-color:var(--p);color:var(--card)}
-        .btn.buy{background:var(--green);border-color:var(--green);color:white}
-        .btn.buy:hover{opacity:.8}
-        .btn.buy:disabled{background:var(--border);border-color:var(--border);color:var(--txt);opacity:.5;cursor:not-allowed}
-        
-        .editor{background:var(--card);border:1px solid var(--border);padding:2rem;margin-bottom:2rem;border-radius:10px}
-        .form-row{margin-bottom:1.5rem}
-        .label{display:block;margin-bottom:.5rem;opacity:.9}
-        .input,.textarea,.select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--txt);padding:.7rem;font-family:inherit;border-radius:6px}
-        .input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--p)}
-        .textarea{height:80px;resize:vertical}
-        .form-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1200px;margin:0 auto;line-height:1.6;transition:all .3s}
+        .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
+        .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .n a:hover{color:var(--p);opacity:1}
+        .info{display:flex;justify-content:center;gap:2rem;margin-bottom:2rem;flex-wrap:wrap}
+        .ib{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;min-width:150px}
+        .iv{font-size:1.5rem;font-weight:bold;color:var(--p);margin-bottom:.3rem}
+        .il{font-size:.8rem;opacity:.8}
+        .tabs{display:flex;justify-content:center;margin-bottom:2rem;overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:10px}
+        .tab{padding:.8rem 1.5rem;cursor:pointer;border:none;background:transparent;color:var(--txt);transition:all .3s;white-space:nowrap}
+        .tab:hover{background:var(--bg)}.tab.active{background:var(--p);color:var(--card)}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem}
+        .item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;transition:all .3s;position:relative}
+        .item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+        .item.locked{opacity:.6;background:var(--bg)}
+        .ih{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
+        .it{font-size:1.1rem;font-weight:bold;margin-bottom:.3rem;color:var(--p)}
+        .ic{font-size:1rem;color:var(--s);font-weight:bold}
+        .id{font-size:.9rem;opacity:.8;margin-bottom:1rem;line-height:1.4}
+        .ird{font-size:.8rem;color:var(--p);margin-bottom:.5rem}
+        .icn{font-size:.7rem;color:var(--s);margin-bottom:1rem}
+        .btn{padding:.6rem 1.2rem;background:var(--p);color:var(--card);border:none;border-radius:6px;cursor:pointer;font-size:.9rem;transition:all .3s}
+        .btn:hover{background:var(--s)}.btn:disabled{background:var(--border);color:var(--txt);opacity:.6;cursor:not-allowed}
+        .badge{position:absolute;top:10px;right:10px;background:var(--s);color:var(--bg);padding:.2rem .6rem;border-radius:12px;font-size:.7rem;font-weight:bold}
+        .sub{margin-top:2rem;background:var(--card);border:2px solid var(--p);border-radius:10px;padding:2rem;text-align:center}
+        .sth{font-size:1.3rem;color:var(--p);margin-bottom:1rem}
+        .std{margin-bottom:1.5rem;opacity:.8}
+        .stp{font-size:1.2rem;color:var(--s);margin-bottom:1rem}
+        .msg{position:fixed;top:20px;right:20px;background:var(--p);color:var(--card);padding:1rem 1.5rem;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:1000;transform:translateX(100%);transition:transform .3s}
+        .msg.show{transform:translateX(0)}
+        .msg.error{background:#f44336}
+        @media(max-width:768px){body{padding:1rem}.grid{grid-template-columns:1fr}.info{flex-direction:column;align-items:center}.tabs{flex-direction:column}.tab{text-align:center}}
+    </style>
+</head>
+<body>
+    <nav class="n">
+        <a href="daily-quests.html">🎯 Daily Quests</a>
+        <a href="achievements.html">🏆 Achievements</a>
+        <a href="calendar.html">📅 Calendar</a>
+        <a href="analytics.html">📊 Analytics</a>
+        <a href="quest-shop.html">🛒 Shop</a>
+        <a href="settings.html">⚙️ Settings</a>
+        <a href="index.html">Home</a>
+    </nav>
+    <header class="h">
+        <h1 class="t">🛒 Quest Shop</h1>
+        <p class="st">Spend your hard-earned XP</p>
+    </header>
+    <div class="info">
+        <div class="ib"><div class="iv" id="xp">0</div><div class="il">Available XP</div></div>
+        <div class="ib"><div class="iv" id="tp">0</div><div class="il">Total Purchases</div></div>
+        <div class="ib"><div class="iv" id="sp">0</div><div class="il">XP Spent</div></div>
+    </div>
+    <div class="tabs">
+        <button class="tab active" data-cat="instant">⚡ Instant</button>
+        <button class="tab" data-cat="daily">📅 Daily</button>
+        <button class="tab" data-cat="weekly">📆 Weekly</button>
+        <button class="tab" data-cat="monthly">🗓️ Monthly</button>
+        <button class="tab" data-cat="subscription">💎 Premium</button>
+        <button class="tab" data-cat="vip">👑 VIP</button>
+    </div>
+    <div class="grid" id="si"></div>
+    <div class="sub">
+        <h3 class="sth">💎 Premium Membership</h3>
+        <p class="std">Unlock exclusive rewards, remove cooldowns, and get bonus XP!</p>
+        <div class="stp">500 XP/month</div>
+        <button class="btn" id="sb">Subscribe Now</button>
+    </div>
+    <div class="msg" id="msg"></div>
+    <script>
+        let u={xp:0,purchases:[],subscription:{active:false,expiresAt:null},cooldowns:{}};
+        function at(){const s=JSON.parse(localStorage.getItem('questSettings')||'{}');if(s.theme)document.documentElement.setAttribute('data-theme',s.theme);}
+        function ld(){const qd=JSON.parse(localStorage.getItem('bq')||'{}');u.xp=qd.xp||0;const ud=JSON.parse(localStorage.getItem('userData')||'{}');if(ud.purchases)u.purchases=ud.purchases;if(ud.subscription)u.subscription=ud.subscription;if(ud.cooldowns)u.cooldowns=ud.cooldowns;}
+        function sd(){const qd=JSON.parse(localStorage.getItem('bq')||'{}');qd.xp=u.xp;localStorage.setItem('bq',JSON.stringify(qd));localStorage.setItem('userData',JSON.stringify(u));}
+        function sm(t,er=false){const m=document.getElementById('msg');m.textContent=t;m.className=er?'msg error show':'msg show';setTimeout(()=>m.classList.remove('show'),3000);}
+        function cc(it){if(!it.cooldown)return false;const lp=u.cooldowns[it.id];return lp&&(Date.now()-lp)<it.cooldown;}
+        function cu(it){const req=it.unlockReq||{};return(req.xp||0)<=u.xp&&(!req.subscription||u.subscription.active);}
+        function ui(){document.getElementById('xp').textContent=u.xp;document.getElementById('tp').textContent=u.purchases.length;document.getElementById('sp').textContent=u.purchases.reduce((t,p)=>t+p.cost,0);}
+        function ri(cat){const c=document.getElementById('si'),is=JSON.parse(localStorage.getItem('bq-shop')||'[]').filter(i=>i.category===cat);c.innerHTML='';if(is.length===0){c.innerHTML='<div style="text-align:center;opacity:.6;padding:2rem;">No rewards in this category yet.<br><a href="reward-editor.html" style="color:var(--p);">Create some rewards first!</a></div>';return;}is.forEach(it=>{const ul=cu(it),oc=cc(it);const el=document.createElement('div');el.className='item';if(!ul)el.classList.add('locked');const cd=oc?`<div class="icn">⏰ Cooldown: ${Math.ceil(((u.cooldowns[it.id]||0)+it.cooldown-Date.now())/3600000)}h</div>`:'';el.innerHTML=`<div class="ih"><div><div class="it">${it.name}</div><div class="ird">${it.unlockReq?.xp?`Requires: ${it.unlockReq.xp} XP`:''}</div></div><div class="ic">${it.cost} XP</div></div><div class="id">${it.desc}</div>${cd}<button class="btn" ${!ul||oc||u.xp<it.cost?'disabled':''}>${u.xp<it.cost?'Insufficient XP':oc?'On Cooldown':ul?'Purchase':'Locked'}</button>`;if(cat==='subscription'&&!u.subscription.active)el.querySelector('.btn').innerHTML+=' <span class="badge">Premium Only</span>';c.appendChild(el);el.querySelector('.btn').addEventListener('click',()=>{if(ul&&!oc&&u.xp>=it.cost){u.xp-=it.cost;u.purchases.push({...it,purchasedAt:Date.now()});if(it.cooldown)u.cooldowns[it.id]=Date.now();sd();ui();ri(cat);sm(`Purchased: ${it.name}`);}});});}
+        function st(){document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(tb=>tb.classList.remove('active'));t.classList.add('active');ri(t.dataset.cat);});});}
+        document.getElementById('sb').addEventListener('click',()=>{if(u.xp>=500){if(u.subscription.active){sm('Subscription already active!','error');return;}u.xp-=500;u.subscription={active:true,expiresAt:Date.now()+2592000000};sd();ui();sm('Premium subscription activated!');}else{sm('Insufficient XP for subscription!','error');}});
+        function init(){at();ld();ui();ri('instant');st();}
+        init();setInterval(()=>{if(u.subscription.active&&Date.now()>u.subscription.expiresAt){u.subscription.active=false;sd();sm('Premium subscription expired!','error');}},60000);
+    </script>
+</body>
+</html>
         
         .purchased-badge{color:var(--green);font-size:.8rem;margin-left:.5rem}
         .cooldown-badge{color:var(--s);font-size:.8rem;margin-left:.5rem}
@@ -613,7 +647,7 @@
         applyTheme();
         load();
         updateCategoryInfo();
-    </script>
+
             
             // Load player XP from daily quests
             let playerData = localStorage.getItem('bq');
@@ -623,7 +657,7 @@
             }
             
             updateDisplay();
-        }
+        
         
         function save() {
             localStorage.setItem('bq-shop', JSON.stringify(shopItems));
@@ -683,7 +717,7 @@
                         <div class="shop-item-category">${item.category}</div>
                         <div class="shop-item-desc">${item.desc}</div>
                         <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button class="btn buy" onclick="buyItem(${item.id})" 
+                            <button class="btn buy" onclick="buyItem('${item.id}')" 
                                 ${!canAfford ? 'disabled' : ''}>
                                 ${item.purchased ? 'Purchased' : 'Buy'}
                             </button>

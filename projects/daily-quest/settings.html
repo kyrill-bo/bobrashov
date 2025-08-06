@@ -11,8 +11,10 @@
         [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
         [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;transition:all .3s}
-        .c{max-width:800px;margin:0 auto;padding:20px}
+        body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;transition:all .3s;padding:2rem;max-width:800px;margin:0 auto}
+        .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .n a:hover{color:var(--p);opacity:1}
         .h{text-align:center;margin-bottom:30px;background:var(--card);padding:30px;border-radius:15px;box-shadow:0 4px 6px rgba(0,0,0,.1)}
         .h h1{color:var(--p);margin-bottom:10px;font-size:2.5rem}
         .sec{background:var(--card);border-radius:15px;padding:25px;margin-bottom:20px;box-shadow:0 4px 6px rgba(0,0,0,.1)}
@@ -32,32 +34,38 @@
         .switch.active{background:var(--p)}
         .switch-handle{position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:all .3s}
         .switch.active .switch-handle{left:28px}
-        .nav{position:fixed;bottom:20px;right:20px;background:var(--p);color:#fff;border:none;border-radius:50px;padding:15px 25px;font-size:1rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:all .3s}
-        .nav:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.3)}
         .test{background:var(--s);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:.9rem;transition:all .3s}
         .test:hover{opacity:.8}
-        @media(max-width:768px){.theme-grid{grid-template-columns:1fr}}
+        @media(max-width:768px){.theme-grid{grid-template-columns:1fr};body{padding:1rem}}
     </style>
 </head>
 <body>
-    <div class="c">
-        <div class="h">
-            <h1>⚙️ Einstellungen</h1>
-            <p>Personalisiere deine Quest-Erfahrung</p>
-        </div>
-        <div class="sec">
-            <h2 class="sec-t">🎨 Themes</h2>
-            <div class="theme-grid">
-                <div class="theme" data-theme="light">
-                    <div class="theme-prev" style="background:linear-gradient(135deg,#4CAF50,#FFC107)">Light</div>
-                    <div class="theme-name">Standard</div>
-                    <div class="theme-desc">Helles, freundliches Design</div>
-                </div>
-                <div class="theme" data-theme="dark">
-                    <div class="theme-prev" style="background:linear-gradient(135deg,#66BB6A,#FFD54F);color:#fff">Dark</div>
-                    <div class="theme-name">Dark Mode</div>
-                    <div class="theme-desc">Augenschonend und elegant</div>
-                </div>
+    <nav class="n">
+        <a href="daily-quests.html">🎯 Daily Quests</a>
+        <a href="achievements.html">🏆 Achievements</a>
+        <a href="calendar.html">📅 Calendar</a>
+        <a href="analytics.html">📊 Analytics</a>
+        <a href="quest-shop.html">🛒 Shop</a>
+        <a href="settings.html">⚙️ Settings</a>
+        <a href="index.html">Home</a>
+    </nav>
+    <div class="h">
+        <h1>⚙️ Einstellungen</h1>
+        <p>Personalisiere deine Quest-Erfahrung</p>
+    </div>
+    <div class="sec">
+        <h2 class="sec-t">🎨 Themes</h2>
+        <div class="theme-grid">
+            <div class="theme" data-theme="light">
+                <div class="theme-prev" style="background:linear-gradient(135deg,#4CAF50,#FFC107)">Light</div>
+                <div class="theme-name">Standard</div>
+                <div class="theme-desc">Helles, freundliches Design</div>
+            </div>
+            <div class="theme" data-theme="dark">
+                <div class="theme-prev" style="background:linear-gradient(135deg,#66BB6A,#FFD54F);color:#fff">Dark</div>
+                <div class="theme-name">Dark Mode</div>
+                <div class="theme-desc">Augenschonend und elegant</div>
+            </div>
                 <div class="theme" data-theme="minimal">
                     <div class="theme-prev" style="background:linear-gradient(135deg,#000,#666);color:#fff">Minimal</div>
                     <div class="theme-name">Minimal</div>
