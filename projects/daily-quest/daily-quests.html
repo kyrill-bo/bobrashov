@@ -82,7 +82,7 @@
         const eventSystem = {
             events: [
                 { name: "Doppel-XP Montag", day: 1, multiplier: 2, description: "Alle Quests geben heute doppelte XP!" },
-                { name: "Herausforderungs-Mittwoch", day: 3, challenge: true, description: "Eine besondere, schwierigere Quest erscheint heute." },
+                { name: "Herausforderungs-Mittwoch", day: 3, challenge: { name: 'Mittwochs-Herausforderung', target: 'Minuten intensive Aktivität', baseTarget: 30, xp: 150, scaling: false}, description: "Eine besondere, schwierigere Quest erscheint heute." },
                 { name: "Sommer-Challenge", month: 5, bonus: 50, description: "Erhalte 50 Bonus-XP für jede abgeschlossene Quest im Juni!" },
                 { name: "Glückstag", chance: 0.1, multiplier: 1.5, description: "Heute ist dein Glückstag! Genieße 50% Bonus-XP auf alle Quests." }
             ],
@@ -125,6 +125,11 @@
                 customQuests = JSON.stringify(defaultQuests);
             }
             quests = JSON.parse(customQuests).map(q => ({ ...q, baseTarget: q.scaling ? q.baseAmount || 15 : (q.name === 'Geistiger Fokus' ? 20 : 10) }));
+
+            if (activeEvent && activeEvent.challenge) {
+                quests.push(activeEvent.challenge);
+            }
+
             state.done = new Array(quests.length).fill(0);
         }
 
@@ -192,6 +197,7 @@
             document.getElementById('bar').style.width = `${(state.cur / state.need * 100)}%`;
             
             activeEvent = eventSystem.getActiveEvent();
+            loadQuests(); // Reload quests in case an event added one
             const banner = document.getElementById('event-banner');
             if (activeEvent) {
                 banner.style.display = 'block';
