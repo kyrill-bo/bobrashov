@@ -208,7 +208,7 @@
 
             let baseXP;
             if (quests[i].scaling) baseXP = quests[i].xp + (state.lv - 1) * 5; else baseXP = quests[i].xp;
-            const finalXP = eventSystem.applyEvent(baseXP, getStreakMultiplier(state.streak));
+            const finalXP = eventSystem.applyEvent(quests[i], baseXP * getStreakMultiplier(state.streak));
 
             state.done[i] = 1;
             state.xp += finalXP;
