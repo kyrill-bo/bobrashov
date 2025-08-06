@@ -2,7 +2,16 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport            getStats(){
+                const u=JSON.parse(localStorage.getItem('userData')||'{}');
+                const c=JSON.parse(localStorage.getItem('bq-custom')||'[]');
+                const h=JSON.parse(localStorage.getItem('completionHistory')||'[]');
+                return{
+                    level:u.level||1,totalXP:u.totalXP||0,currentStreak:u.streak||0,questsCompleted:h.length,customQuests:c.length,
+                    perfectDays:this.countPerfect(),earlyCompletions:this.countEarly(),lateCompletions:this.countLate(),
+                    weekendQuests:this.countWeekend(),comebacks:parseInt(localStorage.getItem('comebacks')||'0')
+                };
+            }"width=device-width, initial-scale=1.0">
     <title>Erfolge - Daily Quest System</title>
     <style>
         :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
@@ -104,7 +113,9 @@
             countLate(){return JSON.parse(localStorage.getItem('completionHistory')||'[]').filter(c=>new Date(c.timestamp).getHours()>=22).length;}
             countWeekend(){return JSON.parse(localStorage.getItem('completionHistory')||'[]').filter(c=>{const d=new Date(c.timestamp).getDay();return d===0||d===6;}).length;}
             checkAll(){
-                const stats=this.getStats();let news=[];
+                const stats=this.getStats();
+                console.log('Achievement Stats:', stats); // Debug
+                let news=[];
                 for(const cat in defs){for(const ach of defs[cat].achs){if(!this.achs[ach.id]){if(this.checkReq(ach,stats)){this.unlock(ach);news.push(ach);}}}}
                 if(news.length>0)this.showUnlocks(news);
             }
@@ -148,11 +159,14 @@
                 return`<div class="ach ${isU?'u':'l'}" id="ach-${ach.id}"><div class="ach-i">${ach.icon}</div><div class="ach-c"><div class="ach-n">${ach.name}</div><div class="ach-d">${ach.desc}</div><div class="ach-p">${isU?'Freigeschaltet!':`${prog}/${ach.req.value} (${perc}%)`}</div>${!isU?`<div class="pb"><div class="pf" style="width:${perc}%"></div></div>`:''}</div><div class="ach-r">+${ach.reward} XP</div></div>`;
             }
             updateStats(){
-                const un=Object.keys(this.achs).length;const tot=Object.values(defs).reduce((s,cat)=>s+cat.achs.length,0);
-                const pts=Object.values(defs).flat().filter(cat=>cat.achs).reduce((s,cat)=>s+cat.achs.filter(ach=>this.achs[ach.id]).reduce((s2,ach)=>s2+ach.reward,0),0);
-                const rare=this.achs['xp_millionaire']||this.achs['quest_master']?1:0;
-                document.getElementById('total').textContent=un;document.getElementById('points').textContent=pts;
-                document.getElementById('rate').textContent=`${Math.round((un/tot)*100)}%`;document.getElementById('rare').textContent=rare;
+                const un=Object.keys(this.achs).length;
+                const tot=Object.values(defs).reduce((s,cat)=>s+cat.achs.length,0);
+                const pts=Object.values(defs).reduce((s,cat)=>s+cat.achs.filter(ach=>this.achs[ach.id]).reduce((s2,ach)=>s2+ach.reward,0),0);
+                const rareCount=Object.keys(this.achs).filter(id=>['xp_millionaire','quest_master','comeback_kid'].includes(id)).length;
+                document.getElementById('total').textContent=un;
+                document.getElementById('points').textContent=pts;
+                document.getElementById('rate').textContent=`${Math.round((un/tot)*100)}%`;
+                document.getElementById('rare').textContent=rareCount;
             }
             init(){this.checkAll();this.render();this.updateStats();}
         }
