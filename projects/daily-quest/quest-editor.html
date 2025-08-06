@@ -7,21 +7,21 @@
     <style>
         :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: var(--txt); font-family: Georgia, serif; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.6; }
-        .header { text-align: center; margin-bottom: 3rem; }
-        .title { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--p); }
+        body { background: var(--bg); color: var(--txt); font-family: Georgia, serif; padding: 1rem; max-width: 800px; margin: 0 auto; line-height: 1.6; }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .title { font-size: 2rem; margin-bottom: 0.5rem; color: var(--p); }
         .subtitle { opacity: 0.8; font-style: italic; }
         .nav { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
         .nav a { color: var(--txt); text-decoration: none; margin: 0 1rem; transition: color .3s; }
         .nav a:hover { color: var(--p); }
-        .editor { background: var(--card); border: 1px solid var(--border); padding: 2rem; margin-bottom: 2rem; border-radius: 10px; }
+        .editor { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 2rem; border-radius: 10px; }
         .form-row { margin-bottom: 1.5rem; }
         .label { display: block; margin-bottom: 0.5rem; opacity: 0.9; }
         .input, .textarea, .select { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--txt); padding: 0.7rem; font-family: inherit; border-radius: 5px; }
         .input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--p); }
         .textarea { height: 80px; resize: vertical; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .btn { background: transparent; border: 1px solid var(--border); color: var(--txt); padding: 0.7rem 1.2rem; cursor: pointer; font-family: inherit; border-radius: 5px; transition: all .3s; }
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .btn { background: transparent; border: 1px solid var(--border); color: var(--txt); padding: 0.7rem 1.2rem; cursor: pointer; font-family: inherit; border-radius: 5px; transition: all .3s; width:100%; }
         .btn:hover { background: var(--p); color: var(--card); }
         .btn.primary { background: var(--p); color: var(--card); }
         .quest-list { margin-bottom: 2rem; }
@@ -30,7 +30,7 @@
         .quest-name { font-size: 1.2rem; font-weight: bold; color: var(--p); }
         .quest-xp { background: var(--s); color: var(--bg); padding: 0.2rem 0.6rem; font-size: 0.8rem; border-radius: 10px; }
         .quest-desc { opacity: 0.8; font-size: 0.9rem; margin-bottom: 1rem; }
-        .quest-meta { display: flex; gap: 1rem; font-size: 0.9rem; opacity: 0.7; margin-bottom: 1rem; }
+        .quest-meta { display: flex; flex-direction:column; gap: 0.5rem; font-size: 0.9rem; opacity: 0.7; margin-bottom: 1rem; }
         .quest-actions { display: flex; gap: 0.5rem; }
         .btn-small { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
         .btn-danger { border-color: #644; color: #faa; }
@@ -39,7 +39,6 @@
         .defaults { margin-bottom: 2rem; }
         .default-quest { background: var(--bg); border: 1px solid var(--border); padding: 1rem; margin-bottom: 0.5rem; cursor: pointer; border-radius: 5px; transition: border-color .3s; }
         .default-quest:hover { border-color: var(--p); }
-        @media (max-width: 600px) { body { padding: 1rem; } .title { font-size: 2rem; } .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>

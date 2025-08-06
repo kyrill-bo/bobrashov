@@ -7,19 +7,19 @@
     <style>
         :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1000px;margin:0 auto;line-height:1.6}
-        .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:1rem;max-width:1000px;margin:0 auto;line-height:1.6}
+        .h{text-align:center;margin-bottom:2rem}.t{font-size:2rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
         .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .n a{color:var(--txt);text-decoration:none;margin:0 .5rem;font-size:.9rem;opacity:.8;transition:all .3s}
         .n a:hover{color:var(--p);opacity:1}
-        .editor{background:var(--card);border:1px solid var(--border);padding:2rem;margin-bottom:2rem;border-radius:10px}
+        .editor{background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:2rem;border-radius:10px}
         .form-row{margin-bottom:1.5rem}
         .label{display:block;margin-bottom:.5rem;opacity:.9}
         .input,.textarea,.select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--txt);padding:.7rem;font-family:inherit;border-radius:6px}
         .input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--p)}
         .textarea{height:80px;resize:vertical}
-        .form-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem}
-        .btn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.7rem 1.2rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s}
+        .form-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+        .btn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.7rem 1.2rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s;width:100%;}
         .btn:hover{background:var(--p);color:var(--card)}
         .btn.primary{background:var(--p);border-color:var(--p);color:var(--card)}
         .defaults{margin-bottom:2rem}
@@ -27,18 +27,17 @@
         .default-item:hover{border-color:var(--p)}
         .rewards-list{margin-bottom:2rem}
         .reward-item{background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;border-radius:8px;position:relative}
-        .reward-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-        .reward-name{font-size:1.1rem;color:var(--p)}
+        .reward-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+        .reward-name{font-size:1.1rem;color:var(--p);margin-bottom:0.5rem;}
         .reward-cost{background:var(--s);color:var(--bg);padding:.2rem .6rem;border-radius:12px;font-size:.8rem;font-weight:bold}
         .reward-desc{opacity:.8;margin-bottom:.5rem}
         .reward-meta{font-size:.8rem;opacity:.7;margin-bottom:1rem}
-        .delete-btn{background:#f44336;border-color:#f44336;color:white;padding:.4rem .8rem;font-size:.8rem}
+        .delete-btn{background:#f44336;border-color:#f44336;color:white;padding:.4rem .8rem;font-size:.8rem;width:100%;margin-top:1rem;}
         .delete-btn:hover{opacity:.8}
-        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;margin-bottom:2rem}
         .stat{background:var(--card);border:1px solid var(--border);padding:1rem;text-align:center;border-radius:8px}
         .sv{font-size:1.5rem;color:var(--p);margin-bottom:.3rem}
         .sl{font-size:.8rem;opacity:.8}
-        @media(max-width:768px){body{padding:1rem}.form-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
     </style>
 </head>
 <body>
@@ -51,7 +50,7 @@
     </header>
     <div class="stats">
         <div class="stat"><div class="sv" id="totalRewards">0</div><div class="sl">Gesamtbelohnungen</div></div>
-        <div class="stat"><div class="sv" id="avgCost">0</div><div class="sl">Durchschnittliche Kosten</div></div>
+        <div class="stat"><div class="sv" id="avgCost">0</div><div class="sl">Durchschn. Kosten</div></div>
         <div class="stat"><div class="sv" id="categories">0</div><div class="sl">Kategorien</div></div>
     </div>
     <div class="editor">

@@ -7,12 +7,12 @@
     <style>
         :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1200px;margin:0 auto;line-height:1.6}
-        .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:1rem;max-width:1200px;margin:0 auto;line-height:1.6}
+        .h{text-align:center;margin-bottom:2rem}.t{font-size:2rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
         .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .n a{color:var(--txt);text-decoration:none;margin:0 .5rem;font-size:.9rem;opacity:.8;transition:all .3s}
         .n a:hover{color:var(--p);opacity:1}
-        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-bottom:3rem}
+        .grid{display:grid;grid-template-columns:1fr;gap:1.5rem;margin-bottom:2rem}
         .c{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
         .ct{font-size:1.2rem;margin-bottom:1rem;color:var(--p);display:flex;align-items:center;gap:.5rem}
         .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;margin-bottom:1rem}
@@ -20,10 +20,9 @@
         .sv{font-size:1.5rem;font-weight:bold;color:var(--p);margin-bottom:.3rem}
         .sl{font-size:.8rem;opacity:.8}
         .chart{height:200px;position:relative;background:var(--bg);border-radius:8px;padding:1rem;margin-bottom:1rem}
-        .heatmap{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;height:150px}
-        .hh{grid-column:span 24;display:grid;grid-template-columns:repeat(24,1fr);gap:2px;height:20px;margin-bottom:5px}
+        .heatmap{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;height:150px}
         .hc{border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:.6rem;cursor:pointer}
-        .patterns{display:grid;grid-template-columns:repeat(7,1fr);gap:1rem;margin-bottom:1rem}
+        .patterns{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:1rem;margin-bottom:1rem}
         .pd{text-align:center;padding:.8rem;background:var(--bg);border-radius:8px;font-size:.8rem}
         .pv{font-weight:bold;color:var(--p);margin-bottom:.3rem}
         .insights{margin-bottom:2rem}
@@ -31,19 +30,18 @@
         .it{font-weight:bold;margin-bottom:.5rem;color:var(--p)}
         .ix{font-size:.9rem;opacity:.8}
         .export{text-align:center;margin-top:2rem}
-        .eb{background:var(--p);color:var(--card);border:none;padding:.8rem 1.5rem;border-radius:6px;cursor:pointer;margin:0 .5rem;font-size:.9rem;transition:all .3s}
+        .eb{background:var(--p);color:var(--card);border:none;padding:.8rem 1.5rem;border-radius:6px;cursor:pointer;margin:.5rem;font-size:.9rem;transition:all .3s}
         .eb:hover{background:var(--s)}
         .trend{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
         .tl{font-size:.9rem;opacity:.8}
         .tv{font-size:1.2rem;font-weight:bold;color:var(--p)}
         .progress{background:var(--border);height:8px;border-radius:4px;overflow:hidden;margin-top:.5rem}
         .pf{background:var(--p);height:100%;transition:width .3s}
-        @media(max-width:768px){body{padding:1rem}.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.patterns{grid-template-columns:repeat(3,1fr)}}
     </style>
 </head>
 <body>
     <nav class="n">
-        <a href="daily-quests.html">Tägliche Quests</a>
+        <a href="daily-quests.html">Quests</a>
         <a href="achievements.html">Erfolge</a>
         <a href="calendar.html">Kalender</a>
         <a href="quest-shop.html">Shop</a>
@@ -61,7 +59,7 @@
                 <div class="stat"><div class="sv" id="ts">0</div><div class="sl">Gesamt-Streak</div></div>
                 <div class="stat"><div class="sv" id="cs">0</div><div class="sl">Aktuelle Serie</div></div>
                 <div class="stat"><div class="sv" id="tx">0</div><div class="sl">Gesamt-XP</div></div>
-                <div class="stat"><div class="sv" id="ax">0</div><div class="sl">Durchschnitts-XP/Tag</div></div>
+                <div class="stat"><div class="sv" id="ax">0</div><div class="sl">Durchschn.-XP/Tag</div></div>
                 <div class="stat"><div class="sv" id="cr">0%</div><div class="sl">Abschlussrate</div></div>
                 <div class="stat"><div class="sv" id="pd">0</div><div class="sl">Perfekte Tage</div></div>
             </div>
@@ -72,8 +70,6 @@
                 <div class="heatmap" id="hm"></div>
             </div>
         </div>
-    </div>
-    <div class="grid">
         <div class="c">
             <h3 class="ct">📅 Wochentagsmuster</h3>
             <div class="patterns" id="wp"></div>
@@ -82,16 +78,16 @@
             <h3 class="ct">📊 Aktuelle Trends</h3>
             <div id="trends"></div>
         </div>
-    </div>
-    <div class="c insights">
-        <h3 class="ct">💡 Einblicke & Empfehlungen</h3>
-        <div id="il"></div>
+        <div class="c insights">
+            <h3 class="ct">💡 Einblicke & Empfehlungen</h3>
+            <div id="il"></div>
+        </div>
     </div>
     <div class="export">
         <h3 class="ct">📁 Daten exportieren</h3>
-        <button class="eb" onclick="ex('json')">JSON exportieren</button>
-        <button class="eb" onclick="ex('csv')">CSV exportieren</button>
-        <button class="eb" onclick="ex('md')">Markdown exportieren</button>
+        <button class="eb" onclick="ex('json')">JSON</button>
+        <button class="eb" onclick="ex('csv')">CSV</button>
+        <button class="eb" onclick="ex('md')">Markdown</button>
     </div>
     <script>
         let ad={};

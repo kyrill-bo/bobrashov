@@ -7,29 +7,30 @@
     <style>
         :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:700px;margin:0 auto;line-height:1.6}
-        .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
-        .stats{display:flex;justify-content:space-between;margin-bottom:3rem}.stat{text-align:center}.sv{font-size:2rem;margin-bottom:.3rem;color:var(--p)}.sl{opacity:.8;font-size:.9rem}
-        .prog{margin-bottom:3rem}.pi{display:flex;justify-content:space-between;margin-bottom:.5rem}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:1rem;max-width:700px;margin:0 auto;line-height:1.6}
+        .h{text-align:center;margin-bottom:2rem}.t{font-size:2rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
+        .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:2rem;}
+        .stat{text-align:center}.sv{font-size:1.8rem;margin-bottom:.3rem;color:var(--p)}.sl{opacity:.8;font-size:.9rem}
+        .prog{margin-bottom:2rem}.pi{display:flex;justify-content:space-between;margin-bottom:.5rem;font-size:0.9rem;}
         .pb{width:100%;height:15px;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
         .pf{height:100%;background:var(--p);width:0%;transition:width .3s}
-        .q{background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;border-radius:10px;transition:all .3s}
-        .q.done{opacity:.6}.qh{display:flex;justify-content:space-between;margin-bottom:1rem}.qt{font-size:1.2rem}
+        .q{background:var(--card);border:1px solid var(--border);padding:1rem;margin-bottom:1rem;border-radius:10px;transition:all .3s}
+        .q.done{opacity:.6}.qh{display:flex;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;}
+        .qt{font-size:1.1rem;margin-bottom:0.5rem;}
         .qx{background:var(--s);color:var(--bg);padding:.2rem .6rem;font-size:.8rem;border-radius:12px;font-weight:bold}
-        .qg{text-align:center;font-size:1.5rem;margin:1rem 0}
-        .btn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.6rem 1rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s}
+        .qg{text-align:center;font-size:1.3rem;margin:1rem 0}
+        .btn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.6rem 1rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s;width:100%;}
         .btn:hover{background:var(--p);color:var(--card)}.btn:disabled{opacity:.5;cursor:not-allowed}
         .r{text-align:center;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)}
         .rb{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.4rem .8rem;cursor:pointer;font-family:inherit;font-size:.8rem;border-radius:6px;opacity:.7;transition:all .3s}
         .rb:hover{opacity:1;background:var(--border)}
-        .c{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border:2px solid var(--p);padding:2rem;text-align:center;opacity:0;transition:opacity .3s;border-radius:15px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+        .c{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border:2px solid var(--p);padding:2rem;text-align:center;opacity:0;transition:opacity .3s;border-radius:15px;box-shadow:0 8px 32px rgba(0,0,0,.3);width:90%;}
         .c.show{opacity:1}
         .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .n a{color:var(--txt);text-decoration:none;margin:0 .5rem;font-size:.9rem;opacity:.8;transition:all .3s}
         .n a:hover{color:var(--p);opacity:1}
         .event-banner{border-radius:10px;animation:pulse 2s infinite;text-align:center;margin-bottom:2rem;padding:1rem;background:var(--card);border:1px solid var(--border);display:none}
         @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,193,7,.4)}70%{box-shadow:0 0 0 10px rgba(255,193,7,0)}100%{box-shadow:0 0 0 0 rgba(255,193,7,0)}}
-        @media(max-width:600px){body{padding:1rem}.stats{flex-wrap:wrap;gap:1rem}.t{font-size:2rem}}
     </style>
 </head>
 <body>
@@ -37,7 +38,7 @@
         <a href="achievements.html">Erfolge</a>
         <a href="calendar.html">Kalender</a>
         <a href="quest-shop.html">Shop</a>
-        <a href="quest-editor.html">Quest-Editor</a>
+        <a href="quest-editor.html">Editor</a>
         <a href="settings.html">Einstellungen</a>
     </nav>
     <header class="h">

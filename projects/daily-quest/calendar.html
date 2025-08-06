@@ -7,12 +7,12 @@
     <style>
         :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1000px;margin:0 auto;line-height:1.6}
-        .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:1rem;max-width:1000px;margin:0 auto;line-height:1.6}
+        .h{text-align:center;margin-bottom:2rem}.t{font-size:2rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
         .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .n a{color:var(--txt);text-decoration:none;margin:0 .5rem;font-size:.9rem;opacity:.8;transition:all .3s}
         .n a:hover{color:var(--p);opacity:1}
-        .grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem}
+        .grid{display:grid;grid-template-columns:1fr;gap:1.5rem;margin-bottom:2rem}
         .c{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
         .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
         .cn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.3rem .6rem;cursor:pointer;border-radius:4px}
@@ -31,7 +31,7 @@
         .wb{flex:1;background:var(--p);border-radius:4px 4px 0 0;min-height:10px;position:relative;transition:all .3s}
         .wb:hover{opacity:.8}
         .wl{position:absolute;bottom:-25px;left:50%;transform:translateX(-50%);font-size:.7rem;opacity:.7}
-        .legend{display:flex;justify-content:center;gap:2rem;margin-top:1rem;flex-wrap:wrap}
+        .legend{display:flex;justify-content:center;gap:1rem;margin-top:1rem;flex-wrap:wrap}
         .li{display:flex;align-items:center;gap:.5rem;font-size:.8rem}
         .lc{width:12px;height:12px;border-radius:3px}
         .insights{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
@@ -39,12 +39,11 @@
         .it{font-weight:bold;margin-bottom:.5rem;color:var(--p)}
         .ix{font-size:.9rem;opacity:.8}
         .tooltip{position:absolute;background:rgba(0,0,0,.8);color:white;padding:.5rem;border-radius:4px;font-size:.7rem;pointer-events:none;z-index:1000;opacity:0;transition:opacity .3s}
-        @media(max-width:768px){body{padding:1rem}.grid{grid-template-columns:1fr}.sg{grid-template-columns:1fr}.ch{flex-direction:column;gap:.5rem}}
     </style>
 </head>
 <body>
     <nav class="n">
-        <a href="daily-quests.html">Tägliche Quests</a>
+        <a href="daily-quests.html">Quests</a>
         <a href="achievements.html">Erfolge</a>
         <a href="analytics.html">Statistiken</a>
         <a href="quest-shop.html">Shop</a>
@@ -73,18 +72,18 @@
             <div class="sg">
                 <div class="stat"><div class="sv" id="pd">0</div><div class="sl">Perfekte Tage</div></div>
                 <div class="stat"><div class="sv" id="tx">0</div><div class="sl">Gesamt-XP</div></div>
-                <div class="stat"><div class="sv" id="ax">0</div><div class="sl">Durchschnitts-XP/Tag</div></div>
+                <div class="stat"><div class="sv" id="ax">0</div><div class="sl">Durchschn.-XP/Tag</div></div>
                 <div class="stat"><div class="sv" id="cr">0%</div><div class="sl">Abschlussrate</div></div>
             </div>
         </div>
-    </div>
-    <div class="c">
-        <h3 class="ct">📈 Wöchentlicher Fortschritt</h3>
-        <div class="weekly" id="wc"></div>
-    </div>
-    <div class="insights">
-        <h3 class="ct">💡 Einblicke</h3>
-        <div id="il"></div>
+        <div class="c">
+            <h3 class="ct">📈 Wöchentlicher Fortschritt</h3>
+            <div class="weekly" id="wc"></div>
+        </div>
+        <div class="insights">
+            <h3 class="ct">💡 Einblicke</h3>
+            <div id="il"></div>
+        </div>
     </div>
     <div class="tooltip" id="tp"></div>
     <script>
