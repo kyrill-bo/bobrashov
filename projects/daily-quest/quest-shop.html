@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quest Shop</title>
+    <title>Quest-Shop</title>
     <style>
         :root {
             --p: #4CAF50; --s: #FFC107; --bg: #f5f5f5; --card: #fff; --txt: #333; --border: #ddd;
@@ -72,48 +72,48 @@
 </head>
 <body>
     <nav class="nav">
-        <a href="daily-quests.html">🎯 Daily Quests</a>
-        <a href="achievements.html">🏆 Achievements</a>
-        <a href="calendar.html">📅 Calendar</a>
-        <a href="reward-editor.html">🏅 Manage Rewards</a>
+        <a href="daily-quests.html">🎯 Tägliche Quests</a>
+        <a href="achievements.html">🏆 Erfolge</a>
+        <a href="calendar.html">📅 Kalender</a>
+        <a href="reward-editor.html">🏅 Belohnungen verwalten</a>
     </nav>
 
     <nav class="nav">
-        <a href="settings.html">⚙️ Settings</a>
-        <a href="../../index.html">🏠 Home</a>
+        <a href="settings.html">⚙️ Einstellungen</a>
+        <a href="../../index.html">🏠 Startseite</a>
     </nav>
 
     <header class="header">
-        <h1 class="title">🛒 Quest Shop</h1>
-        <p class="subtitle">Spend your hard-earned XP on cool rewards!</p>
+        <h1 class="title">🛒 Quest-Shop</h1>
+        <p class="subtitle">Gib deine hart verdienten XP für coole Belohnungen aus!</p>
     </header>
 
     <div class="stats">
         <div class="stat">
             <div class="stat-value" id="totalXP">0</div>
-            <div class="stat-label">Available XP</div>
+            <div class="stat-label">Verfügbare XP</div>
         </div>
         <div class="stat">
             <div class="stat-value" id="totalSpent">0</div>
-            <div class="stat-label">XP Spent</div>
+            <div class="stat-label">Ausgegebene XP</div>
         </div>
         <div class="stat">
             <div class="stat-value" id="rewardsAvailable">0</div>
-            <div class="stat-label">Available Rewards</div>
+            <div class="stat-label">Verfügbare Belohnungen</div>
         </div>
         <div class="stat">
             <div class="stat-value" id="rewardsPurchased">0</div>
-            <div class="stat-label">Rewards Purchased</div>
+            <div class="stat-label">Gekaufte Belohnungen</div>
         </div>
     </div>
 
     <div class="category-tabs">
-        <button class="tab active" data-category="all">🌟 All</button>
-        <button class="tab" data-category="instant">⚡ Instant</button>
-        <button class="tab" data-category="daily">📅 Daily</button>
-        <button class="tab" data-category="weekly">📍 Weekly</button>
-        <button class="tab" data-category="monthly">🎯 Monthly</button>
-        <button class="tab" data-category="subscription">🔄 Subscriptions</button>
+        <button class="tab active" data-category="all">🌟 Alle</button>
+        <button class="tab" data-category="instant">⚡ Sofort</button>
+        <button class="tab" data-category="daily">📅 Täglich</button>
+        <button class="tab" data-category="weekly">📍 Wöchentlich</button>
+        <button class="tab" data-category="monthly">🎯 Monatlich</button>
+        <button class="tab" data-category="subscription">🔄 Abonnements</button>
         <button class="tab" data-category="vip">👑 VIP</button>
     </div>
 
@@ -130,13 +130,13 @@
         let playerStats = { totalSpent: 0, rewardsPurchased: 0 };
 
         const categoryInfo = {
-            all: { title: "🌟 All Rewards", desc: "Browse all available rewards across categories" },
-            instant: { title: "⚡ Instant Rewards", desc: "Quick treats for immediate satisfaction" },
-            daily: { title: "📅 Daily Rewards", desc: "End-of-day celebrations and personal treats" },
-            weekly: { title: "📍 Weekly Rewards", desc: "Bigger rewards for consistent weekly progress" },
-            monthly: { title: "🎯 Monthly Rewards", desc: "Major purchases for long-term dedication" },
-            subscription: { title: "🔄 Subscription Rewards", desc: "Recurring services with ongoing cooldowns" },
-            vip: { title: "👑 VIP Rewards", desc: "Exclusive rewards unlocked through achievements" }
+            all: { title: "🌟 Alle Belohnungen", desc: "Durchsuche alle verfügbaren Belohnungen über alle Kategorien hinweg" },
+            instant: { title: "⚡ Sofortige Belohnungen", desc: "Schnelle Belohnungen für sofortige Befriedigung" },
+            daily: { title: "📅 Tägliche Belohnungen", desc: "Belohnungen am Ende des Tages und persönliche Freuden" },
+            weekly: { title: "📍 Wöchentliche Belohnungen", desc: "Größere Belohnungen für beständigen wöchentlichen Fortschritt" },
+            monthly: { title: "🎯 Monatliche Belohnungen", desc: "Große Anschaffungen für langfristiges Engagement" },
+            subscription: { title: "🔄 Abonnement-Belohnungen", desc: "Wiederkehrende Dienste mit laufenden Abklingzeiten" },
+            vip: { title: "👑 VIP-Belohnungen", desc: "Exklusive Belohnungen, die durch Erfolge freigeschaltet werden" }
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -187,7 +187,6 @@
             if (!requirement) return true;
             const reqLevel = (requirement.match(/Level (\d+)/) || [])[1];
             const reqStreak = (requirement.match(/Streak (\d+)/) || [])[1];
-            // This is a simplified check. A full implementation would need to parse achievements.
             return (!reqLevel || playerLevel >= parseInt(reqLevel)) && (!reqStreak || playerStreak >= parseInt(reqStreak));
         }
 
@@ -209,7 +208,7 @@
             const filtered = currentCategory === 'all' ? shopItems : shopItems.filter(i => i.category === currentCategory);
             
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="empty">No rewards in this category. <a href=\"reward-editor.html\">Add rewards</a> to see them here!</div>`;
+                container.innerHTML = `<div class="empty">Keine Belohnungen in dieser Kategorie. <a href=\"reward-editor.html\">Füge Belohnungen hinzu</a>, um sie hier zu sehen!</div>`;
                 return;
             }
 
@@ -220,19 +219,19 @@
                 const cooldownDays = getCooldownDays(item);
 
                 let statusBadge = '';
-                let buttonText = 'Purchase';
+                let buttonText = 'Kaufen';
                 let buttonDisabled = false;
 
                 if (!isUnlocked) {
-                    statusBadge = `<span class="locked-badge">🔒 Locked</span>`;
-                    buttonText = `Locked (${item.unlock})`;
+                    statusBadge = `<span class="locked-badge">🔒 Gesperrt</span>`;
+                    buttonText = `Gesperrt (${item.unlock})`;
                     buttonDisabled = true;
                 } else if (onCooldown) {
-                    statusBadge = `<span class="cooldown-badge">⏰ Cooldown</span>`;
-                    buttonText = `On Cooldown (${cooldownDays}d)`;
+                    statusBadge = `<span class="cooldown-badge">⏰ Abklingzeit</span>`;
+                    buttonText = `Abklingzeit (${cooldownDays}d)`;
                     buttonDisabled = true;
                 } else if (!canAfford) {
-                    buttonText = 'Insufficient XP';
+                    buttonText = 'Nicht genügend XP';
                     buttonDisabled = true;
                 }
 
@@ -245,8 +244,8 @@
                         <div class="shop-item-category">📂 ${item.category}</div>
                         <p class="shop-item-desc">${item.desc}</p>
                         <div class="shop-item-meta">
-                            ${item.cooldown ? `<span class="cooldown-info">⏰ ${item.cooldown} day cooldown</span>` : ''}
-                            ${item.unlock ? `<span class="unlock-req">🔐 Requires: ${item.unlock}</span>` : ''}
+                            ${item.cooldown ? `<span class="cooldown-info">⏰ ${item.cooldown} Tage Abklingzeit</span>` : ''}
+                            ${item.unlock ? `<span class="unlock-req">🔐 Benötigt: ${item.unlock}</span>` : ''}
                         </div>
                         <div style="margin-top: auto;">
                             <button class="btn buy" onclick="buyItem('${item.id}')" ${buttonDisabled ? 'disabled' : ''}>${buttonText}</button>
@@ -258,11 +257,11 @@
 
         function buyItem(id) {
             const itemIndex = shopItems.findIndex(i => i.id == id);
-            if (itemIndex === -1) return;
+            if (itemIndex === -1) return; 
             
             const item = shopItems[itemIndex];
             if (playerXP < item.cost || !checkUnlockRequirement(item.unlock) || isOnCooldown(item)) {
-                alert('Cannot purchase this item.');
+                alert('Dieser Gegenstand kann nicht gekauft werden.');
                 return;
             }
 
@@ -271,7 +270,6 @@
             playerStats.rewardsPurchased++;
             item.lastPurchased = new Date().toISOString();
 
-            // We need to update the original array in localStorage
             const allShopItems = JSON.parse(localStorage.getItem('bq-shop') || '[]');
             const globalItemIndex = allShopItems.findIndex(i => i.id == id);
             if (globalItemIndex !== -1) {
@@ -282,7 +280,7 @@
             save();
             updateStats();
             renderShop();
-            alert(`Purchased ${item.name}!`);
+            alert(`${item.name} gekauft!`);
         }
 
         function updateCategoryInfo() {

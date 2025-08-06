@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics - Bobrashov</title>
+    <title>Statistiken - Daily Quest</title>
     <style>
         :root{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
         [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
@@ -47,34 +47,34 @@
 </head>
 <body>
     <nav class="n">
-        <a href="daily-quests.html">🎯 Daily Quests</a>
-        <a href="achievements.html">🏆 Achievements</a>
-        <a href="calendar.html">📅 Calendar</a>
+        <a href="daily-quests.html">🎯 Tägliche Quests</a>
+        <a href="achievements.html">🏆 Erfolge</a>
+        <a href="calendar.html">📅 Kalender</a>
         <a href="quest-shop.html">🛒 Shop</a>
     </nav>
     <nav class="n">
-        <a href="settings.html">⚙️ Settings</a>
-        <a href="../../index.html">🏠 Home</a>
+        <a href="settings.html">⚙️ Einstellungen</a>
+        <a href="../../index.html">🏠 Startseite</a>
     </nav>
 
     <header class="h">
-        <h1 class="t">📊 Analytics Dashboard</h1>
-        <p class="st">Insights into your productivity journey</p>
+        <h1 class="t">📊 Statistik-Dashboard</h1>
+        <p class="st">Einblicke in deine Produktivitätsreise</p>
     </header>
     <div class="grid">
         <div class="c">
-            <h3 class="ct">📈 Performance Overview</h3>
+            <h3 class="ct">📈 Leistungsübersicht</h3>
             <div class="stats">
-                <div class="stat"><div class="sv" id="ts">0</div><div class="sl">Total Streak</div></div>
-                <div class="stat"><div class="sv" id="cs">0</div><div class="sl">Current Streak</div></div>
-                <div class="stat"><div class="sv" id="tx">0</div><div class="sl">Total XP</div></div>
-                <div class="stat"><div class="sv" id="ax">0</div><div class="sl">Avg XP/Day</div></div>
-                <div class="stat"><div class="sv" id="cr">0%</div><div class="sl">Completion Rate</div></div>
-                <div class="stat"><div class="sv" id="pd">0</div><div class="sl">Perfect Days</div></div>
+                <div class="stat"><div class="sv" id="ts">0</div><div class="sl">Gesamt-Streak</div></div>
+                <div class="stat"><div class="sv" id="cs">0</div><div class="sl">Aktuelle Serie</div></div>
+                <div class="stat"><div class="sv" id="tx">0</div><div class="sl">Gesamt-XP</div></div>
+                <div class="stat"><div class="sv" id="ax">0</div><div class="sl">Durchschnitts-XP/Tag</div></div>
+                <div class="stat"><div class="sv" id="cr">0%</div><div class="sl">Abschlussrate</div></div>
+                <div class="stat"><div class="sv" id="pd">0</div><div class="sl">Perfekte Tage</div></div>
             </div>
         </div>
         <div class="c">
-            <h3 class="ct">🕐 Hourly Activity</h3>
+            <h3 class="ct">🕐 Stündliche Aktivität</h3>
             <div class="chart">
                 <div class="heatmap" id="hm"></div>
             </div>
@@ -82,23 +82,23 @@
     </div>
     <div class="grid">
         <div class="c">
-            <h3 class="ct">📅 Weekday Patterns</h3>
+            <h3 class="ct">📅 Wochentagsmuster</h3>
             <div class="patterns" id="wp"></div>
         </div>
         <div class="c">
-            <h3 class="ct">📊 Recent Trends</h3>
+            <h3 class="ct">📊 Aktuelle Trends</h3>
             <div id="trends"></div>
         </div>
     </div>
     <div class="c insights">
-        <h3 class="ct">💡 Insights & Recommendations</h3>
+        <h3 class="ct">💡 Einblicke & Empfehlungen</h3>
         <div id="il"></div>
     </div>
     <div class="export">
-        <h3 class="ct">📁 Export Data</h3>
-        <button class="eb" onclick="ex('json')">Export JSON</button>
-        <button class="eb" onclick="ex('csv')">Export CSV</button>
-        <button class="eb" onclick="ex('md')">Export Markdown</button>
+        <h3 class="ct">📁 Daten exportieren</h3>
+        <button class="eb" onclick="ex('json')">JSON exportieren</button>
+        <button class="eb" onclick="ex('csv')">CSV exportieren</button>
+        <button class="eb" onclick="ex('md')">Markdown exportieren</button>
     </div>
     <script>
         let ad={};
@@ -130,18 +130,18 @@
         function gh(){
             const hm=document.getElementById('hm');hm.innerHTML='';
             const ha=Array(24).fill(0);
-            Object.values(ad.dailyProgress).forEach(d=>{if(d.completedAt){const h=new Date(d.completedAt).getHours();ha[h]++;}});
+            ad.completionHistory.forEach(c=>{const h=new Date(c.timestamp).getHours();ha[h]++;});
             const mh=Math.max(...ha,1);
             for(let h=0;h<24;h++){
                 const c=document.createElement('div');c.className='hc';
                 const i=ha[h]/mh;c.style.background=i>0?`rgba(76,175,80,${.2+i*.8})`:'var(--border)';
-                c.textContent=h;c.title=`${h}:00 - ${ha[h]} completions`;hm.appendChild(c);
+                c.textContent=h;c.title=`${h}:00 - ${ha[h]} Abschlüsse`;hm.appendChild(c);
             }
         }
         function gw(){
             const wp=document.getElementById('wp');wp.innerHTML='';
-            const dns=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const wa=Array(7).fill().map(()=>({total:0,completed:0}));
-            Object.values(ad.dailyProgress).forEach(d=>{const dow=new Date(Object.keys(ad.dailyProgress).find(k=>ad.dailyProgress[k]===d)).getDay();wa[dow].total++;if(d.questsCompleted>=d.totalQuests)wa[dow].completed++;});
+            const dns=['So','Mo','Di','Mi','Do','Fr','Sa'];const wa=Array(7).fill().map(()=>({total:0,completed:0}));
+            Object.entries(ad.dailyProgress).forEach(([date,data])=>{const dow=new Date(date).getDay();wa[dow].total+=data.totalQuests;wa[dow].completed+=data.questsCompleted;});
             wa.forEach((w,i)=>{
                 const el=document.createElement('div');el.className='pd';
                 const r=w.total>0?Math.round((w.completed/w.total)*100):0;
@@ -153,7 +153,7 @@
             const ld=Object.entries(ad.dailyProgress).sort(([a],[b])=>new Date(b)-new Date(a)).slice(0,7);
             const px=ld.reduce((s,([,d])=>s+(d.xpEarned||0),0));const ax=Math.round(px/7);
             const cr=ld.reduce((s,[,d])=>s+(d.questsCompleted/d.totalQuests),0)/7*100;
-            tc.innerHTML=`<div class="trend"><span class="tl">7-Day Avg XP</span><span class="tv">${ax}</span></div><div class="progress"><div class="pf" style="width:${Math.min(ax/50*100,100)}%"></div></div><div class="trend"><span class="tl">7-Day Completion</span><span class="tv">${Math.round(cr)}%</span></div><div class="progress"><div class="pf" style="width:${cr}%"></div></div>`;
+            tc.innerHTML=`<div class="trend"><span class="tl">7-Tage Durchschn. XP</span><span class="tv">${ax}</span></div><div class="progress"><div class="pf" style="width:${Math.min(ax/50*100,100)}%"></div></div><div class="trend"><span class="tl">7-Tage Abschlussrate</span><span class="tv">${Math.round(cr)}%</span></div><div class="progress"><div class="pf" style="width:${cr}%"></div></div>`;
         }
         function gi(){
             const ic=document.getElementById('il');ic.innerHTML='';
@@ -165,22 +165,22 @@
         function ai(){
             const{completionRate:cr,perfectDays:pd}=ca();
             const ins=[];
-            if(cr>=80)ins.push({title:"🎯 Excellent Performance",text:"You're maintaining great consistency! Keep up the momentum."});
-            else if(cr>=60)ins.push({title:"📈 Good Progress",text:"You're doing well. Try to be more consistent for better results."});
-            else ins.push({title:"💪 Room for Improvement",text:"Focus on completing more quests daily to build better habits."});
-            if(pd>=10)ins.push({title:"⭐ Perfectionist",text:"You've achieved many perfect days! Your dedication is paying off."});
+            if(cr>=80)ins.push({title:"🎯 Ausgezeichnete Leistung",text:"Du zeigst eine beeindruckende Konstanz! Mach weiter so."});
+            else if(cr>=60)ins.push({title:"📈 Guter Fortschritt",text:"Du bist auf einem guten Weg. Versuche, noch konstanter zu sein, um bessere Ergebnisse zu erzielen."});
+            else ins.push({title:"💪 Raum für Verbesserungen",text:"Konzentriere dich darauf, täglich mehr Quests abzuschließen, um bessere Gewohnheiten aufzubauen."});
+            if(pd>=10)ins.push({title:"⭐ Perfektionist",text:"Du hast viele perfekte Tage erreicht! Dein Engagement zahlt sich aus."});
             const wa=Array(7).fill().map(()=>({total:0,completed:0}));
-            Object.entries(ad.dailyProgress).forEach(([d,data])=>{const dow=new Date(d).getDay();wa[dow].total++;if(data.questsCompleted>=data.totalQuests)wa[dow].completed++;});
+            Object.entries(ad.dailyProgress).forEach(([d,data])=>{const dow=new Date(d).getDay();wa[dow].total+=data.totalQuests;wa[dow].completed+=data.questsCompleted;});
             let bd=0,br=0;wa.forEach((w,i)=>{if(w.total>0){const r=w.completed/w.total;if(r>br){br=r;bd=i;}}});
-            const dns=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-            if(br>0)ins.push({title:"📅 Best Day",text:`Your most productive day is ${dns[bd]} with ${Math.round(br*100)}% completion rate.`});
+            const dns=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+            if(br>0)ins.push({title:"📅 Bester Tag",text:`Dein produktivster Tag ist ${dns[bd]} mit einer Abschlussrate von ${Math.round(br*100)}%.`});
             return ins;
         }
         function ex(f){
             const data={...ad,analytics:ca(),insights:ai()};
-            if(f==='json'){dl(JSON.stringify(data,null,2),'analytics.json','application/json');}
-            else if(f==='csv'){let csv='Date,Quests Completed,Total Quests,XP Earned,Completion Rate\n';Object.entries(ad.dailyProgress).forEach(([d,data])=>{csv+=`${d},${data.questsCompleted},${data.totalQuests},${data.xpEarned||0},${Math.round((data.questsCompleted/data.totalQuests)*100)}%\n`;});dl(csv,'analytics.csv','text/csv');}
-            else if(f==='md'){const{totalXP:tx,avgXP:ax,completionRate:cr,perfectDays:pd}=ca();let md=`# Analytics Report\n\n## Overview\n- Total XP: ${tx}\n- Average XP/Day: ${ax}\n- Completion Rate: ${cr}%\n- Perfect Days: ${pd}\n\n## Insights\n`;ai().forEach(i=>md+=`### ${i.title}\n${i.text}\n\n`);dl(md,'analytics.md','text/markdown');}
+            if(f==='json'){dl(JSON.stringify(data,null,2),'statistiken.json','application/json');}
+            else if(f==='csv'){let csv='Datum,Abgeschlossene Quests,Gesamtquests,XP Verdient,Abschlussrate\n';Object.entries(ad.dailyProgress).forEach(([d,data])=>{csv+=`${d},${data.questsCompleted},${data.totalQuests},${data.xpEarned||0},${Math.round((data.questsCompleted/data.totalQuests)*100)}%\n`;});dl(csv,'statistiken.csv','text/csv');}
+            else if(f==='md'){const{totalXP:tx,avgXP:ax,completionRate:cr,perfectDays:pd}=ca();let md=`# Statistik-Bericht\n\n## Übersicht\n- Gesamt-XP: ${tx}\n- Durchschnitts-XP/Tag: ${ax}\n- Abschlussrate: ${cr}%\n- Perfekte Tage: ${pd}\n\n## Einblicke\n`;ai().forEach(i=>md+=`### ${i.title}\n${i.text}\n\n`);dl(md,'statistiken.md','text/markdown');}
         }
         function dl(c,fn,mt){const b=new Blob([c],{type:mt});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);}
         function init(){at();ld();us();gh();gw();gt();gi();}

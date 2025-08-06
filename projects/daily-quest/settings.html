@@ -53,11 +53,11 @@
 </head>
 <body>
     <nav class="nav">
-        <a href="daily-quests.html">🎯 Quests</a>
-        <a href="achievements.html">🏆 Achievements</a>
-        <a href="calendar.html">📅 Calendar</a>
+        <a href="daily-quests.html">🎯 Tägliche Quests</a>
+        <a href="achievements.html">🏆 Erfolge</a>
+        <a href="calendar.html">📅 Kalender</a>
         <a href="quest-shop.html">🛒 Shop</a>
-        <a href="../../index.html">🏠 Home</a>
+        <a href="../../index.html">🏠 Startseite</a>
     </nav>
 
     <div class="header">
@@ -90,7 +90,7 @@
             <div class="setting">
                 <div class="setting-info">
                     <h3>Streak-Warnungen</h3>
-                    <p>Warnt dich, bevor deine Streak endet.</p>
+                    <p>Warnt dich, bevor deine Serie endet.</p>
                 </div>
                 <div class="switch" data-setting="streakWarnings"></div>
             </div>
@@ -155,8 +155,8 @@
                 { id: 'light', name: 'Standard', colors: ['#4CAF50', '#FFC107'] },
                 { id: 'dark', name: 'Dark Mode', colors: ['#66BB6A', '#FFD54F'] },
                 { id: 'minimal', name: 'Minimal', colors: ['#000', '#666'] },
-                { id: 'ocean', name: 'Ocean', colors: ['#2196F3', '#00BCD4'] },
-                { id: 'forest', name: 'Forest', colors: ['#388E3C', '#8BC34A'] }
+                { id: 'ocean', name: 'Ozean', colors: ['#2196F3', '#00BCD4'] },
+                { id: 'forest', name: 'Wald', colors: ['#388E3C', '#8BC34A'] }
             ],
 
             init() {
@@ -206,7 +206,7 @@
                     if (themeOption) {
                         this.settings.theme = themeOption.dataset.theme;
                         this.applyTheme();
-                        this.renderThemes(); // Re-render to update active class
+                        this.renderThemes();
                         this.saveSettings();
                     }
                 });
@@ -239,7 +239,7 @@
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                a.download = `daily-quest-backup-${new Date().toISOString().split('T')[0]}.json`;
+                a.download = `daily-quest-sicherung-${new Date().toISOString().split('T')[0]}.json`;
                 a.click();
                 URL.revokeObjectURL(a.href);
                 this.showToast('Daten exportiert!');
@@ -296,7 +296,6 @@
 
         document.addEventListener('DOMContentLoaded', () => settingsManager.init());
 
-        // Make functions globally accessible for inline onclick attributes
         window.exportData = () => settingsManager.exportData();
         window.importData = () => settingsManager.importData();
         window.resetApp = () => settingsManager.resetApp();

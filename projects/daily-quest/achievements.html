@@ -46,24 +46,24 @@
 </head>
 <body>
     <nav class="n">
-        <a href="daily-quests.html">🎯 Daily Quests</a>
-        <a href="calendar.html">📅 Calendar</a>
-        <a href="analytics.html">📊 Analytics</a>
+        <a href="daily-quests.html">🎯 Tägliche Quests</a>
+        <a href="calendar.html">📅 Kalender</a>
+        <a href="analytics.html">📊 Statistiken</a>
         <a href="quest-shop.html">🛒 Shop</a>
     </nav>
 
     <nav class="n">
-        <a href="settings.html">⚙️ Settings</a>
-        <a href="../../index.html">🏠 Home</a>
+        <a href="settings.html">⚙️ Einstellungen</a>
+        <a href="../../index.html">🏠 Startseite</a>
     </nav>
 
     <div class="h">
         <h1>🏆 Erfolge</h1>
-        <p>Deine Meilensteine und Achievements</p>
+        <p>Deine Meilensteine und Auszeichnungen</p>
     </div>
     <div class="stats">
         <div class="stat"><div class="stat-n" id="total">0</div><div class="stat-l">Erfolge freigeschaltet</div></div>
-        <div class="stat"><div class="stat-n" id="points">0</div><div class="stat-l">Achievement-Punkte</div></div>
+        <div class="stat"><div class="stat-n" id="points">0</div><div class="stat-l">Erfolgspunkte</div></div>
         <div class="stat"><div class="stat-n" id="rate">0%</div><div class="stat-l">Fortschritt</div></div>
         <div class="stat"><div class="stat-n" id="rare">0</div><div class="stat-l">Seltene Erfolge</div></div>
     </div>
@@ -71,27 +71,27 @@
     <script>
         const defs={
             basic:{title:'🌟 Grundlagen',achs:[
-                {id:'first_steps',name:'First Steps',desc:'Deine erste Quest abgeschlossen',icon:'🎯',req:{type:'quests_completed',value:1},reward:50},
-                {id:'getting_started',name:'Getting Started',desc:'5 Quests abgeschlossen',icon:'🚀',req:{type:'quests_completed',value:5},reward:100},
-                {id:'level_up',name:'Level Up',desc:'Level 5 erreicht',icon:'⬆️',req:{type:'level',value:5},reward:150},
-                {id:'consistent',name:'Consistent',desc:'7 Tage Streak erreicht',icon:'🔥',req:{type:'streak',value:7},reward:200}
+                {id:'first_steps',name:'Erste Schritte',desc:'Schließe deine erste Quest ab',icon:'🎯',req:{type:'quests_completed',value:1},reward:50},
+                {id:'getting_started',name:'Aller Anfang ist leicht',desc:'Schließe 5 Quests ab',icon:'🚀',req:{type:'quests_completed',value:5},reward:100},
+                {id:'level_up',name:'Level Aufstieg',desc:'Erreiche Level 5',icon:'⬆️',req:{type:'level',value:5},reward:150},
+                {id:'consistent',name:'Am Ball geblieben',desc:'Erreiche eine 7-Tage-Serie',icon:'🔥',req:{type:'streak',value:7},reward:200}
             ]},
-            dedication:{title:'💪 Durchhaltevermögen',achs:[
-                {id:'dedicated',name:'Dedicated',desc:'30 Tage Streak erreicht',icon:'🏃',req:{type:'streak',value:30},reward:500},
-                {id:'legend',name:'Legend',desc:'100 Tage Streak erreicht',icon:'👑',req:{type:'streak',value:100},reward:1000},
-                {id:'level_master',name:'Level Master',desc:'Level 25 erreicht',icon:'🎖️',req:{type:'level',value:25},reward:750},
-                {id:'century_club',name:'Century Club',desc:'100 Quests abgeschlossen',icon:'💯',req:{type:'quests_completed',value:100},reward:800}
+            dedication:{title:'💪 Dranbleiber',achs:[
+                {id:'dedicated',name:'Ehrgeizig',desc:'Erreiche eine 30-Tage-Serie',icon:'🏃',req:{type:'streak',value:30},reward:500},
+                {id:'legend',name:'Legende',desc:'Erreiche eine 100-Tage-Serie',icon:'👑',req:{type:'streak',value:100},reward:1000},
+                {id:'level_master',name:'Level-Meister',desc:'Erreiche Level 25',icon:'🎖️',req:{type:'level',value:25},reward:750},
+                {id:'century_club',name:'Club der 100',desc:'Schließe 100 Quests ab',icon:'💯',req:{type:'quests_completed',value:100},reward:800}
             ]},
             special:{title:'✨ Besondere Leistungen',achs:[
-                {id:'perfectionist',name:'Perfectionist',desc:'Alle Quests an einem Tag abgeschlossen',icon:'⭐',req:{type:'perfect_day',value:1},reward:300},
-                {id:'early_bird',name:'Early Bird',desc:'Quest vor 8:00 Uhr abgeschlossen',icon:'🌅',req:{type:'early_completion',value:1},reward:150},
-                {id:'night_owl',name:'Night Owl',desc:'Quest nach 22:00 Uhr abgeschlossen',icon:'🦉',req:{type:'late_completion',value:1},reward:150},
-                {id:'weekend_warrior',name:'Weekend Warrior',desc:'10 Quests am Wochenende abgeschlossen',icon:'🎮',req:{type:'weekend_quests',value:10},reward:250}
+                {id:'perfectionist',name:'Perfektionist',desc:'Schließe alle Quests an einem Tag ab',icon:'⭐',req:{type:'perfect_day',value:1},reward:300},
+                {id:'early_bird',name:'Früher Vogel',desc:'Schließe eine Quest vor 8:00 Uhr ab',icon:'🌅',req:{type:'early_completion',value:1},reward:150},
+                {id:'night_owl',name:'Nachteule',desc:'Schließe eine Quest nach 22:00 Uhr ab',icon:'🦉',req:{type:'late_completion',value:1},reward:150},
+                {id:'weekend_warrior',name:'Wochenend-Krieger',desc:'Schließe 10 Quests am Wochenende ab',icon:'🎮',req:{type:'weekend_quests',value:10},reward:250}
             ]},
             rare:{title:'💎 Seltene Erfolge',achs:[
-                {id:'xp_millionaire',name:'XP Millionaire',desc:'10,000 XP gesammelt',icon:'💰',req:{type:'total_xp',value:10000},reward:1500},
-                {id:'quest_master',name:'Quest Master',desc:'20 eigene Quests erstellt',icon:'🎨',req:{type:'custom_quests',value:20},reward:1000},
-                {id:'comeback_kid',name:'Comeback Kid',desc:'Nach 7+ Tagen Pause wieder gestartet',icon:'🔄',req:{type:'comeback',value:1},reward:400}
+                {id:'xp_millionaire',name:'XP-Millionär',desc:'Sammle 10.000 XP',icon:'💰',req:{type:'total_xp',value:10000},reward:1500},
+                {id:'quest_master',name:'Quest-Meister',desc:'Erstelle 20 eigene Quests',icon:'🎨',req:{type:'custom_quests',value:20},reward:1000},
+                {id:'comeback_kid',name:'Comeback-Kid',desc:'Starte nach einer Pause von 7+ Tagen neu',icon:'🔄',req:{type:'comeback',value:1},reward:400}
             ]}
         };
 
@@ -131,7 +131,7 @@
             unlock(ach){this.achs[ach.id]={unlockedAt:Date.now(),rewarded:false};this.save();this.awardXP(ach.reward);}
             awardXP(amt){const u=JSON.parse(localStorage.getItem('userData')||'{}');u.totalXP=(u.totalXP||0)+amt;u.level=Math.floor(u.totalXP/1000)+1;localStorage.setItem('userData',JSON.stringify(u));}
             showUnlocks(achs){
-                if('Notification'in window&&Notification.permission==='granted'){new Notification('🏆 Achievement Unlocked!',{body:`Du hast ${achs.length} neue Erfolge freigeschaltet!`,icon:'/favicon.ico'});}
+                if('Notification'in window&&Notification.permission==='granted'){new Notification('🏆 Erfolg freigeschaltet!',{body:`Du hast ${achs.length} neue Erfolge freigeschaltet!`,icon:'/favicon.ico'});}
                 setTimeout(()=>{achs.forEach(ach=>{const el=document.getElementById(`ach-${ach.id}`);if(el)el.classList.add('ju');});},100);
             }
             getProgress(ach){

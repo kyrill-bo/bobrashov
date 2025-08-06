@@ -1,129 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quest Editor - Bobrashov</title>
+    <title>Erweiterter Quest-Editor</title>
     <style>
+        :root{--p:#666;--s:#999;--bg:#000;--card:#111;--txt:#fff;--border:#333}
+        [data-theme="light"]{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
+        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
+        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
+        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
+        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: Georgia, serif; padding: 2rem; max-width: 700px; margin: 0 auto; line-height: 1.6; }
+        body { background: var(--bg); color: var(--txt); font-family: Georgia, serif; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.6; }
         .header { text-align: center; margin-bottom: 3rem; }
-        .title { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .title { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--p); }
         .subtitle { opacity: 0.8; font-style: italic; }
-        .nav { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #333; }
-        .nav a { color: #ccc; text-decoration: none; margin: 0 1rem; }
-        .nav a:hover { color: #fff; }
-        .editor { background: #111; border: 1px solid #333; padding: 2rem; margin-bottom: 2rem; }
+        .nav { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .nav a { color: var(--txt); text-decoration: none; margin: 0 1rem; transition: color .3s; }
+        .nav a:hover { color: var(--p); }
+        .editor { background: var(--card); border: 1px solid var(--border); padding: 2rem; margin-bottom: 2rem; border-radius: 10px; }
         .form-row { margin-bottom: 1.5rem; }
         .label { display: block; margin-bottom: 0.5rem; opacity: 0.9; }
-        .input, .textarea { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 0.7rem; font-family: inherit; }
-        .input:focus, .textarea:focus { outline: none; border-color: #666; }
+        .input, .textarea, .select { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--txt); padding: 0.7rem; font-family: inherit; border-radius: 5px; }
+        .input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--p); }
         .textarea { height: 80px; resize: vertical; }
-        .form-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
-        .btn { background: transparent; border: 1px solid #666; color: #fff; padding: 0.7rem 1.2rem; cursor: pointer; font-family: inherit; }
-        .btn:hover { background: #333; }
-        .btn.primary { background: #333; border-color: #999; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn { background: transparent; border: 1px solid var(--border); color: var(--txt); padding: 0.7rem 1.2rem; cursor: pointer; font-family: inherit; border-radius: 5px; transition: all .3s; }
+        .btn:hover { background: var(--p); color: var(--card); }
+        .btn.primary { background: var(--p); color: var(--card); }
         .quest-list { margin-bottom: 2rem; }
-        .quest-item { background: #111; border: 1px solid #333; padding: 1rem; margin-bottom: 1rem; }
-        .quest-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-        .quest-name { font-size: 1.1rem; }
-        .quest-xp { background: #333; padding: 0.2rem 0.5rem; font-size: 0.8rem; }
-        .quest-desc { opacity: 0.8; font-size: 0.9rem; margin-bottom: 0.5rem; }
-        .quest-target { opacity: 0.7; font-size: 0.9rem; }
+        .quest-item { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; border-radius: 10px; }
+        .quest-item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+        .quest-name { font-size: 1.2rem; font-weight: bold; color: var(--p); }
+        .quest-xp { background: var(--s); color: var(--bg); padding: 0.2rem 0.6rem; font-size: 0.8rem; border-radius: 10px; }
+        .quest-desc { opacity: 0.8; font-size: 0.9rem; margin-bottom: 1rem; }
+        .quest-meta { display: flex; gap: 1rem; font-size: 0.9rem; opacity: 0.7; margin-bottom: 1rem; }
         .quest-actions { display: flex; gap: 0.5rem; }
-        .btn-small { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+        .btn-small { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
         .btn-danger { border-color: #644; color: #faa; }
         .btn-danger:hover { background: #422; }
         .empty { text-align: center; opacity: 0.6; padding: 2rem; }
         .defaults { margin-bottom: 2rem; }
-        .default-quest { background: #0a0a0a; border: 1px solid #2a2a2a; padding: 1rem; margin-bottom: 0.5rem; cursor: pointer; }
-        .default-quest:hover { border-color: #444; }
-        @media (max-width: 600px) { body { padding: 1rem; } .title { font-size: 2rem; } .form-grid { grid-template-columns: 1fr; } .quest-actions { flex-direction: column; } }
+        .default-quest { background: var(--bg); border: 1px solid var(--border); padding: 1rem; margin-bottom: 0.5rem; cursor: pointer; border-radius: 5px; transition: border-color .3s; }
+        .default-quest:hover { border-color: var(--p); }
+        @media (max-width: 600px) { body { padding: 1rem; } .title { font-size: 2rem; } .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <nav class="nav">
-        <a href="daily-quests.html">🎯 Return to Daily Quests</a>
+        <a href="daily-quests.html">🎯 Zurück zu den täglichen Quests</a>
     </nav>
 
     <header class="header">
-        <h1 class="title">Quest Editor</h1>
-        <p class="subtitle">Craft your personal challenges</p>
+        <h1 class="title">Erweiterter Quest-Editor</h1>
+        <p class="subtitle">Gestalte deinen Weg zur Selbstverbesserung</p>
     </header>
 
-    <section class="defaults">
-        <h2 style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">Quick Templates</h2>
-        <div class="default-quest" onclick="useTemplate('Physical Training', 'Push-ups', 50, 'Strengthen your body, strengthen your mind.', true, 15, 3)">
-            <strong>Physical Training</strong> • Push-ups • +50 XP • 📈 Scaling
-        </div>
-        <div class="default-quest" onclick="useTemplate('Mental Focus', '20 Min Reading', 30, 'Feed your mind with knowledge.')">
-            <strong>Mental Focus</strong> • 20 Min Reading • +30 XP
-        </div>
-        <div class="default-quest" onclick="useTemplate('Inner Peace', '10 Min Meditation', 25, 'Center your thoughts through stillness.')">
-            <strong>Inner Peace</strong> • 10 Min Meditation • +25 XP
-        </div>
-        <div class="default-quest" onclick="useTemplate('Creative Work', '1 Hour Writing', 40, 'Express your thoughts through words.')">
-            <strong>Creative Work</strong> • 1 Hour Writing • +40 XP
-        </div>
-    </section>
-
     <section class="editor">
-        <h2 style="margin-bottom: 1.5rem;">Create New Quest</h2>
+        <h2 style="margin-bottom: 1.5rem;">Quest erstellen oder bearbeiten</h2>
+        <input type="hidden" id="questId">
         <div class="form-row">
-            <label class="label">Quest Name</label>
-            <input type="text" class="input" id="questName" placeholder="e.g., Morning Run">
+            <label class="label">Quest-Name</label>
+            <input type="text" class="input" id="questName" placeholder="z.B. Morgenlauf">
         </div>
         <div class="form-row">
-            <label class="label">Description</label>
-            <textarea class="textarea" id="questDesc" placeholder="What is this quest about?"></textarea>
+            <label class="label">Beschreibung</label>
+            <textarea class="textarea" id="questDesc" placeholder="Worum geht es bei dieser Quest?"></textarea>
         </div>
-        <div class="form-row">
-            <div class="form-grid">
-                <div>
-                    <label class="label">Target (what to achieve)</label>
-                    <input type="text" class="input" id="questTarget" placeholder="e.g., 30 minutes, 20 reps">
-                </div>
-                <div>
-                    <label class="label">Base XP Reward</label>
-                    <input type="number" class="input" id="questXP" value="25" min="5" max="100">
-                </div>
+        <div class="form-row form-grid">
+            <div>
+                <label class="label">Ziel (was erreicht werden soll)</label>
+                <input type="text" class="input" id="questTarget" placeholder="z.B. 30 Minuten, 20 Wiederholungen">
+            </div>
+            <div>
+                <label class="label">Basis-XP-Belohnung</label>
+                <input type="number" class="input" id="questXP" value="25" min="5">
+            </div>
+        </div>
+        <div class="form-row form-grid">
+            <div>
+                <label class="label">Gewohnheitskette (optional)</label>
+                <input type="text" class="input" id="questChain" placeholder="z.B. Fitness, Achtsamkeit">
+            </div>
+            <div>
+                <label class="label">Freischalt-Level (optional)</label>
+                <input type="number" class="input" id="questUnlock" placeholder="z.B. 5">
             </div>
         </div>
         <div class="form-row">
             <label class="label">
                 <input type="checkbox" id="questScaling" style="margin-right: 0.5rem;">
-                Enable Scaling (increases with level)
+                Skalierung aktivieren (steigt mit dem Level)
             </label>
         </div>
-        <div class="form-row" id="scalingOptions" style="display: none;">
-            <div class="form-grid">
-                <div>
-                    <label class="label">Base Amount (starting value)</label>
-                    <input type="number" class="input" id="questBaseAmount" value="15" min="1">
-                </div>
-                <div>
-                    <label class="label">Increase per Level</label>
-                    <input type="number" class="input" id="questIncrement" value="3" min="1" max="10">
-                </div>
+        <div class="form-row form-grid" id="scalingOptions" style="display: none;">
+            <div>
+                <label class="label">Basis-Betrag</label>
+                <input type="number" class="input" id="questBaseAmount" value="15" min="1">
             </div>
-            <small style="opacity: 0.7; font-size: 0.8rem; margin-top: 0.5rem; display: block;">
-                Example: 15 push-ups at level 1, then +3 per level (18, 21, 24...)
-            </small>
+            <div>
+                <label class="label">Anstieg pro Level</label>
+                <input type="number" class="input" id="questIncrement" value="3" min="1">
+            </div>
         </div>
         <div class="form-row">
-            <button class="btn primary" onclick="addQuest()">Add Quest</button>
-            <button class="btn" onclick="clearForm()" id="clearBtn">Clear</button>
+            <button class="btn primary" onclick="addOrUpdateQuest()">Quest speichern</button>
+            <button class="btn" onclick="clearForm()" id="clearBtn">Leeren</button>
         </div>
     </section>
 
     <section class="quest-list">
-        <h2 style="margin-bottom: 1.5rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">Your Custom Quests</h2>
+        <h2 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Deine benutzerdefinierten Quests</h2>
         <div id="questList"></div>
     </section>
 
     <script>
         let customQuests = [];
-        let editingQuestId = null;
         
         function load() {
             let saved = localStorage.getItem('bq-custom');
@@ -135,49 +128,30 @@
             localStorage.setItem('bq-custom', JSON.stringify(customQuests));
         }
         
-        function addQuest() {
-            let name = document.getElementById('questName').value.trim();
-            let desc = document.getElementById('questDesc').value.trim();
-            let target = document.getElementById('questTarget').value.trim();
-            let xp = parseInt(document.getElementById('questXP').value) || 25;
-            let scaling = document.getElementById('questScaling').checked;
-            let baseAmount = parseInt(document.getElementById('questBaseAmount').value) || 15;
-            let increment = parseInt(document.getElementById('questIncrement').value) || 3;
-            
-            if (!name || !target) {
-                alert('Please fill in quest name and target');
+        function addOrUpdateQuest() {
+            const questId = document.getElementById('questId').value;
+            const quest = {
+                id: questId ? parseInt(questId) : Date.now(),
+                name: document.getElementById('questName').value.trim(),
+                desc: document.getElementById('questDesc').value.trim(),
+                target: document.getElementById('questTarget').value.trim(),
+                xp: parseInt(document.getElementById('questXP').value) || 25,
+                scaling: document.getElementById('questScaling').checked,
+                baseAmount: parseInt(document.getElementById('questBaseAmount').value) || 15,
+                increment: parseInt(document.getElementById('questIncrement').value) || 3,
+                chain: document.getElementById('questChain').value.trim() || null,
+                unlockLevel: parseInt(document.getElementById('questUnlock').value) || null
+            };
+
+            if (!quest.name || !quest.target) {
+                alert('Bitte fülle den Quest-Namen und das Ziel aus');
                 return;
             }
-            
-            if (editingQuestId) {
-                // Update existing quest
-                let questIndex = customQuests.findIndex(q => q.id === editingQuestId);
-                if (questIndex !== -1) {
-                    customQuests[questIndex] = {
-                        id: editingQuestId,
-                        name: name,
-                        desc: desc || 'Complete this daily challenge.',
-                        target: target,
-                        xp: xp,
-                        scaling: scaling,
-                        baseAmount: baseAmount,
-                        increment: increment
-                    };
-                }
-                editingQuestId = null;
-                document.querySelector('.btn.primary').textContent = 'Add Quest';
+
+            if (questId) {
+                const index = customQuests.findIndex(q => q.id === quest.id);
+                if (index !== -1) customQuests[index] = quest;
             } else {
-                // Add new quest
-                let quest = {
-                    id: Date.now(),
-                    name: name,
-                    desc: desc || 'Complete this daily challenge.',
-                    target: target,
-                    xp: xp,
-                    scaling: scaling,
-                    baseAmount: baseAmount,
-                    increment: increment
-                };
                 customQuests.push(quest);
             }
             
@@ -187,7 +161,7 @@
         }
         
         function deleteQuest(id) {
-            if (confirm('Delete this quest permanently?')) {
+            if (confirm('Diese Quest dauerhaft löschen?')) {
                 customQuests = customQuests.filter(q => q.id !== id);
                 save();
                 updateList();
@@ -195,8 +169,9 @@
         }
         
         function editQuest(id) {
-            let quest = customQuests.find(q => q.id === id);
+            const quest = customQuests.find(q => q.id === id);
             if (quest) {
+                document.getElementById('questId').value = quest.id;
                 document.getElementById('questName').value = quest.name;
                 document.getElementById('questDesc').value = quest.desc;
                 document.getElementById('questTarget').value = quest.target;
@@ -204,79 +179,74 @@
                 document.getElementById('questScaling').checked = quest.scaling || false;
                 document.getElementById('questBaseAmount').value = quest.baseAmount || 15;
                 document.getElementById('questIncrement').value = quest.increment || 3;
+                document.getElementById('questChain').value = quest.chain || '';
+                document.getElementById('questUnlock').value = quest.unlockLevel || '';
                 toggleScalingOptions();
-                editingQuestId = id;
-                document.querySelector('.btn.primary').textContent = 'Update Quest';
-                document.getElementById('clearBtn').textContent = 'Cancel';
-                document.getElementById('questName').focus();
+                document.querySelector('.btn.primary').textContent = 'Quest aktualisieren';
+                document.getElementById('clearBtn').textContent = 'Abbrechen';
+                window.scrollTo(0, 0);
             }
         }
         
-        function useTemplate(name, target, xp, desc, scaling = false, baseAmount = 15, increment = 3) {
-            clearForm();
-            document.getElementById('questName').value = name;
-            document.getElementById('questDesc').value = desc;
-            document.getElementById('questTarget').value = target;
-            document.getElementById('questXP').value = xp;
-            document.getElementById('questScaling').checked = scaling;
-            document.getElementById('questBaseAmount').value = baseAmount;
-            document.getElementById('questIncrement').value = increment;
-            toggleScalingOptions();
-        }
-        
         function clearForm() {
+            document.getElementById('questId').value = '';
             document.getElementById('questName').value = '';
             document.getElementById('questDesc').value = '';
             document.getElementById('questTarget').value = '';
             document.getElementById('questXP').value = '25';
             document.getElementById('questScaling').checked = false;
-            document.getElementById('questBaseAmount').value = '15';
-            document.getElementById('questIncrement').value = '3';
+            document.getElementById('questChain').value = '';
+            document.getElementById('questUnlock').value = '';
             toggleScalingOptions();
-            editingQuestId = null;
-            document.querySelector('.btn.primary').textContent = 'Add Quest';
-            document.getElementById('clearBtn').textContent = 'Clear';
+            document.querySelector('.btn.primary').textContent = 'Quest hinzufügen';
+            document.getElementById('clearBtn').textContent = 'Leeren';
         }
         
         function toggleScalingOptions() {
-            let scaling = document.getElementById('questScaling').checked;
-            let options = document.getElementById('scalingOptions');
-            options.style.display = scaling ? 'block' : 'none';
+            document.getElementById('scalingOptions').style.display = document.getElementById('questScaling').checked ? 'grid' : 'none';
         }
         
         function updateList() {
-            let list = document.getElementById('questList');
+            const list = document.getElementById('questList');
             if (customQuests.length === 0) {
-                list.innerHTML = '<div class="empty">No custom quests yet.<br>Use templates above or create your own.</div>';
+                list.innerHTML = '<div class="empty">Noch keine benutzerdefinierten Quests. Erstelle eine oben!</div>';
                 return;
             }
             
-            list.innerHTML = customQuests.map(quest => {
-                let scalingInfo = quest.scaling ? 
-                    `<div style="opacity: 0.6; font-size: 0.8rem; margin-top: 0.3rem;">📈 Scaling: ${quest.baseAmount || 15} + ${quest.increment || 3}/level</div>` : '';
-                
-                return `
-                    <div class="quest-item">
-                        <div class="quest-item-header">
-                            <span class="quest-name">${quest.name}</span>
-                            <span class="quest-xp">+${quest.xp} XP</span>
-                        </div>
-                        <div class="quest-desc">${quest.desc}</div>
-                        <div class="quest-target">Target: ${quest.target}</div>
-                        ${scalingInfo}
-                        <div class="quest-actions" style="margin-top: 0.5rem;">
-                            <button class="btn btn-small" onclick="editQuest(${quest.id})">Edit</button>
-                            <button class="btn btn-small btn-danger" onclick="deleteQuest(${quest.id})">Delete</button>
-                        </div>
+            list.innerHTML = customQuests.map(quest => `
+                <div class="quest-item">
+                    <div class="quest-item-header">
+                        <span class="quest-name">${quest.name}</span>
+                        <span class="quest-xp">+${quest.xp} XP</span>
                     </div>
-                `;
-            }).join('');
+                    <p class="quest-desc">${quest.desc}</p>
+                    <div class="quest-meta">
+                        <span><strong>Ziel:</strong> ${quest.target}</span>
+                        ${quest.scaling ? `<span><strong>Skalierung:</strong> ${quest.baseAmount}+${quest.increment}/lvl</span>` : ''}
+                        ${quest.chain ? `<span><strong>Kette:</strong> ${quest.chain}</span>` : ''}
+                        ${quest.unlockLevel ? `<span><strong>Freischaltung bei:</strong> Lvl ${quest.unlockLevel}</span>` : ''}
+                    </div>
+                    <div class="quest-actions">
+                        <button class="btn btn-small" onclick="editQuest(${quest.id})">Bearbeiten</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteQuest(${quest.id})">Löschen</button>
+                    </div>
+                </div>
+            `).join('');
         }
         
-        load();
-        
-        // Add event listener for scaling checkbox
-        document.getElementById('questScaling').addEventListener('change', toggleScalingOptions);
+        document.addEventListener('DOMContentLoaded', () => {
+            load();
+            document.getElementById('questScaling').addEventListener('change', toggleScalingOptions);
+            if (customQuests.length === 0) {
+                customQuests.push(
+                    { id: 1, name: 'Körperliches Training', desc: 'Tägliche körperliche Betätigung', target: 'Liegestütze', xp: 50, scaling: true, baseAmount: 15, increment: 3, chain: 'Fitness', unlockLevel: null },
+                    { id: 2, name: 'Geistiger Fokus', desc: 'Lesen zur geistigen Weiterentwicklung', target: '20 Min Lesen', xp: 30, scaling: false, chain: 'Achtsamkeit', unlockLevel: null },
+                    { id: 3, name: 'Fortgeschrittenes Workout', desc: 'Ein härteres Workout', target: '50 Kniebeugen', xp: 100, scaling: false, chain: 'Fitness', unlockLevel: 5 }
+                );
+                save();
+                updateList();
+            }
+        });
     </script>
 </body>
 </html>
