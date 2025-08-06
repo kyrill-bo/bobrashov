@@ -92,24 +92,26 @@
         let quests = [];
         
         function loadQuests() {
-            let defaults = [
-                {name:'Physical Training',target:'Push-ups',baseTarget:15,xp:50},
-                {name:'Mental Focus',target:'Min Reading',baseTarget:20,xp:30},
-                {name:'Inner Peace',target:'Min Meditation',baseTarget:10,xp:25}
-            ];
             let custom = localStorage.getItem('bq-custom');
-            if (custom) {
-                let customQuests = JSON.parse(custom);
-                quests = [...defaults, ...customQuests.map(q => ({
-                    name: q.name,
-                    target: q.target,
-                    baseTarget: 1,
-                    xp: q.xp,
-                    desc: q.desc
-                }))];
-            } else {
-                quests = defaults;
+            if (!custom) {
+                // Create default quests as custom quests on first run
+                let defaults = [
+                    {name:'Physical Training',target:'Push-ups',xp:50,desc:'Daily physical exercise'},
+                    {name:'Mental Focus',target:'Min Reading',xp:30,desc:'Reading for mental growth'},
+                    {name:'Inner Peace',target:'Min Meditation',xp:25,desc:'Mindfulness practice'}
+                ];
+                localStorage.setItem('bq-custom', JSON.stringify(defaults));
+                custom = JSON.stringify(defaults);
             }
+            
+            let customQuests = JSON.parse(custom);
+            quests = customQuests.map(q => ({
+                name: q.name,
+                target: q.target,
+                baseTarget: q.name === 'Physical Training' ? 15 : (q.name === 'Mental Focus' ? 20 : 10),
+                xp: q.xp,
+                desc: q.desc
+            }));
             s.done = new Array(quests.length).fill(0);
         }
         

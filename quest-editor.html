@@ -92,7 +92,7 @@
         </div>
         <div class="form-row">
             <button class="btn primary" onclick="addQuest()">Add Quest</button>
-            <button class="btn" onclick="clearForm()">Clear</button>
+            <button class="btn" onclick="clearForm()" id="clearBtn">Clear</button>
         </div>
     </section>
 
@@ -103,6 +103,7 @@
 
     <script>
         let customQuests = [];
+        let editingQuestId = null;
         
         function load() {
             let saved = localStorage.getItem('bq-custom');
@@ -125,22 +126,39 @@
                 return;
             }
             
-            let quest = {
-                id: Date.now(),
-                name: name,
-                desc: desc || 'Complete this daily challenge.',
-                target: target,
-                xp: xp
-            };
+            if (editingQuestId) {
+                // Update existing quest
+                let questIndex = customQuests.findIndex(q => q.id === editingQuestId);
+                if (questIndex !== -1) {
+                    customQuests[questIndex] = {
+                        id: editingQuestId,
+                        name: name,
+                        desc: desc || 'Complete this daily challenge.',
+                        target: target,
+                        xp: xp
+                    };
+                }
+                editingQuestId = null;
+                document.querySelector('.btn.primary').textContent = 'Add Quest';
+            } else {
+                // Add new quest
+                let quest = {
+                    id: Date.now(),
+                    name: name,
+                    desc: desc || 'Complete this daily challenge.',
+                    target: target,
+                    xp: xp
+                };
+                customQuests.push(quest);
+            }
             
-            customQuests.push(quest);
             save();
             updateList();
             clearForm();
         }
         
         function deleteQuest(id) {
-            if (confirm('Delete this quest?')) {
+            if (confirm('Delete this quest permanently?')) {
                 customQuests = customQuests.filter(q => q.id !== id);
                 save();
                 updateList();
@@ -154,11 +172,15 @@
                 document.getElementById('questDesc').value = quest.desc;
                 document.getElementById('questTarget').value = quest.target;
                 document.getElementById('questXP').value = quest.xp;
-                deleteQuest(id);
+                editingQuestId = id;
+                document.querySelector('.btn.primary').textContent = 'Update Quest';
+                document.getElementById('clearBtn').textContent = 'Cancel';
+                document.getElementById('questName').focus();
             }
         }
         
         function useTemplate(name, target, xp, desc) {
+            clearForm();
             document.getElementById('questName').value = name;
             document.getElementById('questDesc').value = desc;
             document.getElementById('questTarget').value = target;
@@ -170,6 +192,9 @@
             document.getElementById('questDesc').value = '';
             document.getElementById('questTarget').value = '';
             document.getElementById('questXP').value = '25';
+            editingQuestId = null;
+            document.querySelector('.btn.primary').textContent = 'Add Quest';
+            document.getElementById('clearBtn').textContent = 'Clear';
         }
         
         function updateList() {
