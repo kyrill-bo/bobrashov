@@ -27,6 +27,7 @@
         .achs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:15px}
         .ach{display:flex;align-items:center;gap:15px;padding:15px;border:2px solid var(--border);border-radius:10px;transition:all .3s;position:relative}
         .ach.u{border-color:#FFD700;background:linear-gradient(135deg,#fff9c4,#fff);transform:scale(1.02)}
+        [data-theme="dark"] .ach.u{background:linear-gradient(135deg,#2a2a00,#1a1a00);color:var(--txt)}
         .ach.l{opacity:.6}
         .ach-i{font-size:2.5rem;width:60px;height:60px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#ccc;transition:all .3s}
         .ach.u .ach-i{background:#FFD700;animation:glow 2s ease-in-out infinite alternate}
