@@ -3,51 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bobrashov</title>
+    <title>Bobrashov - Daily Quest System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd;--accent:#2196F3}
+        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
+        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
+        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
+        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
+        
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;line-height:1.6;padding:2rem;max-width:1000px;margin:0 auto;transition:all .3s}
+        
+        .header{text-align:center;margin-bottom:4rem}
+        .name{font-size:3rem;font-weight:normal;letter-spacing:2px;margin-bottom:.5rem;color:var(--p)}
+        .tagline{font-size:1.2rem;opacity:.8;font-style:italic}
+        .subtitle{margin-top:1rem;font-size:.9rem;opacity:.7}
+        
+        .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-bottom:3rem}
+        .feature-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:2rem;text-align:center;transition:all .3s;cursor:pointer}
+        .feature-card:hover{transform:translateY(-5px);box-shadow:0 8px 25px rgba(0,0,0,.1)}
+        .feature-icon{font-size:3rem;margin-bottom:1rem}
+        .feature-title{font-size:1.3rem;margin-bottom:1rem;color:var(--p)}
+        .feature-desc{opacity:.8;font-size:.9rem;margin-bottom:1.5rem}
+        .feature-status{font-size:.8rem;padding:.3rem .8rem;border-radius:15px;display:inline-block}
+        .status-new{background:var(--s);color:var(--card)}
+        .status-core{background:var(--p);color:var(--card)}
+        .status-enhanced{background:var(--accent);color:white}
+        
+        .quick-stats{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:2rem;margin-bottom:3rem;text-align:center}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-top:1rem}
+        .stat-item{padding:1rem}
+        .stat-value{font-size:1.8rem;font-weight:bold;color:var(--p);margin-bottom:.3rem}
+        .stat-label{font-size:.8rem;opacity:.8}
+        
+        .section{margin-bottom:3rem}
+        .section-title{font-size:1.8rem;margin-bottom:1.5rem;border-bottom:2px solid var(--border);padding-bottom:.5rem;color:var(--p)}
+        
+        .phase-info{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem}
+        .phase-title{font-size:1.2rem;color:var(--p);margin-bottom:.5rem}
+        .phase-desc{opacity:.8;font-size:.9rem}
+        .phase-complete{color:var(--p);font-weight:bold}
+        
+        .quick-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem}
+        .quick-link{background:var(--p);color:var(--card);text-decoration:none;padding:1rem;border-radius:8px;text-align:center;transition:all .3s;font-weight:bold}
+        .quick-link:hover{opacity:.8;transform:translateY(-2px)}
+        
+        @media(max-width:768px){
+            body{padding:1rem}
+            .features-grid{grid-template-columns:1fr}
+            .name{font-size:2.5rem}
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="name">Bobrashov</h1>
+        <p class="tagline">Level up through discipline</p>
+        <p class="subtitle">A gamified system for daily habits and personal development</p>
+    </header>
+    
+    <div class="quick-stats">
+        <h2>📊 Your Progress</h2>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="userLevel">1</div>
+                <div class="stat-label">Level</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="userXP">0</div>
+                <div class="stat-label">Total XP</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="userStreak">0</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalAchievements">0</div>
+                <div class="stat-label">Achievements</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card" onclick="location.href='daily-quests.html'">
+            <div class="feature-icon">🎯</div>
+            <h3 class="feature-title">Daily Quests</h3>
+            <p class="feature-desc">Complete daily challenges and earn XP with streak bonuses and multipliers</p>
+            <span class="feature-status status-enhanced">Enhanced</span>
+        </div>
+        
+        <div class="feature-card" onclick="location.href='achievements.html'">
+            <div class="feature-icon">🏆</div>
+            <h3 class="feature-title">Achievement System</h3>
+            <p class="feature-desc">Unlock 16 achievements across 4 categories for long-term motivation</p>
+            <span class="feature-status status-new">New!</span>
+        </div>
+        
+        <div class="feature-card" onclick="location.href='calendar.html'">
+            <div class="feature-icon">📅</div>
+            <h3 class="feature-title">Calendar & Statistics</h3>
+            <p class="feature-desc">Visual progress tracking with heatmaps and comprehensive insights</p>
+            <span class="feature-status status-new">New!</span>
+        </div>
+        
+        <div class="feature-card" onclick="location.href='analytics.html'">
+            <div class="feature-icon">📊</div>
+            <h3 class="feature-title">Analytics Dashboard</h3>
+            <p class="feature-desc">Deep insights into your habit patterns with data export capabilities</p>
+            <span class="feature-status status-new">New!</span>
+        </div>
+        
+        <div class="feature-card" onclick="location.href='quest-shop.html'">
+            <div class="feature-icon">🛒</div>
+            <h3 class="feature-title">Enhanced Reward Shop</h3>
+            <p class="feature-desc">Categorized rewards with cooldowns, unlocks, and subscription options</p>
+            <span class="feature-status status-enhanced">Enhanced</span>
+        </div>
+        
+        <div class="feature-card" onclick="location.href='settings.html'">
+            <div class="feature-icon">🎨</div>
+            <h3 class="feature-title">Themes & Settings</h3>
+            <p class="feature-desc">5 beautiful themes with notifications and customization options</p>
+            <span class="feature-status status-new">New!</span>
+        </div>
+    </div>
+    
+    <section class="section">
+        <h2 class="section-title">🚀 Implementation Progress</h2>
+        
+        <div class="phase-info">
+            <div class="phase-title">✅ Phase 1: Immediate Motivation (Completed)</div>
+            <div class="phase-desc">Achievement System, Streak Bonuses & Multipliers, Enhanced UX with Themes & Notifications</div>
+        </div>
+        
+        <div class="phase-info">
+            <div class="phase-title">✅ Phase 2: Data & Insights (Completed)</div>
+            <div class="phase-desc">Calendar & Statistics, Enhanced Reward System, Basic Data Analytics</div>
+        </div>
+        
+        <div class="phase-info">
+            <div class="phase-title">🔄 Phase 3: Dynamics & Variety (Coming Next)</div>
+            <div class="phase-desc">Dynamic Quests & Events, Habit Chains & Dependencies</div>
+        </div>
+    </section>
+    
+    <div class="quick-links">
+        <a href="daily-quests.html" class="quick-link">🎯 Start Today's Quests</a>
+        <a href="quest-editor.html" class="quick-link">✏️ Create Custom Quest</a>
+        <a href="achievements.html" class="quick-link">🏆 View Achievements</a>
+        <a href="calendar.html" class="quick-link">📅 Check Progress</a>
+    </div>
+    
+    <script>
+        function applyTheme() {
+            const settings = JSON.parse(localStorage.getItem('questSettings') || '{}');
+            if (settings.theme) {
+                document.documentElement.setAttribute('data-theme', settings.theme);
+            }
         }
         
-        body {
-            background: #000;
-            color: #fff;
-            font-family: Georgia, serif;
-            line-height: 1.6;
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
+        function loadUserStats() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const questData = JSON.parse(localStorage.getItem('bq') || '{}');
+            
+            document.getElementById('userLevel').textContent = userData.level || questData.lv || 1;
+            document.getElementById('userXP').textContent = userData.totalXP || questData.xp || 0;
+            document.getElementById('userStreak').textContent = userData.streak || questData.streak || 0;
+            
+            const achievements = userData.achievements || [];
+            const unlockedCount = achievements.filter(a => a.unlocked).length;
+            document.getElementById('totalAchievements').textContent = unlockedCount;
         }
         
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .name {
-            font-size: 3rem;
-            font-weight: normal;
-            letter-spacing: 2px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .tagline {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            font-style: italic;
-        }
-        
-        .section {
-            margin-bottom: 3rem;
-        }
-        
-        .section-title {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #333;
-            padding-bottom: 0.5rem;
+        applyTheme();
+        loadUserStats();
+    </script>
         }
         
         .project, .post {

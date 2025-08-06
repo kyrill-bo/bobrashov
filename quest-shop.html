@@ -5,79 +5,615 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quest Shop - Bobrashov</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: Georgia, serif; padding: 2rem; max-width: 700px; margin: 0 auto; line-height: 1.6; }
-        .header { text-align: center; margin-bottom: 3rem; }
-        .title { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .subtitle { opacity: 0.8; font-style: italic; }
-        .nav { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #333; }
-        .nav a { color: #ccc; text-decoration: none; margin: 0 1rem; font-size: 0.9rem; }
-        .nav a:hover { color: #fff; }
-        .balance { text-align: center; background: #111; border: 1px solid #333; padding: 1.5rem; margin-bottom: 2rem; }
-        .balance-amount { font-size: 2.5rem; color: #ffd700; margin-bottom: 0.5rem; }
-        .balance-label { opacity: 0.8; }
-        .editor { background: #111; border: 1px solid #333; padding: 2rem; margin-bottom: 2rem; }
-        .form-row { margin-bottom: 1.5rem; }
-        .label { display: block; margin-bottom: 0.5rem; opacity: 0.9; }
-        .input, .textarea { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 0.7rem; font-family: inherit; }
-        .input:focus, .textarea:focus { outline: none; border-color: #666; }
-        .textarea { height: 80px; resize: vertical; }
-        .form-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
-        .btn { background: transparent; border: 1px solid #666; color: #fff; padding: 0.7rem 1.2rem; cursor: pointer; font-family: inherit; }
-        .btn:hover { background: #333; }
-        .btn.primary { background: #333; border-color: #999; }
-        .btn.buy { background: #1a4a1a; border-color: #4a8; color: #8f8; }
-        .btn.buy:hover { background: #2a5a2a; }
-        .btn.buy:disabled { background: #333; border-color: #666; color: #666; cursor: not-allowed; }
-        .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .shop-item { background: #111; border: 1px solid #333; padding: 1.5rem; }
-        .shop-item.purchased { opacity: 0.6; border-color: #4a8; }
-        .shop-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .shop-item-name { font-size: 1.2rem; }
-        .shop-item-price { background: #333; padding: 0.3rem 0.6rem; font-size: 0.9rem; color: #ffd700; }
-        .shop-item-desc { opacity: 0.8; font-size: 0.9rem; margin-bottom: 1rem; }
-        .shop-item-category { opacity: 0.6; font-size: 0.8rem; margin-bottom: 1rem; }
-        .btn-small { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
-        .btn-danger { border-color: #644; color: #faa; }
-        .btn-danger:hover { background: #422; }
-        .empty { text-align: center; opacity: 0.6; padding: 2rem; }
-        .defaults { margin-bottom: 2rem; }
-        .default-item { background: #0a0a0a; border: 1px solid #2a2a2a; padding: 1rem; margin-bottom: 0.5rem; cursor: pointer; }
-        .default-item:hover { border-color: #444; }
-        .purchased-badge { color: #4a8; font-size: 0.8rem; margin-left: 0.5rem; }
-        @media (max-width: 600px) { body { padding: 1rem; } .title { font-size: 2rem; } .form-grid { grid-template-columns: 1fr; } .shop-grid { grid-template-columns: 1fr; } }
+        :root{--p:#666;--s:#999;--bg:#000;--card:#111;--txt:#fff;--border:#333;--gold:#ffd700;--green:#4a8;--red:#f44}
+        [data-theme="light"]{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd;--gold:#FF8F00;--green:#2E7D32;--red:#C62828}
+        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
+        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee;--gold:#BF6000;--green:#1B5E20;--red:#B71C1C}
+        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB;--gold:#F57F17;--green:#00695C;--red:#C62828}
+        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9;--gold:#F57F17;--green:#2E7D32;--red:#C62828}
+        
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:900px;margin:0 auto;line-height:1.6;transition:all .3s}
+        .header{text-align:center;margin-bottom:3rem}
+        .title{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}
+        .subtitle{opacity:.8;font-style:italic}
+        .nav{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+        .nav a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .nav a:hover{color:var(--p);opacity:1}
+        
+        .balance{text-align:center;background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:2rem;border-radius:10px}
+        .balance-amount{font-size:2.5rem;color:var(--gold);margin-bottom:.5rem}
+        .balance-label{opacity:.8}
+        
+        .category-tabs{display:flex;justify-content:center;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
+        .tab{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.6rem 1rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s}
+        .tab:hover,.tab.active{background:var(--p);color:var(--card)}
+        
+        .category-info{background:var(--card);border:1px solid var(--border);padding:1rem;margin-bottom:2rem;border-radius:8px;text-align:center}
+        .category-title{font-size:1.2rem;margin-bottom:.5rem;color:var(--p)}
+        .category-desc{opacity:.8;font-size:.9rem}
+        
+        .shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-bottom:2rem}
+        .shop-item{background:var(--card);border:1px solid var(--border);padding:1.5rem;border-radius:10px;transition:all .3s;position:relative}
+        .shop-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+        .shop-item.purchased{opacity:.6;border-color:var(--green)}
+        .shop-item.locked{opacity:.4;border-color:var(--red)}
+        .shop-item.on-cooldown{border-color:var(--s)}
+        
+        .shop-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+        .shop-item-name{font-size:1.2rem;color:var(--p)}
+        .shop-item-price{background:var(--gold);color:var(--card);padding:.3rem .6rem;font-size:.9rem;border-radius:12px;font-weight:bold}
+        .shop-item-desc{opacity:.8;font-size:.9rem;margin-bottom:1rem}
+        .shop-item-category{opacity:.6;font-size:.8rem;margin-bottom:1rem}
+        
+        .shop-item-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;font-size:.8rem;opacity:.7}
+        .cooldown-info{color:var(--s)}
+        .unlock-req{color:var(--red)}
+        
+        .btn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.7rem 1.2rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s}
+        .btn:hover{background:var(--p);color:var(--card)}
+        .btn.primary{background:var(--p);border-color:var(--p);color:var(--card)}
+        .btn.buy{background:var(--green);border-color:var(--green);color:white}
+        .btn.buy:hover{opacity:.8}
+        .btn.buy:disabled{background:var(--border);border-color:var(--border);color:var(--txt);opacity:.5;cursor:not-allowed}
+        
+        .editor{background:var(--card);border:1px solid var(--border);padding:2rem;margin-bottom:2rem;border-radius:10px}
+        .form-row{margin-bottom:1.5rem}
+        .label{display:block;margin-bottom:.5rem;opacity:.9}
+        .input,.textarea,.select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--txt);padding:.7rem;font-family:inherit;border-radius:6px}
+        .input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--p)}
+        .textarea{height:80px;resize:vertical}
+        .form-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem}
+        
+        .purchased-badge{color:var(--green);font-size:.8rem;margin-left:.5rem}
+        .cooldown-badge{color:var(--s);font-size:.8rem;margin-left:.5rem}
+        .locked-badge{color:var(--red);font-size:.8rem;margin-left:.5rem}
+        
+        .empty{text-align:center;opacity:.6;padding:2rem}
+        .defaults{margin-bottom:2rem}
+        .default-item{background:var(--bg);border:1px solid var(--border);padding:1rem;margin-bottom:.5rem;cursor:pointer;border-radius:6px;transition:all .3s}
+        .default-item:hover{border-color:var(--p)}
+        
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+        .stat{background:var(--card);border:1px solid var(--border);padding:1rem;text-align:center;border-radius:8px}
+        .stat-value{font-size:1.5rem;color:var(--p);margin-bottom:.3rem}
+        .stat-label{font-size:.8rem;opacity:.8}
+        
+        @media(max-width:600px){
+            body{padding:1rem}
+            .title{font-size:2rem}
+            .form-grid{grid-template-columns:1fr}
+            .shop-grid{grid-template-columns:1fr}
+            .category-tabs{flex-direction:column;align-items:center}
+        }
     </style>
 </head>
 <body>
+<body>
     <nav class="nav">
-        <a href="daily-quests.html">Daily Quests</a>
+        <a href="daily-quests.html">🎯 Daily Quests</a>
+        <a href="calendar.html">📅 Calendar</a>
+        <a href="achievements.html">🏆 Achievements</a>
         <a href="quest-editor.html">Quest Editor</a>
         <a href="reward-editor.html">Manage Rewards</a>
+        <a href="settings.html">⚙️ Settings</a>
         <a href="index.html">Home</a>
     </nav>
 
     <header class="header">
-        <h1 class="title">Quest Shop</h1>
-        <p class="subtitle">Spend your hard-earned XP</p>
+        <h1 class="title">🛒 Enhanced Quest Shop</h1>
+        <p class="subtitle">Categorized rewards with smart features</p>
     </header>
 
-    <section class="balance">
-        <div class="balance-amount" id="totalXP">0</div>
-        <div class="balance-label">Available XP</div>
-    </section>
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value" id="totalXP">0</div>
+            <div class="stat-label">Available XP</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="totalSpent">0</div>
+            <div class="stat-label">XP Spent</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="rewardsUnlocked">0</div>
+            <div class="stat-label">Rewards Unlocked</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="rewardsUsed">0</div>
+            <div class="stat-label">Rewards Used</div>
+        </div>
+    </div>
+
+    <div class="category-tabs">
+        <button class="tab active" data-category="all">🌟 All</button>
+        <button class="tab" data-category="instant">⚡ Instant (50-200 XP)</button>
+        <button class="tab" data-category="daily">📅 Daily (200-500 XP)</button>
+        <button class="tab" data-category="weekly">📍 Weekly (1000-2000 XP)</button>
+        <button class="tab" data-category="monthly">🎯 Monthly (5000+ XP)</button>
+        <button class="tab" data-category="subscription">🔄 Subscriptions</button>
+        <button class="tab" data-category="vip">👑 VIP Rewards</button>
+    </div>
+
+    <div class="category-info" id="categoryInfo">
+        <div class="category-title">🌟 All Rewards</div>
+        <div class="category-desc">Browse all available rewards across categories</div>
+    </div>
 
     <section class="shop-grid" id="shopItems">
         <!-- Shop items will be loaded here -->
     </section>
 
+    <div class="editor">
+        <h3>➕ Add New Reward</h3>
+        <div class="form-row">
+            <label class="label">Reward Name</label>
+            <input type="text" class="input" id="rewardName" placeholder="Netflix for 1 month">
+        </div>
+        <div class="form-row">
+            <label class="label">Description</label>
+            <textarea class="textarea" id="rewardDesc" placeholder="Enjoy unlimited streaming..."></textarea>
+        </div>
+        <div class="form-grid">
+            <div>
+                <label class="label">XP Cost</label>
+                <input type="number" class="input" id="rewardCost" placeholder="1500">
+            </div>
+            <div>
+                <label class="label">Category</label>
+                <select class="select" id="rewardCategory">
+                    <option value="instant">Instant</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="subscription">Subscription</option>
+                    <option value="vip">VIP</option>
+                </select>
+            </div>
+            <div>
+                <label class="label">Cooldown (days)</label>
+                <input type="number" class="input" id="rewardCooldown" placeholder="7" value="0">
+            </div>
+        </div>
+        <div class="form-row">
+            <label class="label">Unlock Requirement (optional)</label>
+            <input type="text" class="input" id="rewardUnlock" placeholder="Level 10, Streak 30, Achievement 'Dedicated'">
+        </div>
+        <button class="btn primary" onclick="addReward()">Add Reward</button>
+    </div>
+
+    <div class="defaults">
+        <h3>📋 Suggested Rewards by Category</h3>
+        <div id="defaultRewards"></div>
+    </div>
+
     <script>
         let shopItems = [];
         let playerXP = 0;
-        
+        let playerLevel = 1;
+        let playerStreak = 0;
+        let currentCategory = 'all';
+        let playerStats = {
+            totalSpent: 0,
+            rewardsUnlocked: 0,
+            rewardsUsed: 0
+        };
+
+        const categoryInfo = {
+            all: {
+                title: "🌟 All Rewards",
+                desc: "Browse all available rewards across categories"
+            },
+            instant: {
+                title: "⚡ Instant Rewards (50-200 XP)",
+                desc: "Quick treats and small indulgences for immediate satisfaction"
+            },
+            daily: {
+                title: "📅 Daily Rewards (200-500 XP)",
+                desc: "End-of-day celebrations and personal treats"
+            },
+            weekly: {
+                title: "📍 Weekly Rewards (1000-2000 XP)",
+                desc: "Bigger rewards for consistent weekly progress"
+            },
+            monthly: {
+                title: "🎯 Monthly Rewards (5000+ XP)",
+                desc: "Major purchases and experiences for long-term dedication"
+            },
+            subscription: {
+                title: "🔄 Subscription Rewards",
+                desc: "Recurring services with ongoing cooldowns"
+            },
+            vip: {
+                title: "👑 VIP Rewards",
+                desc: "Exclusive rewards unlocked through achievements and milestones"
+            }
+        };
+
+        const defaultRewards = {
+            instant: [
+                { name: "Favorite Snack", cost: 50, desc: "Treat yourself to your favorite snack", cooldown: 0 },
+                { name: "15 Min Break", cost: 75, desc: "Guilt-free relaxation time", cooldown: 0 },
+                { name: "Coffee/Tea Upgrade", cost: 100, desc: "Premium coffee or special tea", cooldown: 1 },
+                { name: "Music Discovery", cost: 150, desc: "Buy a new song or album", cooldown: 0 },
+                { name: "Quick Game Session", cost: 200, desc: "30 minutes of gaming", cooldown: 0 }
+            ],
+            daily: [
+                { name: "Favorite Meal", cost: 300, desc: "Order or cook your favorite dish", cooldown: 1 },
+                { name: "Movie Night", cost: 400, desc: "Watch a movie with snacks", cooldown: 0 },
+                { name: "Bath & Relaxation", cost: 250, desc: "Long relaxing bath or spa time", cooldown: 2 },
+                { name: "Social Time", cost: 350, desc: "Hang out with friends", cooldown: 0 },
+                { name: "Hobby Time", cost: 500, desc: "2 hours dedicated to your hobby", cooldown: 0 }
+            ],
+            weekly: [
+                { name: "Shopping Spree", cost: 1000, desc: "Guilt-free shopping within budget", cooldown: 7 },
+                { name: "Date Night", cost: 1500, desc: "Special evening out", cooldown: 7 },
+                { name: "Weekend Trip", cost: 2000, desc: "Short getaway or day trip", cooldown: 14 },
+                { name: "New Book/Game", cost: 800, desc: "Purchase something you've been wanting", cooldown: 7 },
+                { name: "Massage/Spa", cost: 1200, desc: "Professional relaxation treatment", cooldown: 14 }
+            ],
+            monthly: [
+                { name: "Major Purchase", cost: 5000, desc: "Something you've been saving for", cooldown: 30 },
+                { name: "Weekend Vacation", cost: 8000, desc: "2-3 day trip somewhere special", cooldown: 60 },
+                { name: "Course/Workshop", cost: 3000, desc: "Invest in learning something new", cooldown: 30 },
+                { name: "Tech Upgrade", cost: 6000, desc: "New gadget or device upgrade", cooldown: 90 },
+                { name: "Experience Gift", cost: 4000, desc: "Concert, show, or special event", cooldown: 30 }
+            ],
+            subscription: [
+                { name: "Netflix Premium", cost: 2000, desc: "1 month premium streaming", cooldown: 30 },
+                { name: "Spotify Premium", cost: 1500, desc: "1 month ad-free music", cooldown: 30 },
+                { name: "Gym Membership", cost: 3000, desc: "1 month fitness access", cooldown: 30 },
+                { name: "Adobe Creative", cost: 2500, desc: "1 month creative tools", cooldown: 30 },
+                { name: "Meal Kit Service", cost: 3500, desc: "1 month cooking convenience", cooldown: 30 }
+            ],
+            vip: [
+                { name: "Cheat Day Pass", cost: 1000, desc: "Guilt-free indulgence day", cooldown: 14, unlock: "Streak 14" },
+                { name: "Skip Workout", cost: 500, desc: "One-time exercise pass", cooldown: 7, unlock: "Level 10" },
+                { name: "Lazy Sunday", cost: 800, desc: "Complete relaxation day", cooldown: 21, unlock: "Perfect Week" },
+                { name: "VIP Treatment", cost: 5000, desc: "Ultimate luxury experience", cooldown: 90, unlock: "Level 25" },
+                { name: "Dream Purchase", cost: 15000, desc: "Something truly special", cooldown: 180, unlock: "Streak 100" }
+            ]
+        };
+
+        function applyTheme() {
+            const settings = JSON.parse(localStorage.getItem('questSettings') || '{}');
+            if (settings.theme) {
+                document.documentElement.setAttribute('data-theme', settings.theme);
+            }
+        }
+
         function load() {
             // Load shop items
             let saved = localStorage.getItem('bq-shop');
-            if (saved) shopItems = JSON.parse(saved);
+            if (saved) {
+                shopItems = JSON.parse(saved);
+            } else {
+                // Initialize with some default items from instant category
+                shopItems = defaultRewards.instant.slice(0, 3).map(item => ({
+                    ...item,
+                    category: 'instant',
+                    id: Date.now() + Math.random(),
+                    purchased: [],
+                    lastPurchased: null
+                }));
+                save();
+            }
+
+            // Load player stats
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const questData = JSON.parse(localStorage.getItem('bq') || '{}');
+            
+            playerXP = userData.totalXP || questData.xp || 0;
+            playerLevel = userData.level || questData.lv || 1;
+            playerStreak = userData.streak || questData.streak || 0;
+
+            // Load shop stats
+            const shopStats = JSON.parse(localStorage.getItem('shopStats') || '{}');
+            playerStats = {
+                totalSpent: shopStats.totalSpent || 0,
+                rewardsUnlocked: shopStats.rewardsUnlocked || 0,
+                rewardsUsed: shopStats.rewardsUsed || 0
+            };
+
+            updateStats();
+            renderShop();
+            renderDefaults();
+        }
+
+        function save() {
+            localStorage.setItem('bq-shop', JSON.stringify(shopItems));
+            localStorage.setItem('shopStats', JSON.stringify(playerStats));
+        }
+
+        function updateStats() {
+            document.getElementById('totalXP').textContent = playerXP;
+            document.getElementById('totalSpent').textContent = playerStats.totalSpent;
+            document.getElementById('rewardsUnlocked').textContent = playerStats.rewardsUnlocked;
+            document.getElementById('rewardsUsed').textContent = playerStats.rewardsUsed;
+        }
+
+        function checkUnlockRequirement(requirement) {
+            if (!requirement) return true;
+
+            if (requirement.includes('Level')) {
+                const reqLevel = parseInt(requirement.match(/Level (\d+)/)[1]);
+                return playerLevel >= reqLevel;
+            }
+            
+            if (requirement.includes('Streak')) {
+                const reqStreak = parseInt(requirement.match(/Streak (\d+)/)[1]);
+                return playerStreak >= reqStreak;
+            }
+            
+            // Check achievements
+            if (requirement.includes('Achievement')) {
+                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                const achievements = userData.achievements || [];
+                return achievements.some(ach => requirement.includes(ach.name));
+            }
+            
+            if (requirement.includes('Perfect Week')) {
+                const questData = JSON.parse(localStorage.getItem('bq') || '{}');
+                return (questData.perfectWeeks || 0) > 0;
+            }
+
+            return true;
+        }
+
+        function isOnCooldown(item) {
+            if (!item.cooldown || item.cooldown === 0) return false;
+            if (!item.lastPurchased) return false;
+
+            const lastPurchase = new Date(item.lastPurchased);
+            const now = new Date();
+            const daysDiff = Math.floor((now - lastPurchase) / (1000 * 60 * 60 * 24));
+            
+            return daysDiff < item.cooldown;
+        }
+
+        function getCooldownDays(item) {
+            if (!item.lastPurchased) return 0;
+            
+            const lastPurchase = new Date(item.lastPurchased);
+            const now = new Date();
+            const daysDiff = Math.floor((now - lastPurchase) / (1000 * 60 * 60 * 24));
+            
+            return Math.max(0, item.cooldown - daysDiff);
+        }
+
+        function renderShop() {
+            const container = document.getElementById('shopItems');
+            
+            const filteredItems = currentCategory === 'all' 
+                ? shopItems 
+                : shopItems.filter(item => item.category === currentCategory);
+
+            if (filteredItems.length === 0) {
+                container.innerHTML = '<div class="empty">No rewards in this category yet. Add some below!</div>';
+                return;
+            }
+
+            container.innerHTML = filteredItems.map(item => {
+                const canAfford = playerXP >= item.cost;
+                const isUnlocked = checkUnlockRequirement(item.unlock);
+                const onCooldown = isOnCooldown(item);
+                const cooldownDays = getCooldownDays(item);
+                
+                let itemClass = 'shop-item';
+                let buttonText = 'Purchase';
+                let buttonDisabled = false;
+                let statusBadge = '';
+
+                if (!isUnlocked) {
+                    itemClass += ' locked';
+                    buttonText = 'Locked';
+                    buttonDisabled = true;
+                    statusBadge = '<span class="locked-badge">🔒 Locked</span>';
+                } else if (onCooldown) {
+                    itemClass += ' on-cooldown';
+                    buttonText = `Cooldown (${cooldownDays}d)`;
+                    buttonDisabled = true;
+                    statusBadge = '<span class="cooldown-badge">⏰ Cooldown</span>';
+                } else if (!canAfford) {
+                    buttonText = 'Cannot Afford';
+                    buttonDisabled = true;
+                }
+
+                return `
+                    <div class="${itemClass}">
+                        <div class="shop-item-header">
+                            <h3 class="shop-item-name">${item.name}${statusBadge}</h3>
+                            <span class="shop-item-price">${item.cost} XP</span>
+                        </div>
+                        <div class="shop-item-category">📂 ${item.category.charAt(0).toUpperCase() + item.category.slice(1)}</div>
+                        <div class="shop-item-desc">${item.desc}</div>
+                        <div class="shop-item-meta">
+                            ${item.cooldown > 0 ? `<span class="cooldown-info">⏰ ${item.cooldown} day cooldown</span>` : '<span>✨ No cooldown</span>'}
+                            ${item.unlock ? `<span class="unlock-req">🔐 ${item.unlock}</span>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn buy" onclick="buyItem('${item.id}')" ${buttonDisabled ? 'disabled' : ''}>${buttonText}</button>
+                            <button class="btn" onclick="deleteItem('${item.id}')" style="border-color: var(--red); color: var(--red);">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderDefaults() {
+            const container = document.getElementById('defaultRewards');
+            
+            container.innerHTML = Object.entries(defaultRewards).map(([category, items]) => `
+                <div class="category-section">
+                    <h4 style="margin: 1rem 0; color: var(--p);">${categoryInfo[category].title}</h4>
+                    ${items.map(item => `
+                        <div class="default-item" onclick="addDefaultReward('${category}', ${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                            <strong>${item.name}</strong> - ${item.cost} XP<br>
+                            <small style="opacity: 0.8;">${item.desc}</small>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function buyItem(id) {
+            const item = shopItems.find(i => i.id === id);
+            if (!item) return;
+
+            if (playerXP < item.cost) {
+                alert('Not enough XP!');
+                return;
+            }
+
+            if (!checkUnlockRequirement(item.unlock)) {
+                alert('This reward is locked!');
+                return;
+            }
+
+            if (isOnCooldown(item)) {
+                alert('This reward is on cooldown!');
+                return;
+            }
+
+            // Deduct XP
+            playerXP -= item.cost;
+            
+            // Update stats
+            playerStats.totalSpent += item.cost;
+            playerStats.rewardsUsed++;
+            
+            // Set cooldown
+            item.lastPurchased = new Date().toISOString();
+            
+            // Add to purchase history
+            if (!item.purchased) item.purchased = [];
+            item.purchased.push({
+                date: new Date().toISOString(),
+                cost: item.cost
+            });
+
+            // Update userData
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            userData.totalXP = playerXP;
+            localStorage.setItem('userData', JSON.stringify(userData));
+
+            // Update quest data too
+            const questData = JSON.parse(localStorage.getItem('bq') || '{}');
+            questData.xp = playerXP;
+            localStorage.setItem('bq', JSON.stringify(questData));
+
+            save();
+            updateStats();
+            renderShop();
+
+            showNotification(`🎉 Reward Purchased!`, `Enjoy your ${item.name}! -${item.cost} XP`);
+        }
+
+        function deleteItem(id) {
+            if (confirm('Delete this reward?')) {
+                shopItems = shopItems.filter(item => item.id !== id);
+                save();
+                renderShop();
+            }
+        }
+
+        function addReward() {
+            const name = document.getElementById('rewardName').value;
+            const desc = document.getElementById('rewardDesc').value;
+            const cost = parseInt(document.getElementById('rewardCost').value);
+            const category = document.getElementById('rewardCategory').value;
+            const cooldown = parseInt(document.getElementById('rewardCooldown').value) || 0;
+            const unlock = document.getElementById('rewardUnlock').value;
+
+            if (!name || !desc || !cost) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const newReward = {
+                id: Date.now() + Math.random(),
+                name,
+                desc,
+                cost,
+                category,
+                cooldown,
+                unlock: unlock || null,
+                purchased: [],
+                lastPurchased: null
+            };
+
+            shopItems.push(newReward);
+            playerStats.rewardsUnlocked++;
+            
+            save();
+            updateStats();
+            renderShop();
+
+            // Clear form
+            document.getElementById('rewardName').value = '';
+            document.getElementById('rewardDesc').value = '';
+            document.getElementById('rewardCost').value = '';
+            document.getElementById('rewardCooldown').value = '0';
+            document.getElementById('rewardUnlock').value = '';
+        }
+
+        function addDefaultReward(category, item) {
+            const newReward = {
+                id: Date.now() + Math.random(),
+                name: item.name,
+                desc: item.desc,
+                cost: item.cost,
+                category,
+                cooldown: item.cooldown || 0,
+                unlock: item.unlock || null,
+                purchased: [],
+                lastPurchased: null
+            };
+
+            shopItems.push(newReward);
+            playerStats.rewardsUnlocked++;
+            
+            save();
+            updateStats();
+            renderShop();
+        }
+
+        function showNotification(title, body) {
+            const settings = JSON.parse(localStorage.getItem('questSettings') || '{}');
+            if (!settings.achievementNotifications) return;
+            
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const notification = new Notification(title, {
+                    body: body,
+                    icon: '/favicon.ico'
+                });
+                setTimeout(() => notification.close(), 5000);
+            }
+        }
+
+        function updateCategoryInfo() {
+            const info = categoryInfo[currentCategory];
+            document.getElementById('categoryInfo').innerHTML = `
+                <div class="category-title">${info.title}</div>
+                <div class="category-desc">${info.desc}</div>
+            `;
+        }
+
+        // Event listeners
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentCategory = tab.dataset.category;
+                updateCategoryInfo();
+                renderShop();
+            });
+        });
+
+        // Initialize
+        applyTheme();
+        load();
+        updateCategoryInfo();
+    </script>
             
             // Load player XP from daily quests
             let playerData = localStorage.getItem('bq');

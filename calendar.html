@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar - Bobrashov</title>
+    <style>
+        :root{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
+        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
+        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
+        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
+        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1000px;margin:0 auto;line-height:1.6;transition:all .3s}
+        .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
+        .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .n a:hover{color:var(--p);opacity:1}
+        .grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem}
+        .c{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
+        .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+        .cn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.3rem .6rem;cursor:pointer;border-radius:4px}
+        .cn:hover{background:var(--p);color:var(--card)}
+        .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+        .dh{text-align:center;font-weight:bold;padding:.5rem;font-size:.8rem;opacity:.7}
+        .day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;position:relative;font-size:.8rem;transition:all .3s}
+        .day:hover{background:var(--border)}.day.other{opacity:.3}.day.today{background:var(--p);color:var(--card);font-weight:bold}
+        .day.completed{background:#4CAF50;color:white}.day.partial{background:#FF9800;color:white}.day.missed{background:#f44336;color:white}
+        .sg{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:1rem}
+        .stat{text-align:center;padding:1rem;background:var(--bg);border-radius:8px}
+        .sv{font-size:1.5rem;font-weight:bold;color:var(--p);margin-bottom:.3rem}
+        .sl{font-size:.8rem;opacity:.8}
+        .ct{font-size:1.2rem;margin-bottom:1rem;color:var(--p)}
+        .weekly{display:flex;align-items:end;gap:.5rem;height:150px;padding:1rem 0}
+        .wb{flex:1;background:var(--p);border-radius:4px 4px 0 0;min-height:10px;position:relative;transition:all .3s}
+        .wb:hover{opacity:.8}
+        .wl{position:absolute;bottom:-25px;left:50%;transform:translateX(-50%);font-size:.7rem;opacity:.7}
+        .legend{display:flex;justify-content:center;gap:2rem;margin-top:1rem;flex-wrap:wrap}
+        .li{display:flex;align-items:center;gap:.5rem;font-size:.8rem}
+        .lc{width:12px;height:12px;border-radius:3px}
+        .insights{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
+        .insight{margin-bottom:1rem;padding:1rem;background:var(--bg);border-radius:8px}
+        .it{font-weight:bold;margin-bottom:.5rem;color:var(--p)}
+        .ix{font-size:.9rem;opacity:.8}
+        .tooltip{position:absolute;background:rgba(0,0,0,.8);color:white;padding:.5rem;border-radius:4px;font-size:.7rem;pointer-events:none;z-index:1000;opacity:0;transition:opacity .3s}
+        @media(max-width:768px){body{padding:1rem}.grid{grid-template-columns:1fr}.sg{grid-template-columns:1fr}.ch{flex-direction:column;gap:.5rem}}
+    </style>
+</head>
+<body>
+    <nav class="n">
+        <a href="daily-quests.html">🎯 Daily Quests</a>
+        <a href="achievements.html">🏆 Achievements</a>
+        <a href="analytics.html">📊 Analytics</a>
+        <a href="quest-shop.html">🛒 Shop</a>
+        <a href="settings.html">⚙️ Settings</a>
+        <a href="index.html">Home</a>
+    </nav>
+    <header class="h">
+        <h1 class="t">📅 Calendar & Statistics</h1>
+        <p class="st">Your journey visualized</p>
+    </header>
+    <div class="grid">
+        <div class="c">
+            <div class="ch">
+                <button class="cn" id="pm">‹</button>
+                <h3 id="cm">January 2025</h3>
+                <button class="cn" id="nm">›</button>
+            </div>
+            <div class="cal" id="cal"></div>
+            <div class="legend">
+                <div class="li"><div class="lc" style="background:#4CAF50"></div><span>Perfect</span></div>
+                <div class="li"><div class="lc" style="background:#FF9800"></div><span>Partial</span></div>
+                <div class="li"><div class="lc" style="background:#f44336"></div><span>Missed</span></div>
+            </div>
+        </div>
+        <div class="c">
+            <h3 class="ct">📊 This Month</h3>
+            <div class="sg">
+                <div class="stat"><div class="sv" id="pd">0</div><div class="sl">Perfect Days</div></div>
+                <div class="stat"><div class="sv" id="tx">0</div><div class="sl">Total XP</div></div>
+                <div class="stat"><div class="sv" id="ax">0</div><div class="sl">Avg XP/Day</div></div>
+                <div class="stat"><div class="sv" id="cr">0%</div><div class="sl">Completion Rate</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="c">
+        <h3 class="ct">📈 Weekly Progress</h3>
+        <div class="weekly" id="wc"></div>
+    </div>
+    <div class="insights">
+        <h3 class="ct">💡 Insights</h3>
+        <div id="il"></div>
+    </div>
+    <div class="tooltip" id="tp"></div>
+    <script>
+        let cd=new Date(),dd={};
+        function at(){const s=JSON.parse(localStorage.getItem('questSettings')||'{}');if(s.theme)document.documentElement.setAttribute('data-theme',s.theme);}
+        function ld(){
+            const ch=JSON.parse(localStorage.getItem('completionHistory')||'[]'),dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}');
+            dd={};
+            Object.entries(dp).forEach(([d,data])=>{
+                const dob=new Date(d),k=dob.toISOString().split('T')[0];
+                dd[k]={date:dob,questsCompleted:data.questsCompleted||0,totalQuests:data.totalQuests||3,xpEarned:data.xpEarned||0,perfectDay:data.questsCompleted>=data.totalQuests};
+            });
+        }
+        function gc(){
+            const c=document.getElementById('cal'),mh=document.getElementById('cm');
+            c.innerHTML='';
+            const y=cd.getFullYear(),m=cd.getMonth();
+            mh.textContent=cd.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+            const dhs=['S','M','T','W','T','F','S'];
+            dhs.forEach(d=>{const de=document.createElement('div');de.className='dh';de.textContent=d;c.appendChild(de);});
+            const fd=new Date(y,m,1),ld=new Date(y,m+1,0),dim=ld.getDate(),sdow=fd.getDay();
+            const pm=new Date(y,m-1,0);
+            for(let i=sdow-1;i>=0;i--){c.appendChild(cde(pm.getDate()-i,true,new Date(y,m-1,pm.getDate()-i)));}
+            for(let d=1;d<=dim;d++){c.appendChild(cde(d,false,new Date(y,m,d)));}
+            const rc=42-(sdow+dim);
+            for(let d=1;d<=rc;d++){c.appendChild(cde(d,true,new Date(y,m+1,d)));}
+        }
+        function cde(d,iom,dt){
+            const de=document.createElement('div');
+            de.className='day';de.textContent=d;
+            if(iom)de.classList.add('other');
+            const td=new Date();
+            if(dt.toDateString()===td.toDateString())de.classList.add('today');
+            const k=dt.toISOString().split('T')[0],data=dd[k];
+            if(data){
+                if(data.perfectDay)de.classList.add('completed');
+                else if(data.questsCompleted>0)de.classList.add('partial');
+                else de.classList.add('missed');
+                de.addEventListener('mouseenter',e=>st(e,data));de.addEventListener('mouseleave',ht);
+            }
+            return de;
+        }
+        function st(e,d){
+            const t=document.getElementById('tp'),cr=Math.round((d.questsCompleted/d.totalQuests)*100);
+            t.innerHTML=`<strong>${d.date.toLocaleDateString()}</strong><br>Quests: ${d.questsCompleted}/${d.totalQuests}<br>XP: ${d.xpEarned||0}<br>Rate: ${cr}%`;
+            t.style.left=e.pageX+10+'px';t.style.top=e.pageY-50+'px';t.style.opacity='1';
+        }
+        function ht(){document.getElementById('tp').style.opacity='0';}
+        function us(){
+            const cm=cd.getMonth(),cy=cd.getFullYear();
+            let pd=0,tx=0,td=0,cq=0,tq=0;
+            Object.values(dd).forEach(d=>{
+                if(d.date.getMonth()===cm&&d.date.getFullYear()===cy){
+                    td++;if(d.perfectDay)pd++;tx+=d.xpEarned||0;cq+=d.questsCompleted;tq+=d.totalQuests;
+                }
+            });
+            const ax=td>0?Math.round(tx/td):0,cr=tq>0?Math.round((cq/tq)*100):0;
+            document.getElementById('pd').textContent=pd;document.getElementById('tx').textContent=tx;
+            document.getElementById('ax').textContent=ax;document.getElementById('cr').textContent=cr+'%';
+        }
+        function gwc(){
+            const c=document.getElementById('wc');c.innerHTML='';
+            const ws=[],td=new Date();
+            for(let i=7;i>=0;i--){
+                const wst=new Date(td);wst.setDate(td.getDate()-(i*7)-td.getDay());
+                const wen=new Date(wst);wen.setDate(wst.getDate()+6);
+                let wx=0;
+                Object.values(dd).forEach(d=>{if(d.date>=wst&&d.date<=wen)wx+=d.xpEarned||0;});
+                ws.push({xp:wx,label:wst.toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+            }
+            const mx=Math.max(...ws.map(w=>w.xp),100);
+            ws.forEach(w=>{
+                const b=document.createElement('div');b.className='wb';b.style.height=((w.xp/mx)*100)+'%';
+                const l=document.createElement('div');l.className='wl';l.textContent=w.label;b.appendChild(l);
+                c.appendChild(b);
+            });
+        }
+        function gi(){
+            const ins=document.getElementById('il');ins.innerHTML='';
+            const id=ad();id.forEach(i=>{
+                const it=document.createElement('div');it.className='insight';
+                it.innerHTML=`<div class="it">${i.title}</div><div class="ix">${i.text}</div>`;ins.appendChild(it);
+            });
+        }
+        function ad(){
+            const ad=Object.values(dd);
+            if(ad.length===0)return[{title:"🌱 Get Started",text:"Complete your first quests to start seeing insights."}];
+            const ds={};
+            ad.forEach(d=>{const day=d.date.getDay();if(!ds[day])ds[day]={perfect:0,total:0};ds[day].total++;if(d.perfectDay)ds[day].perfect++;});
+            let bd=0,br=0;
+            Object.entries(ds).forEach(([d,s])=>{const r=s.perfect/s.total;if(r>br){br=r;bd=parseInt(d);}});
+            const dns=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            return[{title:"📈 Best Day",text:`You perform best on ${dns[bd]} with ${Math.round(br*100)}% completion rate.`},{title:"📊 Progress",text:"Keep building consistency for better insights."}];
+        }
+        document.getElementById('pm').addEventListener('click',()=>{cd.setMonth(cd.getMonth()-1);gc();us();});
+        document.getElementById('nm').addEventListener('click',()=>{cd.setMonth(cd.getMonth()+1);gc();us();});
+        function init(){at();ld();gc();us();gwc();gi();}
+        init();setInterval(init,60000);
+    </script>
+</body>
+</html>

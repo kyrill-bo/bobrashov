@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Bobrashov</title>
+    <style>
+        :root{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
+        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
+        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
+        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
+        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1200px;margin:0 auto;line-height:1.6;transition:all .3s}
+        .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
+        .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .n a:hover{color:var(--p);opacity:1}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-bottom:3rem}
+        .c{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
+        .ct{font-size:1.2rem;margin-bottom:1rem;color:var(--p);display:flex;align-items:center;gap:.5rem}
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;margin-bottom:1rem}
+        .stat{text-align:center;padding:1rem;background:var(--bg);border-radius:8px}
+        .sv{font-size:1.5rem;font-weight:bold;color:var(--p);margin-bottom:.3rem}
+        .sl{font-size:.8rem;opacity:.8}
+        .chart{height:200px;position:relative;background:var(--bg);border-radius:8px;padding:1rem;margin-bottom:1rem}
+        .heatmap{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;height:150px}
+        .hh{grid-column:span 24;display:grid;grid-template-columns:repeat(24,1fr);gap:2px;height:20px;margin-bottom:5px}
+        .hc{border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:.6rem;cursor:pointer}
+        .patterns{display:grid;grid-template-columns:repeat(7,1fr);gap:1rem;margin-bottom:1rem}
+        .pd{text-align:center;padding:.8rem;background:var(--bg);border-radius:8px;font-size:.8rem}
+        .pv{font-weight:bold;color:var(--p);margin-bottom:.3rem}
+        .insights{margin-bottom:2rem}
+        .insight{margin-bottom:1rem;padding:1rem;background:var(--bg);border-radius:8px;border-left:4px solid var(--p)}
+        .it{font-weight:bold;margin-bottom:.5rem;color:var(--p)}
+        .ix{font-size:.9rem;opacity:.8}
+        .export{text-align:center;margin-top:2rem}
+        .eb{background:var(--p);color:var(--card);border:none;padding:.8rem 1.5rem;border-radius:6px;cursor:pointer;margin:0 .5rem;font-size:.9rem;transition:all .3s}
+        .eb:hover{background:var(--s)}
+        .trend{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+        .tl{font-size:.9rem;opacity:.8}
+        .tv{font-size:1.2rem;font-weight:bold;color:var(--p)}
+        .progress{background:var(--border);height:8px;border-radius:4px;overflow:hidden;margin-top:.5rem}
+        .pf{background:var(--p);height:100%;transition:width .3s}
+        @media(max-width:768px){body{padding:1rem}.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.patterns{grid-template-columns:repeat(3,1fr)}}
+    </style>
+</head>
+<body>
+    <nav class="n">
+        <a href="daily-quests.html">🎯 Daily Quests</a>
+        <a href="achievements.html">🏆 Achievements</a>
+        <a href="calendar.html">📅 Calendar</a>
+        <a href="quest-shop.html">🛒 Shop</a>
+        <a href="settings.html">⚙️ Settings</a>
+        <a href="index.html">Home</a>
+    </nav>
+    <header class="h">
+        <h1 class="t">📊 Analytics Dashboard</h1>
+        <p class="st">Insights into your productivity journey</p>
+    </header>
+    <div class="grid">
+        <div class="c">
+            <h3 class="ct">📈 Performance Overview</h3>
+            <div class="stats">
+                <div class="stat"><div class="sv" id="ts">0</div><div class="sl">Total Streak</div></div>
+                <div class="stat"><div class="sv" id="cs">0</div><div class="sl">Current Streak</div></div>
+                <div class="stat"><div class="sv" id="tx">0</div><div class="sl">Total XP</div></div>
+                <div class="stat"><div class="sv" id="ax">0</div><div class="sl">Avg XP/Day</div></div>
+                <div class="stat"><div class="sv" id="cr">0%</div><div class="sl">Completion Rate</div></div>
+                <div class="stat"><div class="sv" id="pd">0</div><div class="sl">Perfect Days</div></div>
+            </div>
+        </div>
+        <div class="c">
+            <h3 class="ct">🕐 Hourly Activity</h3>
+            <div class="chart">
+                <div class="heatmap" id="hm"></div>
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <div class="c">
+            <h3 class="ct">📅 Weekday Patterns</h3>
+            <div class="patterns" id="wp"></div>
+        </div>
+        <div class="c">
+            <h3 class="ct">📊 Recent Trends</h3>
+            <div id="trends"></div>
+        </div>
+    </div>
+    <div class="c insights">
+        <h3 class="ct">💡 Insights & Recommendations</h3>
+        <div id="il"></div>
+    </div>
+    <div class="export">
+        <h3 class="ct">📁 Export Data</h3>
+        <button class="eb" onclick="ex('json')">Export JSON</button>
+        <button class="eb" onclick="ex('csv')">Export CSV</button>
+        <button class="eb" onclick="ex('md')">Export Markdown</button>
+    </div>
+    <script>
+        let ad={};
+        function at(){const s=JSON.parse(localStorage.getItem('questSettings')||'{}');if(s.theme)document.documentElement.setAttribute('data-theme',s.theme);}
+        function ld(){
+            const dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}'),ch=JSON.parse(localStorage.getItem('completionHistory')||'[]'),u=JSON.parse(localStorage.getItem('userData')||'{}');
+            ad={dailyProgress:dp,completionHistory:ch,userData:u};
+        }
+        function cs(){
+            const dp=ad.dailyProgress;let ts=0,cs=0,ct=0;
+            const ds=Object.keys(dp).sort().reverse();
+            for(const d of ds){
+                const data=dp[d];
+                if(data.questsCompleted>=data.totalQuests){ts++;if(ct===0)cs++;}else{if(ct===0)break;}ct++;
+            }
+            return{totalStreak:ts,currentStreak:cs};
+        }
+        function ca(){
+            const dp=ad.dailyProgress;let tx=0,td=0,pd=0,cr=0;
+            Object.values(dp).forEach(d=>{tx+=d.xpEarned||0;td++;if(d.questsCompleted>=d.totalQuests)pd++;cr+=(d.questsCompleted/d.totalQuests);});
+            return{totalXP:tx,totalDays:td,perfectDays:pd,avgXP:td>0?Math.round(tx/td):0,completionRate:td>0?Math.round((cr/td)*100):0};
+        }
+        function us(){
+            const{totalStreak:ts,currentStreak:cs}=cs(),{totalXP:tx,avgXP:ax,completionRate:cr,perfectDays:pd}=ca();
+            document.getElementById('ts').textContent=ts;document.getElementById('cs').textContent=cs;
+            document.getElementById('tx').textContent=tx;document.getElementById('ax').textContent=ax;
+            document.getElementById('cr').textContent=cr+'%';document.getElementById('pd').textContent=pd;
+        }
+        function gh(){
+            const hm=document.getElementById('hm');hm.innerHTML='';
+            const ha=Array(24).fill(0);
+            Object.values(ad.dailyProgress).forEach(d=>{if(d.completedAt){const h=new Date(d.completedAt).getHours();ha[h]++;}});
+            const mh=Math.max(...ha,1);
+            for(let h=0;h<24;h++){
+                const c=document.createElement('div');c.className='hc';
+                const i=ha[h]/mh;c.style.background=i>0?`rgba(76,175,80,${.2+i*.8})`:'var(--border)';
+                c.textContent=h;c.title=`${h}:00 - ${ha[h]} completions`;hm.appendChild(c);
+            }
+        }
+        function gw(){
+            const wp=document.getElementById('wp');wp.innerHTML='';
+            const dns=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const wa=Array(7).fill().map(()=>({total:0,completed:0}));
+            Object.values(ad.dailyProgress).forEach(d=>{const dow=new Date(Object.keys(ad.dailyProgress).find(k=>ad.dailyProgress[k]===d)).getDay();wa[dow].total++;if(d.questsCompleted>=d.totalQuests)wa[dow].completed++;});
+            wa.forEach((w,i)=>{
+                const el=document.createElement('div');el.className='pd';
+                const r=w.total>0?Math.round((w.completed/w.total)*100):0;
+                el.innerHTML=`<div class="pv">${r}%</div><div>${dns[i]}</div>`;wp.appendChild(el);
+            });
+        }
+        function gt(){
+            const tc=document.getElementById('trends');tc.innerHTML='';
+            const ld=Object.entries(ad.dailyProgress).sort(([a],[b])=>new Date(b)-new Date(a)).slice(0,7);
+            const px=ld.reduce((s,([,d])=>s+(d.xpEarned||0),0));const ax=Math.round(px/7);
+            const cr=ld.reduce((s,[,d])=>s+(d.questsCompleted/d.totalQuests),0)/7*100;
+            tc.innerHTML=`<div class="trend"><span class="tl">7-Day Avg XP</span><span class="tv">${ax}</span></div><div class="progress"><div class="pf" style="width:${Math.min(ax/50*100,100)}%"></div></div><div class="trend"><span class="tl">7-Day Completion</span><span class="tv">${Math.round(cr)}%</span></div><div class="progress"><div class="pf" style="width:${cr}%"></div></div>`;
+        }
+        function gi(){
+            const ic=document.getElementById('il');ic.innerHTML='';
+            const ins=ai();ins.forEach(i=>{
+                const el=document.createElement('div');el.className='insight';
+                el.innerHTML=`<div class="it">${i.title}</div><div class="ix">${i.text}</div>`;ic.appendChild(el);
+            });
+        }
+        function ai(){
+            const{completionRate:cr,perfectDays:pd}=ca();
+            const ins=[];
+            if(cr>=80)ins.push({title:"🎯 Excellent Performance",text:"You're maintaining great consistency! Keep up the momentum."});
+            else if(cr>=60)ins.push({title:"📈 Good Progress",text:"You're doing well. Try to be more consistent for better results."});
+            else ins.push({title:"💪 Room for Improvement",text:"Focus on completing more quests daily to build better habits."});
+            if(pd>=10)ins.push({title:"⭐ Perfectionist",text:"You've achieved many perfect days! Your dedication is paying off."});
+            const wa=Array(7).fill().map(()=>({total:0,completed:0}));
+            Object.entries(ad.dailyProgress).forEach(([d,data])=>{const dow=new Date(d).getDay();wa[dow].total++;if(data.questsCompleted>=data.totalQuests)wa[dow].completed++;});
+            let bd=0,br=0;wa.forEach((w,i)=>{if(w.total>0){const r=w.completed/w.total;if(r>br){br=r;bd=i;}}});
+            const dns=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            if(br>0)ins.push({title:"📅 Best Day",text:`Your most productive day is ${dns[bd]} with ${Math.round(br*100)}% completion rate.`});
+            return ins;
+        }
+        function ex(f){
+            const data={...ad,analytics:ca(),insights:ai()};
+            if(f==='json'){dl(JSON.stringify(data,null,2),'analytics.json','application/json');}
+            else if(f==='csv'){let csv='Date,Quests Completed,Total Quests,XP Earned,Completion Rate\n';Object.entries(ad.dailyProgress).forEach(([d,data])=>{csv+=`${d},${data.questsCompleted},${data.totalQuests},${data.xpEarned||0},${Math.round((data.questsCompleted/data.totalQuests)*100)}%\n`;});dl(csv,'analytics.csv','text/csv');}
+            else if(f==='md'){const{totalXP:tx,avgXP:ax,completionRate:cr,perfectDays:pd}=ca();let md=`# Analytics Report\n\n## Overview\n- Total XP: ${tx}\n- Average XP/Day: ${ax}\n- Completion Rate: ${cr}%\n- Perfect Days: ${pd}\n\n## Insights\n`;ai().forEach(i=>md+=`### ${i.title}\n${i.text}\n\n`);dl(md,'analytics.md','text/markdown');}
+        }
+        function dl(c,fn,mt){const b=new Blob([c],{type:mt});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);}
+        function init(){at();ld();us();gh();gw();gt();gi();}
+        init();setInterval(init,300000);
+    </script>
+</body>
+</html>

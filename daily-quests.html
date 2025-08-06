@@ -32,7 +32,7 @@
         .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
         .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
         .n a:hover{color:var(--p);opacity:1}
-        .sb{border-radius:10px;animation:pulse 2s ease-in-out infinite;text-align:center;margin-bottom:2rem;padding:1rem;background:var(--card);border:1px solid var(--border);display:none}
+        .sb{border-radius:10px;animation:pulse 2s infinite;text-align:center;margin-bottom:2rem;padding:1rem;background:var(--card);border:1px solid var(--border);display:none}
         @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,193,7,.4)}70%{box-shadow:0 0 0 10px rgba(255,193,7,0)}100%{box-shadow:0 0 0 0 rgba(255,193,7,0)}}
         @media(max-width:600px){body{padding:1rem}.stats{flex-wrap:wrap;gap:1rem}.t{font-size:2rem}}
     </style>
@@ -40,9 +40,10 @@
 <body>
     <nav class="n">
         <a href="achievements.html">🏆 Achievements</a>
+        <a href="calendar.html">📅 Calendar</a>
+        <a href="analytics.html">📊 Analytics</a>
         <a href="quest-editor.html">Quest Editor</a>
-        <a href="quest-shop.html">Quest Shop</a>
-        <a href="reward-editor.html">Reward Editor</a>
+        <a href="quest-shop.html">🛒 Shop</a>
         <a href="settings.html">⚙️ Settings</a>
         <a href="index.html">Home</a>
     </nav>
@@ -51,66 +52,59 @@
         <p class="st">Level up through discipline</p>
     </header>
     <section class="stats">
-        <div class="stat"><div class="sv" id="level">1</div><div class="sl">Level</div></div>
+        <div class="stat"><div class="sv" id="lv">1</div><div class="sl">Level</div></div>
         <div class="stat"><div class="sv" id="xp">0</div><div class="sl">Total XP</div></div>
-        <div class="stat"><div class="sv" id="streak">0</div><div class="sl">Streak</div></div>
-        <div class="stat"><div class="sv" id="multiplier">1.0x</div><div class="sl">XP Multiplier</div></div>
+        <div class="stat"><div class="sv" id="st">0</div><div class="sl">Streak</div></div>
+        <div class="stat"><div class="sv" id="m">1.0x</div><div class="sl">XP Multiplier</div></div>
     </section>
-    <div class="sb" id="streakBonus">
+    <div class="sb" id="sb">
         <div class="bt">🔥 Streak Bonus Active!</div>
-        <div class="bd" id="bonusDetails"></div>
+        <div class="bd" id="bd"></div>
     </div>
     <section class="prog">
         <div class="pi">
-            <span>Level <span id="lv">1</span></span>
+            <span>Level <span id="clv">1</span></span>
             <span><span id="cur">0</span>/<span id="need">100</span> XP</span>
         </div>
         <div class="pb"><div class="pf" id="bar"></div></div>
     </section>
-    <section id="quests"></section>
+    <section id="q"></section>
     <div class="r"><button class="rb" onclick="reset()">Reset Progress</button></div>
-    <div class="c" id="celebrate">
+    <div class="c" id="cel">
         <h2>Level Up!</h2>
-        <p>Level <span id="newlv"></span> Achieved</p>
+        <p>Level <span id="nlv"></span> Achieved</p>
         <button class="btn" onclick="hide()">Continue</button>
     </div>
     <script>
-        let s={lv:1,xp:0,cur:0,need:100,streak:0,done:[],last:null,perfectWeeks:0,totalBonusXP:0},quests=[];
-
-        function getM(streak){return streak>=30?2.0:streak>=14?1.5:streak>=7?1.25:1.0;}
-        function getB(p){return p>=4?2500:p>=2?1000:p>=1?500:0;}
-
-        function updateS(){
-            const m=getM(s.streak),bd=document.getElementById('streakBonus'),md=document.getElementById('multiplier'),dt=document.getElementById('bonusDetails');
-            md.textContent=m.toFixed(1)+'x';
-            
-            if(m>1.0){
-                bd.style.display='block';
-                let txt='';
-                if(s.streak>=30)txt=`🚀 Legendary Streak! ${s.streak} days - Double XP!`;
-                else if(s.streak>=14)txt=`💪 Strong Streak! ${s.streak} days - 50% Bonus XP!`;
-                else if(s.streak>=7)txt=`🔥 Week Streak! ${s.streak} days - 25% Bonus XP!`;
-                
-                const wb=getB(s.perfectWeeks);
-                if(wb>0)txt+=`<br>💎 Perfect Week Bonus: +${wb} XP earned!`;
-                dt.innerHTML=txt;
-            }else bd.style.display='none';
+        let s={lv:1,xp:0,cur:0,need:100,streak:0,done:[],last:null,pf:0,tx:0},q=[];
+        function gm(st){return st>=30?2:st>=14?1.5:st>=7?1.25:1;}
+        function gb(p){return p>=4?2500:p>=2?1000:p>=1?500:0;}
+        function us(){
+            const m=gm(s.streak),sb=document.getElementById('sb'),ms=document.getElementById('m'),bd=document.getElementById('bd');
+            ms.textContent=m.toFixed(1)+'x';
+            if(m>1){
+                sb.style.display='block';
+                let t='';
+                if(s.streak>=30)t=`🚀 Legendary Streak! ${s.streak} days - Double XP!`;
+                else if(s.streak>=14)t=`💪 Strong Streak! ${s.streak} days - 50% Bonus XP!`;
+                else if(s.streak>=7)t=`🔥 Week Streak! ${s.streak} days - 25% Bonus XP!`;
+                const wb=gb(s.pf);
+                if(wb>0)t+=`<br>💎 Perfect Week Bonus: +${wb} XP earned!`;
+                bd.innerHTML=t;
+            }else sb.style.display='none';
         }
-
-        function track(){
-            const now=new Date();
+        function tr(){
+            const n=new Date();
             let h=JSON.parse(localStorage.getItem('completionHistory')||'[]');
-            h.push({timestamp:now.toISOString(),hour:now.getHours(),isWeekend:now.getDay()===0||now.getDay()===6});
+            h.push({timestamp:n.toISOString(),hour:n.getHours(),isWeekend:n.getDay()===0||n.getDay()===6});
             localStorage.setItem('completionHistory',JSON.stringify(h));
-            
-            const td=now.toDateString();
+            const td=n.toDateString();
             let dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}');
-            if(!dp[td])dp[td]={questsCompleted:0,totalQuests:quests.length};
-            dp[td].questsCompleted++;
+            if(!dp[td])dp[td]={questsCompleted:0,totalQuests:q.length,xpEarned:0};
+            dp[td].questsCompleted++;dp[td].xpEarned=dp[td].xpEarned||0;
             localStorage.setItem('dailyProgress',JSON.stringify(dp));
         }
-
-        function loadQ(){
+        function lq(){
             let c=localStorage.getItem('bq-custom');
             if(!c){
                 let df=[
@@ -118,121 +112,104 @@
                     {name:'Mental Focus',target:'Min Reading',xp:30,desc:'Reading for mental growth',scaling:false},
                     {name:'Inner Peace',target:'Min Meditation',xp:25,desc:'Mindfulness practice',scaling:false}
                 ];
-                localStorage.setItem('bq-custom',JSON.stringify(df));
-                c=JSON.stringify(df);
+                localStorage.setItem('bq-custom',JSON.stringify(df));c=JSON.stringify(df);
             }
-            
             let cq=JSON.parse(c);
-            quests=cq.map(q=>({
-                name:q.name,target:q.target,
-                baseTarget:q.scaling?q.baseAmount||15:(q.name==='Mental Focus'?20:10),
-                xp:q.xp,desc:q.desc,scaling:q.scaling||false,increment:q.increment||3
-            }));
-            s.done=new Array(quests.length).fill(0);
+            q=cq.map(i=>({name:i.name,target:i.target,baseTarget:i.scaling?i.baseAmount||15:(i.name==='Mental Focus'?20:10),xp:i.xp,desc:i.desc,scaling:i.scaling||false,increment:i.increment||3}));
+            s.done=new Array(q.length).fill(0);
         }
-
-        function load(){
+        function ld(){
             let sv=localStorage.getItem('bq');
             if(sv){
                 s={...s,...JSON.parse(sv)};
                 let td=new Date().toDateString();
                 if(s.last!==td){
-                    s.done=new Array(quests.length).fill(0);
+                    s.done=new Array(q.length).fill(0);
                     if(s.last&&(new Date(td)-new Date(s.last))/86400000>1){
                         const dd=Math.floor((new Date(td)-new Date(s.last))/86400000);
                         if(dd>=7){
                             let cb=parseInt(localStorage.getItem('comebacks')||'0');
                             localStorage.setItem('comebacks',(cb+1).toString());
                         }
-                        s.streak=0;s.perfectWeeks=0;
+                        s.streak=0;s.pf=0;
                     }
                 }
             }
         }
-
-        function save(){
+        function sv(){
             localStorage.setItem('bq',JSON.stringify(s));
             let ud=JSON.parse(localStorage.getItem('userData')||'{}');
             ud.level=s.lv;ud.totalXP=s.xp;ud.streak=s.streak;
             localStorage.setItem('userData',JSON.stringify(ud));
         }
-
-        function render(){
-            let h='';const m=getM(s.streak);
-            quests.forEach((q,i)=>{
+        function rn(){
+            let h='';const m=gm(s.streak);
+            q.forEach((i,x)=>{
                 let tg,xp;
-                if(q.scaling){
-                    let amt=q.baseTarget+Math.floor((s.lv-1)*q.increment);
-                    tg=amt+' '+q.target;xp=q.xp+(s.lv-1)*5;
-                }else{tg=q.baseTarget+' '+q.target;xp=q.xp;}
-                
-                const fx=Math.round(xp*m),bx=fx-xp;let dn=s.done[i];
-                h+=`<div class="q ${dn?'done':''}" id="q${i+1}">
+                if(i.scaling){
+                    let amt=i.baseTarget+Math.floor((s.lv-1)*i.increment);
+                    tg=amt+' '+i.target;xp=i.xp+(s.lv-1)*5;
+                }else{tg=i.baseTarget+' '+i.target;xp=i.xp;}
+                const fx=Math.round(xp*m),bx=fx-xp;let dn=s.done[x];
+                h+=`<div class="q ${dn?'done':''}" id="q${x+1}">
                     <div class="qh">
-                        <h3 class="qt">${q.name}</h3>
+                        <h3 class="qt">${i.name}</h3>
                         <span class="qx">+${fx} XP${bx>0?` <small style="color:#ffc107;">(+${bx} bonus)</small>`:''}</span>
                     </div>
                     <div class="qg">${tg}</div>
-                    <button class="btn" onclick="complete(${i})" ${dn?'disabled':''}>${dn?'Done ✓':'Complete'}</button>
+                    <button class="btn" onclick="co(${x})" ${dn?'disabled':''}>${dn?'Done ✓':'Complete'}</button>
                 </div>`;
             });
-            document.getElementById('quests').innerHTML=h;
+            document.getElementById('q').innerHTML=h;
         }
-
-        function update(){
-            document.getElementById('level').textContent=s.lv;document.getElementById('xp').textContent=s.xp;
-            document.getElementById('streak').textContent=s.streak;document.getElementById('lv').textContent=s.lv;
+        function up(){
+            document.getElementById('lv').textContent=s.lv;document.getElementById('xp').textContent=s.xp;
+            document.getElementById('st').textContent=s.streak;document.getElementById('clv').textContent=s.lv;
             document.getElementById('cur').textContent=s.cur;document.getElementById('need').textContent=s.need;
             document.getElementById('bar').style.width=(s.cur/s.need*100)+'%';
-            updateS();render();
+            us();rn();
         }
-
-        function complete(i){
+        function co(i){
             if(s.done[i])return;
             let bx;
-            if(quests[i].scaling)bx=quests[i].xp+(s.lv-1)*5;else bx=quests[i].xp;
-            
-            const m=getM(s.streak),fx=Math.round(bx*m);
+            if(q[i].scaling)bx=q[i].xp+(s.lv-1)*5;else bx=q[i].xp;
+            const m=gm(s.streak),fx=Math.round(bx*m);
             s.done[i]=1;s.xp+=fx;s.cur+=fx;s.last=new Date().toDateString();
-            
-            track();playS();
-            showN(`🎯 Quest Completed!`,`${quests[i].name} - +${fx} XP earned${m>1?` (${m}x bonus!)`:''}`);
-            
+            const td=new Date().toDateString();
+            let dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}');
+            if(!dp[td])dp[td]={questsCompleted:0,totalQuests:q.length,xpEarned:0};
+            dp[td].xpEarned=(dp[td].xpEarned||0)+fx;
+            localStorage.setItem('dailyProgress',JSON.stringify(dp));
+            tr();ps();
+            sn(`🎯 Quest Completed!`,`${q[i].name} - +${fx} XP earned${m>1?` (${m}x bonus!)`:''}`);
             if(s.cur>=s.need){
                 s.cur-=s.need;s.lv++;s.need=Math.floor(100*Math.pow(1.2,s.lv-1));
-                document.getElementById('newlv').textContent=s.lv;
-                document.getElementById('celebrate').classList.add('show');
-                showN(`🎉 Level Up!`,`Congratulations! You reached Level ${s.lv}!`);
+                document.getElementById('nlv').textContent=s.lv;
+                document.getElementById('cel').classList.add('show');
+                sn(`🎉 Level Up!`,`Congratulations! You reached Level ${s.lv}!`);
             }
-            
             if(s.done.every(x=>x)){
                 s.streak++;
-                showN(`⭐ Perfect Day!`,`All quests completed! Streak: ${s.streak} days`);
-                
+                sn(`⭐ Perfect Day!`,`All quests completed! Streak: ${s.streak} days`);
                 if(s.streak%7===0){
-                    s.perfectWeeks=Math.floor(s.streak/7);
-                    const wb=getB(s.perfectWeeks);
+                    s.pf=Math.floor(s.streak/7);
+                    const wb=gb(s.pf);
                     if(wb>0){
-                        s.xp+=wb;s.cur+=wb;s.totalBonusXP+=wb;
+                        s.xp+=wb;s.cur+=wb;s.tx+=wb;
                         setTimeout(()=>{
-                            showN(`🎉 Perfect Week Bonus!`,`+${wb} XP - You've completed ${s.perfectWeeks} perfect week(s)!`);
+                            sn(`🎉 Perfect Week Bonus!`,`+${wb} XP - You've completed ${s.pf} perfect week(s)!`);
                         },1000);
                     }
                 }
             }
-            
-            save();update();
+            sv();up();
             if(typeof window.checkAchievements==='function')window.checkAchievements();
         }
-
-        function hide(){document.getElementById('celebrate').classList.remove('show');}
-        function reset(){if(confirm('Reset all progress?')){localStorage.removeItem('bq');s={lv:1,xp:0,cur:0,need:100,streak:0,done:new Array(quests.length).fill(0),last:null,perfectWeeks:0,totalBonusXP:0};update();}}
-
-        function reqN(){if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();}
-
-        function apply(){const st=JSON.parse(localStorage.getItem('questSettings')||'{}');if(st.theme)document.documentElement.setAttribute('data-theme',st.theme);}
-
-        function playS(){
+        function hide(){document.getElementById('cel').classList.remove('show');}
+        function reset(){if(confirm('Reset all progress?')){localStorage.removeItem('bq');s={lv:1,xp:0,cur:0,need:100,streak:0,done:new Array(q.length).fill(0),last:null,pf:0,tx:0};up();}}
+        function rq(){if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();}
+        function at(){const st=JSON.parse(localStorage.getItem('questSettings')||'{}');if(st.theme)document.documentElement.setAttribute('data-theme',st.theme);}
+        function ps(){
             const st=JSON.parse(localStorage.getItem('questSettings')||'{}');
             if(!st.celebrationSounds)return;
             try{
@@ -245,8 +222,7 @@
                 osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3);
             }catch(e){}
         }
-
-        function showN(t,b,o={}){
+        function sn(t,b,o={}){
             const st=JSON.parse(localStorage.getItem('questSettings')||'{}');
             if(!st.achievementNotifications)return;
             if('Notification'in window&&Notification.permission==='granted'){
@@ -255,8 +231,7 @@
                 setTimeout(()=>n.close(),5000);
             }
         }
-
-        apply();loadQ();load();update();reqN();
+        at();lq();ld();up();rq();
     </script>
 </body>
 </html>
