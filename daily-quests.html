@@ -5,218 +5,258 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Quests - Bobrashov</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: Georgia, serif; padding: 2rem; max-width: 700px; margin: 0 auto; line-height: 1.6; }
-        .header { text-align: center; margin-bottom: 3rem; }
-        .title { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .subtitle { opacity: 0.8; font-style: italic; }
-        .stats { display: flex; justify-content: space-between; margin-bottom: 3rem; }
-        .stat { text-align: center; }
-        .stat-value { font-size: 2rem; margin-bottom: 0.3rem; }
-        .stat-label { opacity: 0.8; font-size: 0.9rem; }
-        .progress { margin-bottom: 3rem; }
-        .progress-info { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
-        .progress-bar { width: 100%; height: 15px; background: #222; border: 1px solid #333; }
-        .progress-fill { height: 100%; background: #666; width: 0%; transition: width 0.3s; }
-        .quest { background: #111; border: 1px solid #333; padding: 1.5rem; margin-bottom: 1rem; }
-        .quest.done { opacity: 0.6; }
-        .quest-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
-        .quest-title { font-size: 1.2rem; }
-        .quest-xp { background: #333; padding: 0.2rem 0.6rem; font-size: 0.8rem; }
-        .quest-target { text-align: center; font-size: 1.5rem; margin: 1rem 0; }
-        .btn { background: transparent; border: 1px solid #666; color: #fff; padding: 0.6rem 1rem; cursor: pointer; font-family: inherit; }
-        .btn:hover { background: #333; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .reset { text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #333; }
-        .reset-btn { background: transparent; border: 1px solid #444; color: #888; padding: 0.4rem 0.8rem; cursor: pointer; font-family: inherit; font-size: 0.8rem; }
-        .celebration { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #222; border: 2px solid #666; padding: 2rem; text-align: center; opacity: 0; transition: opacity 0.3s; }
-        .celebration.show { opacity: 1; }
-        .nav { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #333; }
-        .nav a { color: #ccc; text-decoration: none; margin: 0 1rem; font-size: 0.9rem; }
-        .nav a:hover { color: #fff; }
-        @media (max-width: 600px) { body { padding: 1rem; } .stats { flex-wrap: wrap; gap: 1rem; } .title { font-size: 2rem; } }
+        :root{--p:#666;--s:#999;--bg:#000;--card:#111;--txt:#fff;--border:#333}
+        [data-theme="light"]{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
+        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
+        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
+        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
+        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:700px;margin:0 auto;line-height:1.6;transition:all .3s}
+        .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
+        .stats{display:flex;justify-content:space-between;margin-bottom:3rem}.stat{text-align:center}.sv{font-size:2rem;margin-bottom:.3rem;color:var(--p)}.sl{opacity:.8;font-size:.9rem}
+        .prog{margin-bottom:3rem}.pi{display:flex;justify-content:space-between;margin-bottom:.5rem}
+        .pb{width:100%;height:15px;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+        .pf{height:100%;background:var(--p);width:0%;transition:width .3s}
+        .q{background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;border-radius:10px;transition:all .3s}
+        .q.done{opacity:.6}.qh{display:flex;justify-content:space-between;margin-bottom:1rem}.qt{font-size:1.2rem}
+        .qx{background:var(--s);color:var(--card);padding:.2rem .6rem;font-size:.8rem;border-radius:12px;font-weight:bold}
+        .qg{text-align:center;font-size:1.5rem;margin:1rem 0}
+        .btn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.6rem 1rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s}
+        .btn:hover{background:var(--p);color:var(--card)}.btn:disabled{opacity:.5;cursor:not-allowed}
+        .r{text-align:center;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)}
+        .rb{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.4rem .8rem;cursor:pointer;font-family:inherit;font-size:.8rem;border-radius:6px;opacity:.7;transition:all .3s}
+        .rb:hover{opacity:1;background:var(--border)}
+        .c{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border:2px solid var(--p);padding:2rem;text-align:center;opacity:0;transition:opacity .3s;border-radius:15px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+        .c.show{opacity:1}
+        .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
+        .n a:hover{color:var(--p);opacity:1}
+        .sb{border-radius:10px;animation:pulse 2s ease-in-out infinite;text-align:center;margin-bottom:2rem;padding:1rem;background:var(--card);border:1px solid var(--border);display:none}
+        @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,193,7,.4)}70%{box-shadow:0 0 0 10px rgba(255,193,7,0)}100%{box-shadow:0 0 0 0 rgba(255,193,7,0)}}
+        @media(max-width:600px){body{padding:1rem}.stats{flex-wrap:wrap;gap:1rem}.t{font-size:2rem}}
     </style>
 </head>
 <body>
-    <nav class="nav">
+    <nav class="n">
+        <a href="achievements.html">🏆 Achievements</a>
         <a href="quest-editor.html">Quest Editor</a>
         <a href="quest-shop.html">Quest Shop</a>
         <a href="reward-editor.html">Reward Editor</a>
+        <a href="settings.html">⚙️ Settings</a>
         <a href="index.html">Home</a>
     </nav>
-
-    <header class="header">
-        <h1 class="title">Daily Quests</h1>
-        <p class="subtitle">Level up through discipline</p>
+    <header class="h">
+        <h1 class="t">Daily Quests</h1>
+        <p class="st">Level up through discipline</p>
     </header>
-
     <section class="stats">
-        <div class="stat">
-            <div class="stat-value" id="level">1</div>
-            <div class="stat-label">Level</div>
-        </div>
-        <div class="stat">
-            <div class="stat-value" id="xp">0</div>
-            <div class="stat-label">Total XP</div>
-        </div>
-        <div class="stat">
-            <div class="stat-value" id="streak">0</div>
-            <div class="stat-label">Streak</div>
-        </div>
+        <div class="stat"><div class="sv" id="level">1</div><div class="sl">Level</div></div>
+        <div class="stat"><div class="sv" id="xp">0</div><div class="sl">Total XP</div></div>
+        <div class="stat"><div class="sv" id="streak">0</div><div class="sl">Streak</div></div>
+        <div class="stat"><div class="sv" id="multiplier">1.0x</div><div class="sl">XP Multiplier</div></div>
     </section>
-
-    <section class="progress">
-        <div class="progress-info">
+    <div class="sb" id="streakBonus">
+        <div class="bt">🔥 Streak Bonus Active!</div>
+        <div class="bd" id="bonusDetails"></div>
+    </div>
+    <section class="prog">
+        <div class="pi">
             <span>Level <span id="lv">1</span></span>
             <span><span id="cur">0</span>/<span id="need">100</span> XP</span>
         </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="bar"></div>
-        </div>
+        <div class="pb"><div class="pf" id="bar"></div></div>
     </section>
-
-    <section id="quests">
-        <!-- Quests are loaded dynamically -->
-    </section>
-
-    <div class="reset">
-        <button class="reset-btn" onclick="reset()">Reset Progress</button>
-    </div>
-
-    <div class="celebration" id="celebrate">
+    <section id="quests"></section>
+    <div class="r"><button class="rb" onclick="reset()">Reset Progress</button></div>
+    <div class="c" id="celebrate">
         <h2>Level Up!</h2>
         <p>Level <span id="newlv"></span> Achieved</p>
         <button class="btn" onclick="hide()">Continue</button>
     </div>
-
     <script>
-        let s = {lv:1,xp:0,cur:0,need:100,streak:0,done:[],last:null};
-        let quests = [];
-        
-        function loadQuests() {
-            let custom = localStorage.getItem('bq-custom');
-            if (!custom) {
-                // Create default quests as custom quests on first run
-                let defaults = [
+        let s={lv:1,xp:0,cur:0,need:100,streak:0,done:[],last:null,perfectWeeks:0,totalBonusXP:0},quests=[];
+
+        function getM(streak){return streak>=30?2.0:streak>=14?1.5:streak>=7?1.25:1.0;}
+        function getB(p){return p>=4?2500:p>=2?1000:p>=1?500:0;}
+
+        function updateS(){
+            const m=getM(s.streak),bd=document.getElementById('streakBonus'),md=document.getElementById('multiplier'),dt=document.getElementById('bonusDetails');
+            md.textContent=m.toFixed(1)+'x';
+            
+            if(m>1.0){
+                bd.style.display='block';
+                let txt='';
+                if(s.streak>=30)txt=`🚀 Legendary Streak! ${s.streak} days - Double XP!`;
+                else if(s.streak>=14)txt=`💪 Strong Streak! ${s.streak} days - 50% Bonus XP!`;
+                else if(s.streak>=7)txt=`🔥 Week Streak! ${s.streak} days - 25% Bonus XP!`;
+                
+                const wb=getB(s.perfectWeeks);
+                if(wb>0)txt+=`<br>💎 Perfect Week Bonus: +${wb} XP earned!`;
+                dt.innerHTML=txt;
+            }else bd.style.display='none';
+        }
+
+        function track(){
+            const now=new Date();
+            let h=JSON.parse(localStorage.getItem('completionHistory')||'[]');
+            h.push({timestamp:now.toISOString(),hour:now.getHours(),isWeekend:now.getDay()===0||now.getDay()===6});
+            localStorage.setItem('completionHistory',JSON.stringify(h));
+            
+            const td=now.toDateString();
+            let dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}');
+            if(!dp[td])dp[td]={questsCompleted:0,totalQuests:quests.length};
+            dp[td].questsCompleted++;
+            localStorage.setItem('dailyProgress',JSON.stringify(dp));
+        }
+
+        function loadQ(){
+            let c=localStorage.getItem('bq-custom');
+            if(!c){
+                let df=[
                     {name:'Physical Training',target:'Push-ups',xp:50,desc:'Daily physical exercise',scaling:true,baseAmount:15,increment:3},
                     {name:'Mental Focus',target:'Min Reading',xp:30,desc:'Reading for mental growth',scaling:false},
                     {name:'Inner Peace',target:'Min Meditation',xp:25,desc:'Mindfulness practice',scaling:false}
                 ];
-                localStorage.setItem('bq-custom', JSON.stringify(defaults));
-                custom = JSON.stringify(defaults);
+                localStorage.setItem('bq-custom',JSON.stringify(df));
+                c=JSON.stringify(df);
             }
             
-            let customQuests = JSON.parse(custom);
-            quests = customQuests.map(q => ({
-                name: q.name,
-                target: q.target,
-                baseTarget: q.scaling ? q.baseAmount || 15 : (q.name === 'Mental Focus' ? 20 : 10),
-                xp: q.xp,
-                desc: q.desc,
-                scaling: q.scaling || false,
-                increment: q.increment || 3
+            let cq=JSON.parse(c);
+            quests=cq.map(q=>({
+                name:q.name,target:q.target,
+                baseTarget:q.scaling?q.baseAmount||15:(q.name==='Mental Focus'?20:10),
+                xp:q.xp,desc:q.desc,scaling:q.scaling||false,increment:q.increment||3
             }));
-            s.done = new Array(quests.length).fill(0);
+            s.done=new Array(quests.length).fill(0);
         }
-        
-        function load() {
-            let saved = localStorage.getItem('bq');
-            if (saved) {
-                s = {...s, ...JSON.parse(saved)};
-                let today = new Date().toDateString();
-                if (s.last !== today) {
-                    s.done = new Array(quests.length).fill(0);
-                    if (s.last && (new Date(today) - new Date(s.last)) / 86400000 > 1) {
-                        s.streak = 0;
+
+        function load(){
+            let sv=localStorage.getItem('bq');
+            if(sv){
+                s={...s,...JSON.parse(sv)};
+                let td=new Date().toDateString();
+                if(s.last!==td){
+                    s.done=new Array(quests.length).fill(0);
+                    if(s.last&&(new Date(td)-new Date(s.last))/86400000>1){
+                        const dd=Math.floor((new Date(td)-new Date(s.last))/86400000);
+                        if(dd>=7){
+                            let cb=parseInt(localStorage.getItem('comebacks')||'0');
+                            localStorage.setItem('comebacks',(cb+1).toString());
+                        }
+                        s.streak=0;s.perfectWeeks=0;
                     }
                 }
             }
         }
-        
-        function save() { localStorage.setItem('bq', JSON.stringify(s)); }
-        
-        function renderQuests() {
-            let html = '';
-            quests.forEach((q, i) => {
-                let target, xp;
-                if (q.scaling) {
-                    // Use scaling formula for scaling quests
-                    let amount = q.baseTarget + Math.floor((s.lv-1) * q.increment);
-                    target = amount + ' ' + q.target;
-                    xp = q.xp + (s.lv-1)*5; // XP also scales
-                } else {
-                    // Fixed target for non-scaling quests
-                    target = q.baseTarget + ' ' + q.target;
-                    xp = q.xp;
-                }
-                let done = s.done[i];
+
+        function save(){
+            localStorage.setItem('bq',JSON.stringify(s));
+            let ud=JSON.parse(localStorage.getItem('userData')||'{}');
+            ud.level=s.lv;ud.totalXP=s.xp;ud.streak=s.streak;
+            localStorage.setItem('userData',JSON.stringify(ud));
+        }
+
+        function render(){
+            let h='';const m=getM(s.streak);
+            quests.forEach((q,i)=>{
+                let tg,xp;
+                if(q.scaling){
+                    let amt=q.baseTarget+Math.floor((s.lv-1)*q.increment);
+                    tg=amt+' '+q.target;xp=q.xp+(s.lv-1)*5;
+                }else{tg=q.baseTarget+' '+q.target;xp=q.xp;}
                 
-                html += `
-                    <div class="quest ${done ? 'done' : ''}" id="q${i+1}">
-                        <div class="quest-header">
-                            <h3 class="quest-title">${q.name}</h3>
-                            <span class="quest-xp">+${xp} XP</span>
-                        </div>
-                        <div class="quest-target">${target}</div>
-                        <button class="btn" onclick="complete(${i})" ${done ? 'disabled' : ''}>
-                            ${done ? 'Done ✓' : 'Complete'}
-                        </button>
+                const fx=Math.round(xp*m),bx=fx-xp;let dn=s.done[i];
+                h+=`<div class="q ${dn?'done':''}" id="q${i+1}">
+                    <div class="qh">
+                        <h3 class="qt">${q.name}</h3>
+                        <span class="qx">+${fx} XP${bx>0?` <small style="color:#ffc107;">(+${bx} bonus)</small>`:''}</span>
                     </div>
-                `;
+                    <div class="qg">${tg}</div>
+                    <button class="btn" onclick="complete(${i})" ${dn?'disabled':''}>${dn?'Done ✓':'Complete'}</button>
+                </div>`;
             });
-            document.getElementById('quests').innerHTML = html;
+            document.getElementById('quests').innerHTML=h;
         }
-        
-        function update() {
-            document.getElementById('level').textContent = s.lv;
-            document.getElementById('xp').textContent = s.xp;
-            document.getElementById('streak').textContent = s.streak;
-            document.getElementById('lv').textContent = s.lv;
-            document.getElementById('cur').textContent = s.cur;
-            document.getElementById('need').textContent = s.need;
-            document.getElementById('bar').style.width = (s.cur/s.need*100) + '%';
-            renderQuests();
+
+        function update(){
+            document.getElementById('level').textContent=s.lv;document.getElementById('xp').textContent=s.xp;
+            document.getElementById('streak').textContent=s.streak;document.getElementById('lv').textContent=s.lv;
+            document.getElementById('cur').textContent=s.cur;document.getElementById('need').textContent=s.need;
+            document.getElementById('bar').style.width=(s.cur/s.need*100)+'%';
+            updateS();render();
         }
-        
-        function complete(i) {
-            if (s.done[i]) return;
-            let xp;
-            if (quests[i].scaling) {
-                xp = quests[i].xp + (s.lv-1)*5; // Scaling XP
-            } else {
-                xp = quests[i].xp; // Fixed XP
-            }
-            s.done[i] = 1;
-            s.xp += xp;
-            s.cur += xp;
-            s.last = new Date().toDateString();
+
+        function complete(i){
+            if(s.done[i])return;
+            let bx;
+            if(quests[i].scaling)bx=quests[i].xp+(s.lv-1)*5;else bx=quests[i].xp;
             
-            if (s.cur >= s.need) {
-                s.cur -= s.need;
-                s.lv++;
-                s.need = Math.floor(100 * Math.pow(1.2, s.lv-1));
-                document.getElementById('newlv').textContent = s.lv;
+            const m=getM(s.streak),fx=Math.round(bx*m);
+            s.done[i]=1;s.xp+=fx;s.cur+=fx;s.last=new Date().toDateString();
+            
+            track();playS();
+            showN(`🎯 Quest Completed!`,`${quests[i].name} - +${fx} XP earned${m>1?` (${m}x bonus!)`:''}`);
+            
+            if(s.cur>=s.need){
+                s.cur-=s.need;s.lv++;s.need=Math.floor(100*Math.pow(1.2,s.lv-1));
+                document.getElementById('newlv').textContent=s.lv;
                 document.getElementById('celebrate').classList.add('show');
+                showN(`🎉 Level Up!`,`Congratulations! You reached Level ${s.lv}!`);
             }
             
-            if (s.done.every(x => x)) s.streak++;
-            save();
-            update();
+            if(s.done.every(x=>x)){
+                s.streak++;
+                showN(`⭐ Perfect Day!`,`All quests completed! Streak: ${s.streak} days`);
+                
+                if(s.streak%7===0){
+                    s.perfectWeeks=Math.floor(s.streak/7);
+                    const wb=getB(s.perfectWeeks);
+                    if(wb>0){
+                        s.xp+=wb;s.cur+=wb;s.totalBonusXP+=wb;
+                        setTimeout(()=>{
+                            showN(`🎉 Perfect Week Bonus!`,`+${wb} XP - You've completed ${s.perfectWeeks} perfect week(s)!`);
+                        },1000);
+                    }
+                }
+            }
+            
+            save();update();
+            if(typeof window.checkAchievements==='function')window.checkAchievements();
         }
-        
-        function hide() { document.getElementById('celebrate').classList.remove('show'); }
-        
-        function reset() {
-            if (confirm('Reset all progress?')) {
-                localStorage.removeItem('bq');
-                s = {lv:1,xp:0,cur:0,need:100,streak:0,done:new Array(quests.length).fill(0),last:null};
-                update();
+
+        function hide(){document.getElementById('celebrate').classList.remove('show');}
+        function reset(){if(confirm('Reset all progress?')){localStorage.removeItem('bq');s={lv:1,xp:0,cur:0,need:100,streak:0,done:new Array(quests.length).fill(0),last:null,perfectWeeks:0,totalBonusXP:0};update();}}
+
+        function reqN(){if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();}
+
+        function apply(){const st=JSON.parse(localStorage.getItem('questSettings')||'{}');if(st.theme)document.documentElement.setAttribute('data-theme',st.theme);}
+
+        function playS(){
+            const st=JSON.parse(localStorage.getItem('questSettings')||'{}');
+            if(!st.celebrationSounds)return;
+            try{
+                const ctx=new(window.AudioContext||window.webkitAudioContext)(),osc=ctx.createOscillator(),gain=ctx.createGain();
+                osc.connect(gain);gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(800,ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200,ctx.currentTime+0.1);
+                gain.gain.setValueAtTime(0.3,ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.3);
+                osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3);
+            }catch(e){}
+        }
+
+        function showN(t,b,o={}){
+            const st=JSON.parse(localStorage.getItem('questSettings')||'{}');
+            if(!st.achievementNotifications)return;
+            if('Notification'in window&&Notification.permission==='granted'){
+                const n=new Notification(t,{body:b,icon:'/favicon.ico',badge:'/favicon.ico',...o});
+                n.onclick=()=>{window.focus();n.close();};
+                setTimeout(()=>n.close(),5000);
             }
         }
-        
-        loadQuests();
-        load();
-        update();
+
+        apply();loadQ();load();update();reqN();
     </script>
 </body>
 </html>
