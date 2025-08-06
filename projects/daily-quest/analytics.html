@@ -84,24 +84,30 @@
         let ad={};
         function ld(){
             const dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}'),ch=JSON.parse(localStorage.getItem('completionHistory')||'[]'),u=JSON.parse(localStorage.getItem('userData')||'{}');
+            console.log('Analytics Data Loaded:', {dailyProgress: dp, completionHistory: ch, userData: u}); // Debug
             ad={dailyProgress:dp,completionHistory:ch,userData:u};
         }
-        function cs(){
+        function calculateStreak(){
             const dp=ad.dailyProgress;let ts=0,cs=0,ct=0;
             const ds=Object.keys(dp).sort().reverse();
+            console.log('Streak calculation - dates:', ds); // Debug
             for(const d of ds){
                 const data=dp[d];
                 if(data.questsCompleted>=data.totalQuests){ts++;if(ct===0)cs++;}else{if(ct===0)break;}ct++;
             }
-            return{totalStreak:ts,currentStreak:cs};
+            const result = {totalStreak:ts,currentStreak:cs};
+            console.log('Streak Results:', result); // Debug
+            return result;
         }
         function ca(){
             const dp=ad.dailyProgress;let tx=0,td=0,pd=0,cr=0;
             Object.values(dp).forEach(d=>{tx+=d.xpEarned||0;td++;if(d.questsCompleted>=d.totalQuests)pd++;cr+=(d.questsCompleted/d.totalQuests);});
-            return{totalXP:tx,totalDays:td,perfectDays:pd,avgXP:td>0?Math.round(tx/td):0,completionRate:td>0?Math.round((cr/td)*100):0};
+            const result = {totalXP:tx,totalDays:td,perfectDays:pd,avgXP:td>0?Math.round(tx/td):0,completionRate:td>0?Math.round((cr/td)*100):0};
+            console.log('Analytics Calculations:', result); // Debug
+            return result;
         }
         function us(){
-            const{totalStreak:ts,currentStreak:cs}=cs(),{totalXP:tx,avgXP:ax,completionRate:cr,perfectDays:pd}=ca();
+            const{totalStreak:ts,currentStreak:cs}=calculateStreak(),{totalXP:tx,avgXP:ax,completionRate:cr,perfectDays:pd}=ca();
             document.getElementById('ts').textContent=ts;document.getElementById('cs').textContent=cs;
             document.getElementById('tx').textContent=tx;document.getElementById('ax').textContent=ax;
             document.getElementById('cr').textContent=cr+'%';document.getElementById('pd').textContent=pd;
@@ -109,7 +115,9 @@
         function gh(){
             const hm=document.getElementById('hm');hm.innerHTML='';
             const ha=Array(24).fill(0);
+            console.log('Heatmap - completion history length:', ad.completionHistory.length); // Debug
             ad.completionHistory.forEach(c=>{const h=new Date(c.timestamp).getHours();ha[h]++;});
+            console.log('Hourly activity data:', ha); // Debug
             const mh=Math.max(...ha,1);
             for(let h=0;h<24;h++){
                 const c=document.createElement('div');c.className='hc';
@@ -129,10 +137,11 @@
         }
         function gt(){
             const tc=document.getElementById('trends');tc.innerHTML='';
-            const ld=Object.entries(ad.dailyProgress).sort(([a],[b])=>new Date(b)-new Date(a)).slice(0,7);
-            const px=ld.reduce((s,([,d])=>s+(d.xpEarned||0),0));const ax=Math.round(px/7);
-            const cr=ld.reduce((s,[,d])=>s+(d.questsCompleted/d.totalQuests),0)/7*100;
-            tc.innerHTML=`<div class="trend"><span class="tl">7-Tage Durchschn. XP</span><span class="tv">${ax}</span></div><div class="progress"><div class="pf" style="width:${Math.min(ax/50*100,100)}%"></div></div><div class="trend"><span class="tl">7-Tage Abschlussrate</span><span class="tv">${Math.round(cr)}%</span></div><div class="progress"><div class="pf" style="width:${cr}%"></div></div>`;
+            const lastDays=Object.entries(ad.dailyProgress).sort(([a],[b])=>new Date(b)-new Date(a)).slice(0,7);
+            const totalXP=lastDays.reduce((sum,entry)=>sum+(entry[1].xpEarned||0),0);
+            const avgXP=Math.round(totalXP/7);
+            const completionRate=lastDays.reduce((sum,entry)=>sum+(entry[1].questsCompleted/entry[1].totalQuests),0)/7*100;
+            tc.innerHTML=`<div class="trend"><span class="tl">7-Tage Durchschn. XP</span><span class="tv">${avgXP}</span></div><div class="progress"><div class="pf" style="width:${Math.min(avgXP/50*100,100)}%"></div></div><div class="trend"><span class="tl">7-Tage Abschlussrate</span><span class="tv">${Math.round(completionRate)}%</span></div><div class="progress"><div class="pf" style="width:${completionRate}%"></div></div>`;
         }
         function gi(){
             const ic=document.getElementById('il');ic.innerHTML='';

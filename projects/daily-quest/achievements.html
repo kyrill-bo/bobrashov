@@ -2,16 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport            getStats(){
-                const u=JSON.parse(localStorage.getItem('userData')||'{}');
-                const c=JSON.parse(localStorage.getItem('bq-custom')||'[]');
-                const h=JSON.parse(localStorage.getItem('completionHistory')||'[]');
-                return{
-                    level:u.level||1,totalXP:u.totalXP||0,currentStreak:u.streak||0,questsCompleted:h.length,customQuests:c.length,
-                    perfectDays:this.countPerfect(),earlyCompletions:this.countEarly(),lateCompletions:this.countLate(),
-                    weekendQuests:this.countWeekend(),comebacks:parseInt(localStorage.getItem('comebacks')||'0')
-                };
-            }"width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erfolge - Daily Quest System</title>
     <style>
         :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
@@ -100,8 +91,9 @@
             save(){localStorage.setItem('achievements',JSON.stringify(this.achs));}
             getStats(){
                 const u=JSON.parse(localStorage.getItem('userData')||'{}');
-                const c=JSON.parse(localStorage.getItem('customQuests')||'[]');
+                const c=JSON.parse(localStorage.getItem('bq-custom')||'[]');
                 const h=JSON.parse(localStorage.getItem('completionHistory')||'[]');
+                console.log('Achievement Stats Loading:', {userData: u, customQuests: c, completionHistory: h}); // Debug
                 return{
                     level:u.level||1,totalXP:u.totalXP||0,currentStreak:u.streak||0,questsCompleted:h.length,customQuests:c.length,
                     perfectDays:this.countPerfect(),earlyCompletions:this.countEarly(),lateCompletions:this.countLate(),
