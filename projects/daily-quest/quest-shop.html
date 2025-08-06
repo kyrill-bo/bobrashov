@@ -3,145 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quest Shop - Bobrashov</title>
+    <title>Quest Shop</title>
     <style>
-        :root{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
-        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
-        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
-        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
-        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1200px;margin:0 auto;line-height:1.6;transition:all .3s}
-        .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
-        .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-        .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
-        .n a:hover{color:var(--p);opacity:1}
-        .info{display:flex;justify-content:center;gap:2rem;margin-bottom:2rem;flex-wrap:wrap}
-        .ib{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;min-width:150px}
-        .iv{font-size:1.5rem;font-weight:bold;color:var(--p);margin-bottom:.3rem}
-        .il{font-size:.8rem;opacity:.8}
-        .tabs{display:flex;justify-content:center;margin-bottom:2rem;overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:10px}
-        .tab{padding:.8rem 1.5rem;cursor:pointer;border:none;background:transparent;color:var(--txt);transition:all .3s;white-space:nowrap}
-        .tab:hover{background:var(--bg)}.tab.active{background:var(--p);color:var(--card)}
-        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem}
-        .item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;transition:all .3s;position:relative}
-        .item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
-        .item.locked{opacity:.6;background:var(--bg)}
-        .ih{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
-        .it{font-size:1.1rem;font-weight:bold;margin-bottom:.3rem;color:var(--p)}
-        .ic{font-size:1rem;color:var(--s);font-weight:bold}
-        .id{font-size:.9rem;opacity:.8;margin-bottom:1rem;line-height:1.4}
-        .ird{font-size:.8rem;color:var(--p);margin-bottom:.5rem}
-        .icn{font-size:.7rem;color:var(--s);margin-bottom:1rem}
-        .btn{padding:.6rem 1.2rem;background:var(--p);color:var(--card);border:none;border-radius:6px;cursor:pointer;font-size:.9rem;transition:all .3s}
-        .btn:hover{background:var(--s)}.btn:disabled{background:var(--border);color:var(--txt);opacity:.6;cursor:not-allowed}
-        .badge{position:absolute;top:10px;right:10px;background:var(--s);color:var(--bg);padding:.2rem .6rem;border-radius:12px;font-size:.7rem;font-weight:bold}
-        .sub{margin-top:2rem;background:var(--card);border:2px solid var(--p);border-radius:10px;padding:2rem;text-align:center}
-        .sth{font-size:1.3rem;color:var(--p);margin-bottom:1rem}
-        .std{margin-bottom:1.5rem;opacity:.8}
-        .stp{font-size:1.2rem;color:var(--s);margin-bottom:1rem}
-        .msg{position:fixed;top:20px;right:20px;background:var(--p);color:var(--card);padding:1rem 1.5rem;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:1000;transform:translateX(100%);transition:transform .3s}
-        .msg.show{transform:translateX(0)}
-        .msg.error{background:#f44336}
-        @media(max-width:768px){body{padding:1rem}.grid{grid-template-columns:1fr}.info{flex-direction:column;align-items:center}.tabs{flex-direction:column}.tab{text-align:center}}
-    </style>
-</head>
-<body>
-    <nav class="n">
-        <a href="daily-quests.html">🎯 Daily Quests</a>
-        <a href="achievements.html">🏆 Achievements</a>
-        <a href="calendar.html">📅 Calendar</a>
-        <a href="analytics.html">📊 Analytics</a>
-        <a href="reward-editor.html">🏅 Manage Rewards</a>
-    </nav>
-    <nav class="n">
-        <a href="settings.html">⚙️ Settings</a>
-        <a href="../../index.html">🏠 Home</a>
-    </nav>
+        :root {
+            --p: #4CAF50; --s: #FFC107; --bg: #f5f5f5; --card: #fff; --txt: #333; --border: #ddd;
+            --red: #f44336; --green: #4CAF50;
+        }
+        [data-theme="dark"] { --p: #66BB6A; --s: #FFD54F; --bg: #121212; --card: #1e1e1e; --txt: #fff; --border: #333; }
+        [data-theme="minimal"] { --p: #000; --s: #666; --bg: #fff; --card: #fafafa; --txt: #000; --border: #eee; }
+        [data-theme="ocean"] { --p: #2196F3; --s: #00BCD4; --bg: #E3F2FD; --card: #fff; --txt: #0D47A1; --border: #BBDEFB; }
+        [data-theme="forest"] { --p: #388E3C; --s: #8BC34A; --bg: #E8F5E8; --card: #fff; --txt: #1B5E20; --border: #C8E6C9; }
 
-    <header class="h">
-        <h1 class="t">🛒 Quest Shop</h1>
-        <p class="st">Spend your hard-earned XP</p>
-    </header>
-    <div class="info">
-        <div class="ib"><div class="iv" id="xp">0</div><div class="il">Available XP</div></div>
-        <div class="ib"><div class="iv" id="tp">0</div><div class="il">Total Purchases</div></div>
-        <div class="ib"><div class="iv" id="sp">0</div><div class="il">XP Spent</div></div>
-    </div>
-    <div class="tabs">
-        <button class="tab active" data-cat="instant">⚡ Instant</button>
-        <button class="tab" data-cat="daily">📅 Daily</button>
-        <button class="tab" data-cat="weekly">📆 Weekly</button>
-        <button class="tab" data-cat="monthly">🗓️ Monthly</button>
-        <button class="tab" data-cat="subscription">💎 Premium</button>
-        <button class="tab" data-cat="vip">👑 VIP</button>
-    </div>
-    <div class="grid" id="si"></div>
-    <div class="sub">
-        <h3 class="sth">💎 Premium Membership</h3>
-        <p class="std">Unlock exclusive rewards, remove cooldowns, and get bonus XP!</p>
-        <div class="stp">500 XP/month</div>
-        <button class="btn" id="sb">Subscribe Now</button>
-    </div>
-    <div class="msg" id="msg"></div>
-    <script>
-        let u={xp:0,purchases:[],subscription:{active:false,expiresAt:null},cooldowns:{}};
-        function at(){const s=JSON.parse(localStorage.getItem('questSettings')||'{}');if(s.theme)document.documentElement.setAttribute('data-theme',s.theme);}
-        function ld(){const qd=JSON.parse(localStorage.getItem('bq')||'{}');u.xp=qd.xp||0;const ud=JSON.parse(localStorage.getItem('userData')||'{}');if(ud.purchases)u.purchases=ud.purchases;if(ud.subscription)u.subscription=ud.subscription;if(ud.cooldowns)u.cooldowns=ud.cooldowns;}
-        function sd(){const qd=JSON.parse(localStorage.getItem('bq')||'{}');qd.xp=u.xp;localStorage.setItem('bq',JSON.stringify(qd));localStorage.setItem('userData',JSON.stringify(u));}
-        function sm(t,er=false){const m=document.getElementById('msg');m.textContent=t;m.className=er?'msg error show':'msg show';setTimeout(()=>m.classList.remove('show'),3000);}
-        function cc(it){if(!it.cooldown)return false;const lp=u.cooldowns[it.id];return lp&&(Date.now()-lp)<it.cooldown;}
-        function cu(it){const req=it.unlockReq||{};return(req.xp||0)<=u.xp&&(!req.subscription||u.subscription.active);}
-        function ui(){document.getElementById('xp').textContent=u.xp;document.getElementById('tp').textContent=u.purchases.length;document.getElementById('sp').textContent=u.purchases.reduce((t,p)=>t+p.cost,0);}
-        function ri(cat){const c=document.getElementById('si'),is=JSON.parse(localStorage.getItem('bq-shop')||'[]').filter(i=>i.category===cat);c.innerHTML='';if(is.length===0){c.innerHTML='<div style="text-align:center;opacity:.6;padding:2rem;">No rewards in this category yet.<br><a href="reward-editor.html" style="color:var(--p);">Create some rewards first!</a></div>';return;}is.forEach(it=>{const ul=cu(it),oc=cc(it);const el=document.createElement('div');el.className='item';if(!ul)el.classList.add('locked');const cd=oc?`<div class="icn">⏰ Cooldown: ${Math.ceil(((u.cooldowns[it.id]||0)+it.cooldown-Date.now())/3600000)}h</div>`:'';el.innerHTML=`<div class="ih"><div><div class="it">${it.name}</div><div class="ird">${it.unlockReq?.xp?`Requires: ${it.unlockReq.xp} XP`:''}</div></div><div class="ic">${it.cost} XP</div></div><div class="id">${it.desc}</div>${cd}<button class="btn" ${!ul||oc||u.xp<it.cost?'disabled':''}>${u.xp<it.cost?'Insufficient XP':oc?'On Cooldown':ul?'Purchase':'Locked'}</button>`;if(cat==='subscription'&&!u.subscription.active)el.querySelector('.btn').innerHTML+=' <span class="badge">Premium Only</span>';c.appendChild(el);el.querySelector('.btn').addEventListener('click',()=>{if(ul&&!oc&&u.xp>=it.cost){u.xp-=it.cost;u.purchases.push({...it,purchasedAt:Date.now()});if(it.cooldown)u.cooldowns[it.id]=Date.now();sd();ui();ri(cat);sm(`Purchased: ${it.name}`);}});});}
-        function st(){document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(tb=>tb.classList.remove('active'));t.classList.add('active');ri(t.dataset.cat);});});}
-        document.getElementById('sb').addEventListener('click',()=>{if(u.xp>=500){if(u.subscription.active){sm('Subscription already active!','error');return;}u.xp-=500;u.subscription={active:true,expiresAt:Date.now()+2592000000};sd();ui();sm('Premium subscription activated!');}else{sm('Insufficient XP for subscription!','error');}});
-        function init(){at();ld();ui();ri('instant');st();}
-        init();setInterval(()=>{if(u.subscription.active&&Date.now()>u.subscription.expiresAt){u.subscription.active=false;sd();sm('Premium subscription expired!','error');}},60000);
-    </script>
-</body>
-</html>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg); color: var(--txt); font-family: Georgia, serif;
+            padding: 2rem; max-width: 1200px; margin: 0 auto; line-height: 1.6; transition: all .3s;
+        }
+        .nav { text-align: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .nav a { color: var(--txt); text-decoration: none; margin: 0 1rem; font-size: .9rem; opacity: .8; transition: all .3s; }
+        .nav a:hover { color: var(--p); opacity: 1; }
+
+        .header { text-align: center; margin-bottom: 2rem; }
+        .title { font-size: 2.5rem; margin-bottom: .5rem; color: var(--p); }
+        .subtitle { opacity: .8; font-style: italic; }
+
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat { background: var(--card); border: 1px solid var(--border); padding: 1rem; text-align: center; border-radius: 8px; }
+        .stat-value { font-size: 1.5rem; color: var(--p); margin-bottom: .3rem; font-weight: bold; }
+        .stat-label { font-size: .8rem; opacity: .8; }
+
+        .category-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .tab { padding: .8rem 1.5rem; cursor: pointer; border: none; background: var(--card); color: var(--txt); transition: all .3s; border-radius: 8px; border: 1px solid var(--border); }
+        .tab:hover { background: var(--bg); }
+        .tab.active { background: var(--p); color: var(--card); border-color: var(--p); }
+
+        .category-info { text-align: center; margin-bottom: 2rem; padding: 1rem; background: var(--card); border-radius: 8px; border: 1px solid var(--border); }
+        .category-title { font-size: 1.5rem; color: var(--p); }
+        .category-desc { opacity: 0.8; }
+
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .shop-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; transition: all .3s; position: relative; display: flex; flex-direction: column; }
+        .shop-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+        .shop-item.locked, .shop-item.on-cooldown { opacity: .7; background: var(--bg); }
         
-        .purchased-badge{color:var(--green);font-size:.8rem;margin-left:.5rem}
-        .cooldown-badge{color:var(--s);font-size:.8rem;margin-left:.5rem}
-        .locked-badge{color:var(--red);font-size:.8rem;margin-left:.5rem}
-        
-        .empty{text-align:center;opacity:.6;padding:2rem}
-        .defaults{margin-bottom:2rem}
-        .default-item{background:var(--bg);border:1px solid var(--border);padding:1rem;margin-bottom:.5rem;cursor:pointer;border-radius:6px;transition:all .3s}
-        .default-item:hover{border-color:var(--p)}
-        
-        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
-        .stat{background:var(--card);border:1px solid var(--border);padding:1rem;text-align:center;border-radius:8px}
-        .stat-value{font-size:1.5rem;color:var(--p);margin-bottom:.3rem}
-        .stat-label{font-size:.8rem;opacity:.8}
-        
-        @media(max-width:600px){
-            body{padding:1rem}
-            .title{font-size:2rem}
-            .form-grid{grid-template-columns:1fr}
-            .shop-grid{grid-template-columns:1fr}
-            .category-tabs{flex-direction:column;align-items:center}
+        .shop-item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+        .shop-item-name { font-size: 1.2rem; font-weight: bold; color: var(--p); }
+        .shop-item-price { font-size: 1.1rem; color: var(--s); font-weight: bold; }
+        .shop-item-category { font-size: 0.8rem; opacity: 0.7; margin-bottom: 1rem; }
+        .shop-item-desc { font-size: 0.9rem; opacity: .8; margin-bottom: 1rem; flex-grow: 1; }
+        .shop-item-meta { font-size: 0.8rem; opacity: 0.7; margin-bottom: 1rem; }
+        .cooldown-info, .unlock-req { display: block; margin-top: 0.5rem; }
+
+        .btn { padding: .6rem 1.2rem; background: var(--p); color: var(--card); border: none; border-radius: 6px; cursor: pointer; font-size: .9rem; transition: all .3s; }
+        .btn:hover:not(:disabled) { background: var(--s); }
+        .btn:disabled { background: var(--border); color: var(--txt); opacity: .6; cursor: not-allowed; }
+
+        .locked-badge, .cooldown-badge { font-size: .8rem; margin-left: .5rem; padding: .2rem .5rem; border-radius: 10px; }
+        .locked-badge { background: var(--red); color: var(--card); }
+        .cooldown-badge { background: var(--s); color: var(--txt); }
+
+        .empty { text-align: center; opacity: .6; padding: 2rem; }
+
+        @media(max-width:768px) {
+            body { padding: 1rem; }
+            .shop-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-<body>
     <nav class="nav">
         <a href="daily-quests.html">🎯 Daily Quests</a>
-        <a href="calendar.html">📅 Calendar</a>
         <a href="achievements.html">🏆 Achievements</a>
+        <a href="calendar.html">📅 Calendar</a>
         <a href="reward-editor.html">🏅 Manage Rewards</a>
     </nav>
 
     <nav class="nav">
         <a href="settings.html">⚙️ Settings</a>
-        <a href="index.html">🏠 Home</a>
+        <a href="../../index.html">🏠 Home</a>
     </nav>
 
     <header class="header">
-        <h1 class="title">🛒 Enhanced Quest Shop</h1>
-        <p class="subtitle">Categorized rewards with smart features</p>
+        <h1 class="title">🛒 Quest Shop</h1>
+        <p class="subtitle">Spend your hard-earned XP on cool rewards!</p>
     </header>
 
     <div class="stats">
@@ -154,76 +98,28 @@
             <div class="stat-label">XP Spent</div>
         </div>
         <div class="stat">
-            <div class="stat-value" id="rewardsUnlocked">0</div>
-            <div class="stat-label">Rewards Unlocked</div>
+            <div class="stat-value" id="rewardsAvailable">0</div>
+            <div class="stat-label">Available Rewards</div>
         </div>
         <div class="stat">
-            <div class="stat-value" id="rewardsUsed">0</div>
-            <div class="stat-label">Rewards Used</div>
+            <div class="stat-value" id="rewardsPurchased">0</div>
+            <div class="stat-label">Rewards Purchased</div>
         </div>
     </div>
 
     <div class="category-tabs">
         <button class="tab active" data-category="all">🌟 All</button>
-        <button class="tab" data-category="instant">⚡ Instant (50-200 XP)</button>
-        <button class="tab" data-category="daily">📅 Daily (200-500 XP)</button>
-        <button class="tab" data-category="weekly">📍 Weekly (1000-2000 XP)</button>
-        <button class="tab" data-category="monthly">🎯 Monthly (5000+ XP)</button>
+        <button class="tab" data-category="instant">⚡ Instant</button>
+        <button class="tab" data-category="daily">📅 Daily</button>
+        <button class="tab" data-category="weekly">📍 Weekly</button>
+        <button class="tab" data-category="monthly">🎯 Monthly</button>
         <button class="tab" data-category="subscription">🔄 Subscriptions</button>
-        <button class="tab" data-category="vip">👑 VIP Rewards</button>
+        <button class="tab" data-category="vip">👑 VIP</button>
     </div>
 
-    <div class="category-info" id="categoryInfo">
-        <div class="category-title">🌟 All Rewards</div>
-        <div class="category-desc">Browse all available rewards across categories</div>
-    </div>
+    <div class="category-info" id="categoryInfo"></div>
 
-    <section class="shop-grid" id="shopItems">
-        <!-- Shop items will be loaded here -->
-    </section>
-
-    <div class="editor">
-        <h3>➕ Add New Reward</h3>
-        <div class="form-row">
-            <label class="label">Reward Name</label>
-            <input type="text" class="input" id="rewardName" placeholder="Netflix for 1 month">
-        </div>
-        <div class="form-row">
-            <label class="label">Description</label>
-            <textarea class="textarea" id="rewardDesc" placeholder="Enjoy unlimited streaming..."></textarea>
-        </div>
-        <div class="form-grid">
-            <div>
-                <label class="label">XP Cost</label>
-                <input type="number" class="input" id="rewardCost" placeholder="1500">
-            </div>
-            <div>
-                <label class="label">Category</label>
-                <select class="select" id="rewardCategory">
-                    <option value="instant">Instant</option>
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="subscription">Subscription</option>
-                    <option value="vip">VIP</option>
-                </select>
-            </div>
-            <div>
-                <label class="label">Cooldown (days)</label>
-                <input type="number" class="input" id="rewardCooldown" placeholder="7" value="0">
-            </div>
-        </div>
-        <div class="form-row">
-            <label class="label">Unlock Requirement (optional)</label>
-            <input type="text" class="input" id="rewardUnlock" placeholder="Level 10, Streak 30, Achievement 'Dedicated'">
-        </div>
-        <button class="btn primary" onclick="addReward()">Add Reward</button>
-    </div>
-
-    <div class="defaults">
-        <h3>📋 Suggested Rewards by Category</h3>
-        <div id="defaultRewards"></div>
-    </div>
+    <section class="shop-grid" id="shopItems"></section>
 
     <script>
         let shopItems = [];
@@ -231,508 +127,182 @@
         let playerLevel = 1;
         let playerStreak = 0;
         let currentCategory = 'all';
-        let playerStats = {
-            totalSpent: 0,
-            rewardsUnlocked: 0,
-            rewardsUsed: 0
-        };
+        let playerStats = { totalSpent: 0, rewardsPurchased: 0 };
 
         const categoryInfo = {
-            all: {
-                title: "🌟 All Rewards",
-                desc: "Browse all available rewards across categories"
-            },
-            instant: {
-                title: "⚡ Instant Rewards (50-200 XP)",
-                desc: "Quick treats and small indulgences for immediate satisfaction"
-            },
-            daily: {
-                title: "📅 Daily Rewards (200-500 XP)",
-                desc: "End-of-day celebrations and personal treats"
-            },
-            weekly: {
-                title: "📍 Weekly Rewards (1000-2000 XP)",
-                desc: "Bigger rewards for consistent weekly progress"
-            },
-            monthly: {
-                title: "🎯 Monthly Rewards (5000+ XP)",
-                desc: "Major purchases and experiences for long-term dedication"
-            },
-            subscription: {
-                title: "🔄 Subscription Rewards",
-                desc: "Recurring services with ongoing cooldowns"
-            },
-            vip: {
-                title: "👑 VIP Rewards",
-                desc: "Exclusive rewards unlocked through achievements and milestones"
-            }
+            all: { title: "🌟 All Rewards", desc: "Browse all available rewards across categories" },
+            instant: { title: "⚡ Instant Rewards", desc: "Quick treats for immediate satisfaction" },
+            daily: { title: "📅 Daily Rewards", desc: "End-of-day celebrations and personal treats" },
+            weekly: { title: "📍 Weekly Rewards", desc: "Bigger rewards for consistent weekly progress" },
+            monthly: { title: "🎯 Monthly Rewards", desc: "Major purchases for long-term dedication" },
+            subscription: { title: "🔄 Subscription Rewards", desc: "Recurring services with ongoing cooldowns" },
+            vip: { title: "👑 VIP Rewards", desc: "Exclusive rewards unlocked through achievements" }
         };
 
-        const defaultRewards = {
-            instant: [
-                { name: "Favorite Snack", cost: 50, desc: "Treat yourself to your favorite snack", cooldown: 0 },
-                { name: "15 Min Break", cost: 75, desc: "Guilt-free relaxation time", cooldown: 0 },
-                { name: "Coffee/Tea Upgrade", cost: 100, desc: "Premium coffee or special tea", cooldown: 1 },
-                { name: "Music Discovery", cost: 150, desc: "Buy a new song or album", cooldown: 0 },
-                { name: "Quick Game Session", cost: 200, desc: "30 minutes of gaming", cooldown: 0 }
-            ],
-            daily: [
-                { name: "Favorite Meal", cost: 300, desc: "Order or cook your favorite dish", cooldown: 1 },
-                { name: "Movie Night", cost: 400, desc: "Watch a movie with snacks", cooldown: 0 },
-                { name: "Bath & Relaxation", cost: 250, desc: "Long relaxing bath or spa time", cooldown: 2 },
-                { name: "Social Time", cost: 350, desc: "Hang out with friends", cooldown: 0 },
-                { name: "Hobby Time", cost: 500, desc: "2 hours dedicated to your hobby", cooldown: 0 }
-            ],
-            weekly: [
-                { name: "Shopping Spree", cost: 1000, desc: "Guilt-free shopping within budget", cooldown: 7 },
-                { name: "Date Night", cost: 1500, desc: "Special evening out", cooldown: 7 },
-                { name: "Weekend Trip", cost: 2000, desc: "Short getaway or day trip", cooldown: 14 },
-                { name: "New Book/Game", cost: 800, desc: "Purchase something you've been wanting", cooldown: 7 },
-                { name: "Massage/Spa", cost: 1200, desc: "Professional relaxation treatment", cooldown: 14 }
-            ],
-            monthly: [
-                { name: "Major Purchase", cost: 5000, desc: "Something you've been saving for", cooldown: 30 },
-                { name: "Weekend Vacation", cost: 8000, desc: "2-3 day trip somewhere special", cooldown: 60 },
-                { name: "Course/Workshop", cost: 3000, desc: "Invest in learning something new", cooldown: 30 },
-                { name: "Tech Upgrade", cost: 6000, desc: "New gadget or device upgrade", cooldown: 90 },
-                { name: "Experience Gift", cost: 4000, desc: "Concert, show, or special event", cooldown: 30 }
-            ],
-            subscription: [
-                { name: "Netflix Premium", cost: 2000, desc: "1 month premium streaming", cooldown: 30 },
-                { name: "Spotify Premium", cost: 1500, desc: "1 month ad-free music", cooldown: 30 },
-                { name: "Gym Membership", cost: 3000, desc: "1 month fitness access", cooldown: 30 },
-                { name: "Adobe Creative", cost: 2500, desc: "1 month creative tools", cooldown: 30 },
-                { name: "Meal Kit Service", cost: 3500, desc: "1 month cooking convenience", cooldown: 30 }
-            ],
-            vip: [
-                { name: "Cheat Day Pass", cost: 1000, desc: "Guilt-free indulgence day", cooldown: 14, unlock: "Streak 14" },
-                { name: "Skip Workout", cost: 500, desc: "One-time exercise pass", cooldown: 7, unlock: "Level 10" },
-                { name: "Lazy Sunday", cost: 800, desc: "Complete relaxation day", cooldown: 21, unlock: "Perfect Week" },
-                { name: "VIP Treatment", cost: 5000, desc: "Ultimate luxury experience", cooldown: 90, unlock: "Level 25" },
-                { name: "Dream Purchase", cost: 15000, desc: "Something truly special", cooldown: 180, unlock: "Streak 100" }
-            ]
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme();
+            load();
+            updateCategoryInfo();
+            renderShop();
+            setupEventListeners();
+        });
 
         function applyTheme() {
             const settings = JSON.parse(localStorage.getItem('questSettings') || '{}');
-            if (settings.theme) {
-                document.documentElement.setAttribute('data-theme', settings.theme);
-            }
+            if (settings.theme) document.documentElement.setAttribute('data-theme', settings.theme);
         }
 
         function load() {
-            // Load shop items
-            let saved = localStorage.getItem('bq-shop');
-            if (saved) {
-                shopItems = JSON.parse(saved);
-            } else {
-                // Initialize with some default items from instant category
-                shopItems = defaultRewards.instant.slice(0, 3).map(item => ({
-                    ...item,
-                    category: 'instant',
-                    id: Date.now() + Math.random(),
-                    purchased: [],
-                    lastPurchased: null
-                }));
-                save();
-            }
-
-            // Load player stats
+            shopItems = JSON.parse(localStorage.getItem('bq-shop') || '[]');
             const userData = JSON.parse(localStorage.getItem('userData') || '{}');
             const questData = JSON.parse(localStorage.getItem('bq') || '{}');
             
-            playerXP = userData.totalXP || questData.xp || 0;
+            playerXP = questData.xp || 0;
             playerLevel = userData.level || questData.lv || 1;
-            playerStreak = userData.streak || questData.streak || 0;
+            playerStreak = userData.streak || 0;
 
-            // Load shop stats
-            const shopStats = JSON.parse(localStorage.getItem('shopStats') || '{}');
+            const savedStats = JSON.parse(localStorage.getItem('shopStats') || '{}');
             playerStats = {
-                totalSpent: shopStats.totalSpent || 0,
-                rewardsUnlocked: shopStats.rewardsUnlocked || 0,
-                rewardsUsed: shopStats.rewardsUsed || 0
+                totalSpent: savedStats.totalSpent || 0,
+                rewardsPurchased: savedStats.rewardsPurchased || 0
             };
-
             updateStats();
-            renderShop();
-            renderDefaults();
         }
 
         function save() {
-            localStorage.setItem('bq-shop', JSON.stringify(shopItems));
             localStorage.setItem('shopStats', JSON.stringify(playerStats));
+            const questData = JSON.parse(localStorage.getItem('bq') || '{}');
+            questData.xp = playerXP;
+            localStorage.setItem('bq', JSON.stringify(questData));
         }
 
         function updateStats() {
             document.getElementById('totalXP').textContent = playerXP;
             document.getElementById('totalSpent').textContent = playerStats.totalSpent;
-            document.getElementById('rewardsUnlocked').textContent = playerStats.rewardsUnlocked;
-            document.getElementById('rewardsUsed').textContent = playerStats.rewardsUsed;
+            document.getElementById('rewardsAvailable').textContent = shopItems.length;
+            document.getElementById('rewardsPurchased').textContent = playerStats.rewardsPurchased;
         }
 
         function checkUnlockRequirement(requirement) {
             if (!requirement) return true;
-
-            if (requirement.includes('Level')) {
-                const reqLevel = parseInt(requirement.match(/Level (\d+)/)[1]);
-                return playerLevel >= reqLevel;
-            }
-            
-            if (requirement.includes('Streak')) {
-                const reqStreak = parseInt(requirement.match(/Streak (\d+)/)[1]);
-                return playerStreak >= reqStreak;
-            }
-            
-            // Check achievements
-            if (requirement.includes('Achievement')) {
-                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-                const achievements = userData.achievements || [];
-                return achievements.some(ach => requirement.includes(ach.name));
-            }
-            
-            if (requirement.includes('Perfect Week')) {
-                const questData = JSON.parse(localStorage.getItem('bq') || '{}');
-                return (questData.perfectWeeks || 0) > 0;
-            }
-
-            return true;
+            const reqLevel = (requirement.match(/Level (\d+)/) || [])[1];
+            const reqStreak = (requirement.match(/Streak (\d+)/) || [])[1];
+            // This is a simplified check. A full implementation would need to parse achievements.
+            return (!reqLevel || playerLevel >= parseInt(reqLevel)) && (!reqStreak || playerStreak >= parseInt(reqStreak));
         }
 
         function isOnCooldown(item) {
-            if (!item.cooldown || item.cooldown === 0) return false;
-            if (!item.lastPurchased) return false;
-
-            const lastPurchase = new Date(item.lastPurchased);
-            const now = new Date();
-            const daysDiff = Math.floor((now - lastPurchase) / (1000 * 60 * 60 * 24));
-            
-            return daysDiff < item.cooldown;
+            if (!item.cooldown || !item.lastPurchased) return false;
+            const cooldownMillis = item.cooldown * 24 * 60 * 60 * 1000;
+            return (Date.now() - new Date(item.lastPurchased).getTime()) < cooldownMillis;
         }
 
         function getCooldownDays(item) {
-            if (!item.lastPurchased) return 0;
-            
-            const lastPurchase = new Date(item.lastPurchased);
-            const now = new Date();
-            const daysDiff = Math.floor((now - lastPurchase) / (1000 * 60 * 60 * 24));
-            
-            return Math.max(0, item.cooldown - daysDiff);
+            if (!isOnCooldown(item)) return 0;
+            const cooldownMillis = item.cooldown * 24 * 60 * 60 * 1000;
+            const elapsed = Date.now() - new Date(item.lastPurchased).getTime();
+            return Math.ceil((cooldownMillis - elapsed) / (1000 * 60 * 60 * 24));
         }
 
         function renderShop() {
             const container = document.getElementById('shopItems');
+            const filtered = currentCategory === 'all' ? shopItems : shopItems.filter(i => i.category === currentCategory);
             
-            const filteredItems = currentCategory === 'all' 
-                ? shopItems 
-                : shopItems.filter(item => item.category === currentCategory);
-
-            if (filteredItems.length === 0) {
-                container.innerHTML = '<div class="empty">No rewards in this category yet. Add some below!</div>';
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="empty">No rewards in this category. <a href=\"reward-editor.html\">Add rewards</a> to see them here!</div>`;
                 return;
             }
 
-            container.innerHTML = filteredItems.map(item => {
-                const canAfford = playerXP >= item.cost;
+            container.innerHTML = filtered.map(item => {
                 const isUnlocked = checkUnlockRequirement(item.unlock);
                 const onCooldown = isOnCooldown(item);
+                const canAfford = playerXP >= item.cost;
                 const cooldownDays = getCooldownDays(item);
-                
-                let itemClass = 'shop-item';
+
+                let statusBadge = '';
                 let buttonText = 'Purchase';
                 let buttonDisabled = false;
-                let statusBadge = '';
 
                 if (!isUnlocked) {
-                    itemClass += ' locked';
-                    buttonText = 'Locked';
+                    statusBadge = `<span class="locked-badge">🔒 Locked</span>`;
+                    buttonText = `Locked (${item.unlock})`;
                     buttonDisabled = true;
-                    statusBadge = '<span class="locked-badge">🔒 Locked</span>';
                 } else if (onCooldown) {
-                    itemClass += ' on-cooldown';
-                    buttonText = `Cooldown (${cooldownDays}d)`;
+                    statusBadge = `<span class="cooldown-badge">⏰ Cooldown</span>`;
+                    buttonText = `On Cooldown (${cooldownDays}d)`;
                     buttonDisabled = true;
-                    statusBadge = '<span class="cooldown-badge">⏰ Cooldown</span>';
                 } else if (!canAfford) {
-                    buttonText = 'Cannot Afford';
+                    buttonText = 'Insufficient XP';
                     buttonDisabled = true;
                 }
 
                 return `
-                    <div class="${itemClass}">
+                    <div class="shop-item ${!isUnlocked ? 'locked' : ''} ${onCooldown ? 'on-cooldown' : ''}">
                         <div class="shop-item-header">
-                            <h3 class="shop-item-name">${item.name}${statusBadge}</h3>
+                            <h3 class="shop-item-name">${item.name} ${statusBadge}</h3>
                             <span class="shop-item-price">${item.cost} XP</span>
                         </div>
-                        <div class="shop-item-category">📂 ${item.category.charAt(0).toUpperCase() + item.category.slice(1)}</div>
-                        <div class="shop-item-desc">${item.desc}</div>
+                        <div class="shop-item-category">📂 ${item.category}</div>
+                        <p class="shop-item-desc">${item.desc}</p>
                         <div class="shop-item-meta">
-                            ${item.cooldown > 0 ? `<span class="cooldown-info">⏰ ${item.cooldown} day cooldown</span>` : '<span>✨ No cooldown</span>'}
-                            ${item.unlock ? `<span class="unlock-req">🔐 ${item.unlock}</span>` : ''}
+                            ${item.cooldown ? `<span class="cooldown-info">⏰ ${item.cooldown} day cooldown</span>` : ''}
+                            ${item.unlock ? `<span class="unlock-req">🔐 Requires: ${item.unlock}</span>` : ''}
                         </div>
-                        <div style="display: flex; gap: 0.5rem;">
+                        <div style="margin-top: auto;">
                             <button class="btn buy" onclick="buyItem('${item.id}')" ${buttonDisabled ? 'disabled' : ''}>${buttonText}</button>
-                            <button class="btn" onclick="deleteItem('${item.id}')" style="border-color: var(--red); color: var(--red);">Delete</button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function renderDefaults() {
-            const container = document.getElementById('defaultRewards');
-            
-            container.innerHTML = Object.entries(defaultRewards).map(([category, items]) => `
-                <div class="category-section">
-                    <h4 style="margin: 1rem 0; color: var(--p);">${categoryInfo[category].title}</h4>
-                    ${items.map(item => `
-                        <div class="default-item" onclick="addDefaultReward('${category}', ${JSON.stringify(item).replace(/"/g, '&quot;')})">
-                            <strong>${item.name}</strong> - ${item.cost} XP<br>
-                            <small style="opacity: 0.8;">${item.desc}</small>
-                        </div>
-                    `).join('')}
-                </div>
-            `).join('');
-        }
-
         function buyItem(id) {
-            const item = shopItems.find(i => i.id === id);
-            if (!item) return;
-
-            if (playerXP < item.cost) {
-                alert('Not enough XP!');
+            const itemIndex = shopItems.findIndex(i => i.id == id);
+            if (itemIndex === -1) return;
+            
+            const item = shopItems[itemIndex];
+            if (playerXP < item.cost || !checkUnlockRequirement(item.unlock) || isOnCooldown(item)) {
+                alert('Cannot purchase this item.');
                 return;
             }
 
-            if (!checkUnlockRequirement(item.unlock)) {
-                alert('This reward is locked!');
-                return;
-            }
-
-            if (isOnCooldown(item)) {
-                alert('This reward is on cooldown!');
-                return;
-            }
-
-            // Deduct XP
             playerXP -= item.cost;
-            
-            // Update stats
             playerStats.totalSpent += item.cost;
-            playerStats.rewardsUsed++;
-            
-            // Set cooldown
+            playerStats.rewardsPurchased++;
             item.lastPurchased = new Date().toISOString();
-            
-            // Add to purchase history
-            if (!item.purchased) item.purchased = [];
-            item.purchased.push({
-                date: new Date().toISOString(),
-                cost: item.cost
-            });
 
-            // Update userData
-            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-            userData.totalXP = playerXP;
-            localStorage.setItem('userData', JSON.stringify(userData));
-
-            // Update quest data too
-            const questData = JSON.parse(localStorage.getItem('bq') || '{}');
-            questData.xp = playerXP;
-            localStorage.setItem('bq', JSON.stringify(questData));
+            // We need to update the original array in localStorage
+            const allShopItems = JSON.parse(localStorage.getItem('bq-shop') || '[]');
+            const globalItemIndex = allShopItems.findIndex(i => i.id == id);
+            if (globalItemIndex !== -1) {
+                allShopItems[globalItemIndex] = item;
+                localStorage.setItem('bq-shop', JSON.stringify(allShopItems));
+            }
 
             save();
             updateStats();
             renderShop();
-
-            showNotification(`🎉 Reward Purchased!`, `Enjoy your ${item.name}! -${item.cost} XP`);
-        }
-
-        function deleteItem(id) {
-            if (confirm('Delete this reward?')) {
-                shopItems = shopItems.filter(item => item.id !== id);
-                save();
-                renderShop();
-            }
-        }
-
-        function addReward() {
-            const name = document.getElementById('rewardName').value;
-            const desc = document.getElementById('rewardDesc').value;
-            const cost = parseInt(document.getElementById('rewardCost').value);
-            const category = document.getElementById('rewardCategory').value;
-            const cooldown = parseInt(document.getElementById('rewardCooldown').value) || 0;
-            const unlock = document.getElementById('rewardUnlock').value;
-
-            if (!name || !desc || !cost) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            const newReward = {
-                id: Date.now() + Math.random(),
-                name,
-                desc,
-                cost,
-                category,
-                cooldown,
-                unlock: unlock || null,
-                purchased: [],
-                lastPurchased: null
-            };
-
-            shopItems.push(newReward);
-            playerStats.rewardsUnlocked++;
-            
-            save();
-            updateStats();
-            renderShop();
-
-            // Clear form
-            document.getElementById('rewardName').value = '';
-            document.getElementById('rewardDesc').value = '';
-            document.getElementById('rewardCost').value = '';
-            document.getElementById('rewardCooldown').value = '0';
-            document.getElementById('rewardUnlock').value = '';
-        }
-
-        function addDefaultReward(category, item) {
-            const newReward = {
-                id: Date.now() + Math.random(),
-                name: item.name,
-                desc: item.desc,
-                cost: item.cost,
-                category,
-                cooldown: item.cooldown || 0,
-                unlock: item.unlock || null,
-                purchased: [],
-                lastPurchased: null
-            };
-
-            shopItems.push(newReward);
-            playerStats.rewardsUnlocked++;
-            
-            save();
-            updateStats();
-            renderShop();
-        }
-
-        function showNotification(title, body) {
-            const settings = JSON.parse(localStorage.getItem('questSettings') || '{}');
-            if (!settings.achievementNotifications) return;
-            
-            if ('Notification' in window && Notification.permission === 'granted') {
-                const notification = new Notification(title, {
-                    body: body,
-                    icon: '/favicon.ico'
-                });
-                setTimeout(() => notification.close(), 5000);
-            }
+            alert(`Purchased ${item.name}!`);
         }
 
         function updateCategoryInfo() {
             const info = categoryInfo[currentCategory];
             document.getElementById('categoryInfo').innerHTML = `
                 <div class="category-title">${info.title}</div>
-                <div class="category-desc">${info.desc}</div>
-            `;
+                <div class="category-desc">${info.desc}</div>`;
         }
 
-        // Event listeners
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentCategory = tab.dataset.category;
-                updateCategoryInfo();
-                renderShop();
+        function setupEventListeners() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelector('.tab.active').classList.remove('active');
+                    tab.classList.add('active');
+                    currentCategory = tab.dataset.category;
+                    updateCategoryInfo();
+                    renderShop();
+                });
             });
-        });
-
-        // Initialize
-        applyTheme();
-        load();
-        updateCategoryInfo();
-
-            
-            // Load player XP from daily quests
-            let playerData = localStorage.getItem('bq');
-            if (playerData) {
-                let data = JSON.parse(playerData);
-                playerXP = data.xp || 0;
-            }
-            
-            updateDisplay();
-        
-        
-        function save() {
-            localStorage.setItem('bq-shop', JSON.stringify(shopItems));
         }
-        
-        function updatePlayerXP() {
-            let playerData = localStorage.getItem('bq');
-            if (playerData) {
-                let data = JSON.parse(playerData);
-                data.xp = playerXP;
-                localStorage.setItem('bq', JSON.stringify(data));
-            }
-        }
-        
-        function buyItem(id) {
-            let item = shopItems.find(i => i.id === id);
-            if (!item || item.purchased) return;
-            
-            if (playerXP < item.price) {
-                alert(`Not enough XP! You need ${item.price - playerXP} more XP.`);
-                return;
-            }
-            
-            if (confirm(`Buy "${item.name}" for ${item.price} XP?`)) {
-                playerXP -= item.price;
-                item.purchased = true;
-                updatePlayerXP();
-                save();
-                updateDisplay();
-                
-                // Show success message
-                alert(`🎉 You bought "${item.name}"! Enjoy your reward!`);
-            }
-        }
-        
-        function updateDisplay() {
-            // Update XP balance
-            document.getElementById('totalXP').textContent = playerXP;
-            
-            // Update shop items
-            let container = document.getElementById('shopItems');
-            if (shopItems.length === 0) {
-                container.innerHTML = '<div class="empty">No rewards available yet.<br><a href="reward-editor.html" style="color: #ccc;">Create some rewards first!</a></div>';
-                return;
-            }
-            
-            container.innerHTML = shopItems.map(item => {
-                let canAfford = playerXP >= item.price && !item.purchased;
-                let purchasedBadge = item.purchased ? '<span class="purchased-badge">✓ Purchased</span>' : '';
-                
-                return `
-                    <div class="shop-item ${item.purchased ? 'purchased' : ''}">
-                        <div class="shop-item-header">
-                            <span class="shop-item-name">${item.name}${purchasedBadge}</span>
-                            <span class="shop-item-price">${item.price} XP</span>
-                        </div>
-                        <div class="shop-item-category">${item.category}</div>
-                        <div class="shop-item-desc">${item.desc}</div>
-                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button class="btn buy" onclick="buyItem('${item.id}')" 
-                                ${!canAfford ? 'disabled' : ''}>
-                                ${item.purchased ? 'Purchased' : 'Buy'}
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        load();
     </script>
 </body>
 </html>
