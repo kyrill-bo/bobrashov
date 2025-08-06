@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest Shop - Bobrashov</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: #fff; font-family: Georgia, serif; padding: 2rem; max-width: 700px; margin: 0 auto; line-height: 1.6; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .title { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .subtitle { opacity: 0.8; font-style: italic; }
+        .nav { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #333; }
+        .nav a { color: #ccc; text-decoration: none; margin: 0 1rem; font-size: 0.9rem; }
+        .nav a:hover { color: #fff; }
+        .balance { text-align: center; background: #111; border: 1px solid #333; padding: 1.5rem; margin-bottom: 2rem; }
+        .balance-amount { font-size: 2.5rem; color: #ffd700; margin-bottom: 0.5rem; }
+        .balance-label { opacity: 0.8; }
+        .editor { background: #111; border: 1px solid #333; padding: 2rem; margin-bottom: 2rem; }
+        .form-row { margin-bottom: 1.5rem; }
+        .label { display: block; margin-bottom: 0.5rem; opacity: 0.9; }
+        .input, .textarea { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 0.7rem; font-family: inherit; }
+        .input:focus, .textarea:focus { outline: none; border-color: #666; }
+        .textarea { height: 80px; resize: vertical; }
+        .form-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
+        .btn { background: transparent; border: 1px solid #666; color: #fff; padding: 0.7rem 1.2rem; cursor: pointer; font-family: inherit; }
+        .btn:hover { background: #333; }
+        .btn.primary { background: #333; border-color: #999; }
+        .btn.buy { background: #1a4a1a; border-color: #4a8; color: #8f8; }
+        .btn.buy:hover { background: #2a5a2a; }
+        .btn.buy:disabled { background: #333; border-color: #666; color: #666; cursor: not-allowed; }
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .shop-item { background: #111; border: 1px solid #333; padding: 1.5rem; }
+        .shop-item.purchased { opacity: 0.6; border-color: #4a8; }
+        .shop-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .shop-item-name { font-size: 1.2rem; }
+        .shop-item-price { background: #333; padding: 0.3rem 0.6rem; font-size: 0.9rem; color: #ffd700; }
+        .shop-item-desc { opacity: 0.8; font-size: 0.9rem; margin-bottom: 1rem; }
+        .shop-item-category { opacity: 0.6; font-size: 0.8rem; margin-bottom: 1rem; }
+        .btn-small { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+        .btn-danger { border-color: #644; color: #faa; }
+        .btn-danger:hover { background: #422; }
+        .empty { text-align: center; opacity: 0.6; padding: 2rem; }
+        .defaults { margin-bottom: 2rem; }
+        .default-item { background: #0a0a0a; border: 1px solid #2a2a2a; padding: 1rem; margin-bottom: 0.5rem; cursor: pointer; }
+        .default-item:hover { border-color: #444; }
+        .purchased-badge { color: #4a8; font-size: 0.8rem; margin-left: 0.5rem; }
+        @media (max-width: 600px) { body { padding: 1rem; } .title { font-size: 2rem; } .form-grid { grid-template-columns: 1fr; } .shop-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="daily-quests.html">Daily Quests</a>
+        <a href="quest-editor.html">Quest Editor</a>
+        <a href="reward-editor.html">Manage Rewards</a>
+        <a href="index.html">Home</a>
+    </nav>
+
+    <header class="header">
+        <h1 class="title">Quest Shop</h1>
+        <p class="subtitle">Spend your hard-earned XP</p>
+    </header>
+
+    <section class="balance">
+        <div class="balance-amount" id="totalXP">0</div>
+        <div class="balance-label">Available XP</div>
+    </section>
+
+    <section class="shop-grid" id="shopItems">
+        <!-- Shop items will be loaded here -->
+    </section>
+
+    <script>
+        let shopItems = [];
+        let playerXP = 0;
+        
+        function load() {
+            // Load shop items
+            let saved = localStorage.getItem('bq-shop');
+            if (saved) shopItems = JSON.parse(saved);
+            
+            // Load player XP from daily quests
+            let playerData = localStorage.getItem('bq');
+            if (playerData) {
+                let data = JSON.parse(playerData);
+                playerXP = data.xp || 0;
+            }
+            
+            updateDisplay();
+        }
+        
+        function save() {
+            localStorage.setItem('bq-shop', JSON.stringify(shopItems));
+        }
+        
+        function updatePlayerXP() {
+            let playerData = localStorage.getItem('bq');
+            if (playerData) {
+                let data = JSON.parse(playerData);
+                data.xp = playerXP;
+                localStorage.setItem('bq', JSON.stringify(data));
+            }
+        }
+        
+        function buyItem(id) {
+            let item = shopItems.find(i => i.id === id);
+            if (!item || item.purchased) return;
+            
+            if (playerXP < item.price) {
+                alert(`Not enough XP! You need ${item.price - playerXP} more XP.`);
+                return;
+            }
+            
+            if (confirm(`Buy "${item.name}" for ${item.price} XP?`)) {
+                playerXP -= item.price;
+                item.purchased = true;
+                updatePlayerXP();
+                save();
+                updateDisplay();
+                
+                // Show success message
+                alert(`🎉 You bought "${item.name}"! Enjoy your reward!`);
+            }
+        }
+        
+        function updateDisplay() {
+            // Update XP balance
+            document.getElementById('totalXP').textContent = playerXP;
+            
+            // Update shop items
+            let container = document.getElementById('shopItems');
+            if (shopItems.length === 0) {
+                container.innerHTML = '<div class="empty">No rewards available yet.<br><a href="reward-editor.html" style="color: #ccc;">Create some rewards first!</a></div>';
+                return;
+            }
+            
+            container.innerHTML = shopItems.map(item => {
+                let canAfford = playerXP >= item.price && !item.purchased;
+                let purchasedBadge = item.purchased ? '<span class="purchased-badge">✓ Purchased</span>' : '';
+                
+                return `
+                    <div class="shop-item ${item.purchased ? 'purchased' : ''}">
+                        <div class="shop-item-header">
+                            <span class="shop-item-name">${item.name}${purchasedBadge}</span>
+                            <span class="shop-item-price">${item.price} XP</span>
+                        </div>
+                        <div class="shop-item-category">${item.category}</div>
+                        <div class="shop-item-desc">${item.desc}</div>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button class="btn buy" onclick="buyItem(${item.id})" 
+                                ${!canAfford ? 'disabled' : ''}>
+                                ${item.purchased ? 'Purchased' : 'Buy'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        load();
+    </script>
+</body>
+</html>

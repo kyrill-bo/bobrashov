@@ -44,6 +44,8 @@
 <body>
     <nav class="nav">
         <a href="daily-quests.html">← Back to Quests</a>
+        <a href="quest-shop.html">Quest Shop</a>
+        <a href="reward-editor.html">Reward Editor</a>
         <a href="index.html">Home</a>
     </nav>
 
@@ -54,8 +56,8 @@
 
     <section class="defaults">
         <h2 style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem;">Quick Templates</h2>
-        <div class="default-quest" onclick="useTemplate('Physical Training', '15 Push-ups', 50, 'Strengthen your body, strengthen your mind.')">
-            <strong>Physical Training</strong> • 15 Push-ups • +50 XP
+        <div class="default-quest" onclick="useTemplate('Physical Training', 'Push-ups', 50, 'Strengthen your body, strengthen your mind.', true, 15, 3)">
+            <strong>Physical Training</strong> • Push-ups • +50 XP • 📈 Scaling
         </div>
         <div class="default-quest" onclick="useTemplate('Mental Focus', '20 Min Reading', 30, 'Feed your mind with knowledge.')">
             <strong>Mental Focus</strong> • 20 Min Reading • +30 XP
@@ -91,6 +93,27 @@
             </div>
         </div>
         <div class="form-row">
+            <label class="label">
+                <input type="checkbox" id="questScaling" style="margin-right: 0.5rem;">
+                Enable Scaling (increases with level)
+            </label>
+        </div>
+        <div class="form-row" id="scalingOptions" style="display: none;">
+            <div class="form-grid">
+                <div>
+                    <label class="label">Base Amount (starting value)</label>
+                    <input type="number" class="input" id="questBaseAmount" value="15" min="1">
+                </div>
+                <div>
+                    <label class="label">Increase per Level</label>
+                    <input type="number" class="input" id="questIncrement" value="3" min="1" max="10">
+                </div>
+            </div>
+            <small style="opacity: 0.7; font-size: 0.8rem; margin-top: 0.5rem; display: block;">
+                Example: 15 push-ups at level 1, then +3 per level (18, 21, 24...)
+            </small>
+        </div>
+        <div class="form-row">
             <button class="btn primary" onclick="addQuest()">Add Quest</button>
             <button class="btn" onclick="clearForm()" id="clearBtn">Clear</button>
         </div>
@@ -120,6 +143,9 @@
             let desc = document.getElementById('questDesc').value.trim();
             let target = document.getElementById('questTarget').value.trim();
             let xp = parseInt(document.getElementById('questXP').value) || 25;
+            let scaling = document.getElementById('questScaling').checked;
+            let baseAmount = parseInt(document.getElementById('questBaseAmount').value) || 15;
+            let increment = parseInt(document.getElementById('questIncrement').value) || 3;
             
             if (!name || !target) {
                 alert('Please fill in quest name and target');
@@ -135,7 +161,10 @@
                         name: name,
                         desc: desc || 'Complete this daily challenge.',
                         target: target,
-                        xp: xp
+                        xp: xp,
+                        scaling: scaling,
+                        baseAmount: baseAmount,
+                        increment: increment
                     };
                 }
                 editingQuestId = null;
@@ -147,7 +176,10 @@
                     name: name,
                     desc: desc || 'Complete this daily challenge.',
                     target: target,
-                    xp: xp
+                    xp: xp,
+                    scaling: scaling,
+                    baseAmount: baseAmount,
+                    increment: increment
                 };
                 customQuests.push(quest);
             }
@@ -172,6 +204,10 @@
                 document.getElementById('questDesc').value = quest.desc;
                 document.getElementById('questTarget').value = quest.target;
                 document.getElementById('questXP').value = quest.xp;
+                document.getElementById('questScaling').checked = quest.scaling || false;
+                document.getElementById('questBaseAmount').value = quest.baseAmount || 15;
+                document.getElementById('questIncrement').value = quest.increment || 3;
+                toggleScalingOptions();
                 editingQuestId = id;
                 document.querySelector('.btn.primary').textContent = 'Update Quest';
                 document.getElementById('clearBtn').textContent = 'Cancel';
@@ -179,12 +215,16 @@
             }
         }
         
-        function useTemplate(name, target, xp, desc) {
+        function useTemplate(name, target, xp, desc, scaling = false, baseAmount = 15, increment = 3) {
             clearForm();
             document.getElementById('questName').value = name;
             document.getElementById('questDesc').value = desc;
             document.getElementById('questTarget').value = target;
             document.getElementById('questXP').value = xp;
+            document.getElementById('questScaling').checked = scaling;
+            document.getElementById('questBaseAmount').value = baseAmount;
+            document.getElementById('questIncrement').value = increment;
+            toggleScalingOptions();
         }
         
         function clearForm() {
@@ -192,9 +232,19 @@
             document.getElementById('questDesc').value = '';
             document.getElementById('questTarget').value = '';
             document.getElementById('questXP').value = '25';
+            document.getElementById('questScaling').checked = false;
+            document.getElementById('questBaseAmount').value = '15';
+            document.getElementById('questIncrement').value = '3';
+            toggleScalingOptions();
             editingQuestId = null;
             document.querySelector('.btn.primary').textContent = 'Add Quest';
             document.getElementById('clearBtn').textContent = 'Clear';
+        }
+        
+        function toggleScalingOptions() {
+            let scaling = document.getElementById('questScaling').checked;
+            let options = document.getElementById('scalingOptions');
+            options.style.display = scaling ? 'block' : 'none';
         }
         
         function updateList() {
@@ -204,23 +254,32 @@
                 return;
             }
             
-            list.innerHTML = customQuests.map(quest => `
-                <div class="quest-item">
-                    <div class="quest-item-header">
-                        <span class="quest-name">${quest.name}</span>
-                        <span class="quest-xp">+${quest.xp} XP</span>
+            list.innerHTML = customQuests.map(quest => {
+                let scalingInfo = quest.scaling ? 
+                    `<div style="opacity: 0.6; font-size: 0.8rem; margin-top: 0.3rem;">📈 Scaling: ${quest.baseAmount || 15} + ${quest.increment || 3}/level</div>` : '';
+                
+                return `
+                    <div class="quest-item">
+                        <div class="quest-item-header">
+                            <span class="quest-name">${quest.name}</span>
+                            <span class="quest-xp">+${quest.xp} XP</span>
+                        </div>
+                        <div class="quest-desc">${quest.desc}</div>
+                        <div class="quest-target">Target: ${quest.target}</div>
+                        ${scalingInfo}
+                        <div class="quest-actions" style="margin-top: 0.5rem;">
+                            <button class="btn btn-small" onclick="editQuest(${quest.id})">Edit</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteQuest(${quest.id})">Delete</button>
+                        </div>
                     </div>
-                    <div class="quest-desc">${quest.desc}</div>
-                    <div class="quest-target">Target: ${quest.target}</div>
-                    <div class="quest-actions" style="margin-top: 0.5rem;">
-                        <button class="btn btn-small" onclick="editQuest(${quest.id})">Edit</button>
-                        <button class="btn btn-small btn-danger" onclick="deleteQuest(${quest.id})">Delete</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         load();
+        
+        // Add event listener for scaling checkbox
+        document.getElementById('questScaling').addEventListener('change', toggleScalingOptions);
     </script>
 </body>
 </html>

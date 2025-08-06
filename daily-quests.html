@@ -40,6 +40,8 @@
 <body>
     <nav class="nav">
         <a href="quest-editor.html">Quest Editor</a>
+        <a href="quest-shop.html">Quest Shop</a>
+        <a href="reward-editor.html">Reward Editor</a>
         <a href="index.html">Home</a>
     </nav>
 
@@ -96,9 +98,9 @@
             if (!custom) {
                 // Create default quests as custom quests on first run
                 let defaults = [
-                    {name:'Physical Training',target:'Push-ups',xp:50,desc:'Daily physical exercise'},
-                    {name:'Mental Focus',target:'Min Reading',xp:30,desc:'Reading for mental growth'},
-                    {name:'Inner Peace',target:'Min Meditation',xp:25,desc:'Mindfulness practice'}
+                    {name:'Physical Training',target:'Push-ups',xp:50,desc:'Daily physical exercise',scaling:true,baseAmount:15,increment:3},
+                    {name:'Mental Focus',target:'Min Reading',xp:30,desc:'Reading for mental growth',scaling:false},
+                    {name:'Inner Peace',target:'Min Meditation',xp:25,desc:'Mindfulness practice',scaling:false}
                 ];
                 localStorage.setItem('bq-custom', JSON.stringify(defaults));
                 custom = JSON.stringify(defaults);
@@ -108,9 +110,11 @@
             quests = customQuests.map(q => ({
                 name: q.name,
                 target: q.target,
-                baseTarget: q.name === 'Physical Training' ? 15 : (q.name === 'Mental Focus' ? 20 : 10),
+                baseTarget: q.scaling ? q.baseAmount || 15 : (q.name === 'Mental Focus' ? 20 : 10),
                 xp: q.xp,
-                desc: q.desc
+                desc: q.desc,
+                scaling: q.scaling || false,
+                increment: q.increment || 3
             }));
             s.done = new Array(quests.length).fill(0);
         }
@@ -134,11 +138,17 @@
         function renderQuests() {
             let html = '';
             quests.forEach((q, i) => {
-                let target = q.name === 'Physical Training' ? 
-                    (15 + Math.floor((s.lv-1) * 3)) + ' ' + q.target :
-                    q.baseTarget + ' ' + q.target;
-                let xp = q.name === 'Physical Training' ? 
-                    (50 + (s.lv-1)*5) : q.xp;
+                let target, xp;
+                if (q.scaling) {
+                    // Use scaling formula for scaling quests
+                    let amount = q.baseTarget + Math.floor((s.lv-1) * q.increment);
+                    target = amount + ' ' + q.target;
+                    xp = q.xp + (s.lv-1)*5; // XP also scales
+                } else {
+                    // Fixed target for non-scaling quests
+                    target = q.baseTarget + ' ' + q.target;
+                    xp = q.xp;
+                }
                 let done = s.done[i];
                 
                 html += `
@@ -170,8 +180,12 @@
         
         function complete(i) {
             if (s.done[i]) return;
-            let xp = quests[i].name === 'Physical Training' ? 
-                (50 + (s.lv-1)*5) : quests[i].xp;
+            let xp;
+            if (quests[i].scaling) {
+                xp = quests[i].xp + (s.lv-1)*5; // Scaling XP
+            } else {
+                xp = quests[i].xp; // Fixed XP
+            }
             s.done[i] = 1;
             s.xp += xp;
             s.cur += xp;
