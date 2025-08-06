@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Einstellungen - Daily Quest</title>
     <style>
-        :root { --p: #4CAF50; --s: #FFC107; --bg: #f5f5f5; --card: #fff; --txt: #333; --border: #ddd; }
-        [data-theme="dark"] { --p: #66BB6A; --s: #FFD54F; --bg: #121212; --card: #1e1e1e; --txt: #fff; --border: #333; }
-        [data-theme="minimal"] { --p: #000; --s: #666; --bg: #fff; --card: #fafafa; --txt: #000; --border: #eee; }
-        [data-theme="ocean"] { --p: #2196F3; --s: #00BCD4; --bg: #E3F2FD; --card: #fff; --txt: #0D47A1; --border: #BBDEFB; }
-        [data-theme="forest"] { --p: #388E3C; --s: #8BC34A; --bg: #E8F5E8; --card: #fff; --txt: #1B5E20; --border: #C8E6C9; }
+        :root {
+            --p: #66BB6A; --s: #FFD54F; --bg: #121212; --card: #1e1e1e; --txt: #fff; --border: #333;
+        }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--txt); line-height: 1.6; transition: background 0.3s, color 0.3s; padding: 2rem; max-width: 900px; margin: 0 auto; }
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--txt); line-height: 1.6; padding: 2rem; max-width: 900px; margin: 0 auto; }
         .nav { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
         .nav a { color: var(--txt); text-decoration: none; margin: 0 1rem; font-size: 1rem; opacity: .8; transition: all .3s; }
         .nav a:hover { color: var(--p); opacity: 1; }
@@ -23,13 +21,6 @@
 
         .section { background: var(--card); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
         .section-title { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--p); display: flex; align-items: center; gap: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
-
-        .theme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; }
-        .theme-option { border: 2px solid var(--border); border-radius: 10px; padding: 1rem; cursor: pointer; transition: all .3s; text-align: center; }
-        .theme-option:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .theme-option.active { border-color: var(--p); background: var(--p); color: var(--card); }
-        .theme-preview { width: 100%; height: 50px; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
-        .theme-name { font-weight: bold; }
 
         .settings-grid { display: grid; gap: 1.5rem; }
         .setting { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; transition: background .3s; }
@@ -42,7 +33,7 @@
         .switch-handle { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: transform .3s; }
         .switch.active .switch-handle { transform: translateX(24px); }
 
-        .btn { background: var(--s); color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all .3s; }
+        .btn { background: var(--s); color: #000; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all .3s; }
         .btn:hover { opacity: .85; }
 
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 1rem 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; opacity: 0; transition: opacity .3s, transform .3s; }
@@ -62,11 +53,6 @@
     <div class="header">
         <h1>Einstellungen</h1>
         <p>Passe deine Daily Quest-Erfahrung an.</p>
-    </div>
-
-    <div class="section">
-        <h2 class="section-title">🎨 Erscheinungsbild</h2>
-        <div class="theme-grid" id="theme-grid"></div>
     </div>
 
     <div class="section">
@@ -143,25 +129,15 @@
     <script>
         const settingsManager = {
             defaults: {
-                theme: 'light',
                 achievementNotifications: true,
                 dailyReminders: true,
                 streakWarnings: true,
                 celebrationSounds: true
             },
             settings: {},
-            themes: [
-                { id: 'light', name: 'Standard', colors: ['#4CAF50', '#FFC107'] },
-                { id: 'dark', name: 'Dark Mode', colors: ['#66BB6A', '#FFD54F'] },
-                { id: 'minimal', name: 'Minimal', colors: ['#000', '#666'] },
-                { id: 'ocean', name: 'Ozean', colors: ['#2196F3', '#00BCD4'] },
-                { id: 'forest', name: 'Wald', colors: ['#388E3C', '#8BC34A'] }
-            ],
 
             init() {
                 this.settings = this.loadSettings();
-                this.applyTheme();
-                this.renderThemes();
                 this.initSwitches();
                 this.initEventListeners();
             },
@@ -176,19 +152,6 @@
                 this.showToast('Einstellungen gespeichert!');
             },
 
-            applyTheme() {
-                document.documentElement.setAttribute('data-theme', this.settings.theme);
-            },
-
-            renderThemes() {
-                const grid = document.getElementById('theme-grid');
-                grid.innerHTML = this.themes.map(theme => `
-                    <div class="theme-option ${this.settings.theme === theme.id ? 'active' : ''}" data-theme="${theme.id}">
-                        <div class="theme-preview" style="background: linear-gradient(135deg, ${theme.colors[0]}, ${theme.colors[1]})">${theme.name}</div>
-                    </div>
-                `).join('');
-            },
-
             initSwitches() {
                 document.querySelectorAll('.switch').forEach(sw => {
                     const key = sw.dataset.setting;
@@ -200,16 +163,6 @@
             },
 
             initEventListeners() {
-                document.getElementById('theme-grid').addEventListener('click', e => {
-                    const themeOption = e.target.closest('.theme-option');
-                    if (themeOption) {
-                        this.settings.theme = themeOption.dataset.theme;
-                        this.applyTheme();
-                        this.renderThemes();
-                        this.saveSettings();
-                    }
-                });
-
                 document.querySelectorAll('.switch').forEach(sw => {
                     sw.addEventListener('click', () => {
                         const key = sw.dataset.setting;

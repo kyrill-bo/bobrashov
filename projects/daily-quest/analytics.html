@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistiken - Daily Quest</title>
     <style>
-        :root{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
-        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
-        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
-        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
-        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
+        :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1200px;margin:0 auto;line-height:1.6;transition:all .3s}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1200px;margin:0 auto;line-height:1.6}
         .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
         .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
         .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
@@ -99,7 +95,6 @@
     </div>
     <script>
         let ad={};
-        function at(){const s=JSON.parse(localStorage.getItem('questSettings')||'{}');if(s.theme)document.documentElement.setAttribute('data-theme',s.theme);}
         function ld(){
             const dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}'),ch=JSON.parse(localStorage.getItem('completionHistory')||'[]'),u=JSON.parse(localStorage.getItem('userData')||'{}');
             ad={dailyProgress:dp,completionHistory:ch,userData:u};
@@ -131,7 +126,7 @@
             const mh=Math.max(...ha,1);
             for(let h=0;h<24;h++){
                 const c=document.createElement('div');c.className='hc';
-                const i=ha[h]/mh;c.style.background=i>0?`rgba(76,175,80,${.2+i*.8})`:'var(--border)';
+                const i=ha[h]/mh;c.style.background=i>0?`rgba(102,187,106,${.2+i*.8})`:'var(--border)';
                 c.textContent=h;c.title=`${h}:00 - ${ha[h]} Abschlüsse`;hm.appendChild(c);
             }
         }
@@ -168,7 +163,9 @@
             if(pd>=10)ins.push({title:"⭐ Perfektionist",text:"Du hast viele perfekte Tage erreicht! Dein Engagement zahlt sich aus."});
             const wa=Array(7).fill().map(()=>({total:0,completed:0}));
             Object.entries(ad.dailyProgress).forEach(([d,data])=>{const dow=new Date(d).getDay();wa[dow].total+=data.totalQuests;wa[dow].completed+=data.questsCompleted;});
-            let bd=0,br=0;wa.forEach((w,i)=>{if(w.total>0){const r=w.completed/w.total;if(r>br){br=r;bd=i;}}});
+            let bd=0,br=0;wa.forEach((w,i)=>{
+                if(w.total>0){const r=w.completed/w.total;if(r>br){br=r;bd=i;}}
+            });
             const dns=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
             if(br>0)ins.push({title:"📅 Bester Tag",text:`Dein produktivster Tag ist ${dns[bd]} mit einer Abschlussrate von ${Math.round(br*100)}%.`});
             return ins;
@@ -177,10 +174,12 @@
             const data={...ad,analytics:ca(),insights:ai()};
             if(f==='json'){dl(JSON.stringify(data,null,2),'statistiken.json','application/json');}
             else if(f==='csv'){let csv='Datum,Abgeschlossene Quests,Gesamtquests,XP Verdient,Abschlussrate\n';Object.entries(ad.dailyProgress).forEach(([d,data])=>{csv+=`${d},${data.questsCompleted},${data.totalQuests},${data.xpEarned||0},${Math.round((data.questsCompleted/data.totalQuests)*100)}%\n`;});dl(csv,'statistiken.csv','text/csv');}
-            else if(f==='md'){const{totalXP:tx,avgXP:ax,completionRate:cr,perfectDays:pd}=ca();let md=`# Statistik-Bericht\n\n## Übersicht\n- Gesamt-XP: ${tx}\n- Durchschnitts-XP/Tag: ${ax}\n- Abschlussrate: ${cr}%\n- Perfekte Tage: ${pd}\n\n## Einblicke\n`;ai().forEach(i=>md+=`### ${i.title}\n${i.text}\n\n`);dl(md,'statistiken.md','text/markdown');}
+            else if(f==='md'){
+                const{totalXP:tx,avgXP:ax,completionRate:cr,perfectDays:pd}=ca();let md=`# Statistik-Bericht\n\n## Übersicht\n- Gesamt-XP: ${tx}\n- Durchschnitts-XP/Tag: ${ax}\n- Abschlussrate: ${cr}%\n- Perfekte Tage: ${pd}\n\n## Einblicke\n`;ai().forEach(i=>md+=`### ${i.title}\n${i.text}\n\n`);dl(md,'statistiken.md','text/markdown');
+            }
         }
         function dl(c,fn,mt){const b=new Blob([c],{type:mt});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);}
-        function init(){at();ld();us();gh();gw();gt();gi();}
+        function init(){ld();us();gh();gw();gt();gi();}
         init();setInterval(init,300000);
     </script>
 </body>

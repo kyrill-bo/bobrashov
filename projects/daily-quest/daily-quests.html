@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tägliche Quests - Dynamische Edition</title>
     <style>
-        :root{--p:#666;--s:#999;--bg:#000;--card:#111;--txt:#fff;--border:#333}
-        [data-theme="light"]{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
-        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
-        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
-        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
-        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
+        :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:700px;margin:0 auto;line-height:1.6;transition:all .3s}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:700px;margin:0 auto;line-height:1.6}
         .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
         .stats{display:flex;justify-content:space-between;margin-bottom:3rem}.stat{text-align:center}.sv{font-size:2rem;margin-bottom:.3rem;color:var(--p)}.sl{opacity:.8;font-size:.9rem}
         .prog{margin-bottom:3rem}.pi{display:flex;justify-content:space-between;margin-bottom:.5rem}
@@ -20,7 +15,7 @@
         .pf{height:100%;background:var(--p);width:0%;transition:width .3s}
         .q{background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;border-radius:10px;transition:all .3s}
         .q.done{opacity:.6}.qh{display:flex;justify-content:space-between;margin-bottom:1rem}.qt{font-size:1.2rem}
-        .qx{background:var(--s);color:var(--card);padding:.2rem .6rem;font-size:.8rem;border-radius:12px;font-weight:bold}
+        .qx{background:var(--s);color:var(--bg);padding:.2rem .6rem;font-size:.8rem;border-radius:12px;font-weight:bold}
         .qg{text-align:center;font-size:1.5rem;margin:1rem 0}
         .btn{background:transparent;border:1px solid var(--border);color:var(--txt);padding:.6rem 1rem;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .3s}
         .btn:hover{background:var(--p);color:var(--card)}.btn:disabled{opacity:.5;cursor:not-allowed}
@@ -254,9 +249,7 @@
         function hide() { document.getElementById('cel').classList.remove('show'); }
         function reset() { if (confirm('Den gesamten Fortschritt zurücksetzen?')) { localStorage.removeItem('bq'); state = { lv: 1, xp: 0, cur: 0, need: 100, streak: 0, done: new Array(quests.length).fill(0), last: null, pf: 0, tx: 0 }; updateUI(); } }
         function showNotification(title, body) { /* ... implementation from before ... */ }
-        function applyTheme() { const s = JSON.parse(localStorage.getItem('questSettings') || '{}'); if (s.theme) document.documentElement.setAttribute('data-theme', s.theme); }
 
-        applyTheme();
         loadQuests();
         loadState();
         updateUI();

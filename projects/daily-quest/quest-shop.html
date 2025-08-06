@@ -6,18 +6,14 @@
     <title>Quest-Shop</title>
     <style>
         :root {
-            --p: #4CAF50; --s: #FFC107; --bg: #f5f5f5; --card: #fff; --txt: #333; --border: #ddd;
+            --p: #66BB6A; --s: #FFD54F; --bg: #121212; --card: #1e1e1e; --txt: #fff; --border: #333;
             --red: #f44336; --green: #4CAF50;
         }
-        [data-theme="dark"] { --p: #66BB6A; --s: #FFD54F; --bg: #121212; --card: #1e1e1e; --txt: #fff; --border: #333; }
-        [data-theme="minimal"] { --p: #000; --s: #666; --bg: #fff; --card: #fafafa; --txt: #000; --border: #eee; }
-        [data-theme="ocean"] { --p: #2196F3; --s: #00BCD4; --bg: #E3F2FD; --card: #fff; --txt: #0D47A1; --border: #BBDEFB; }
-        [data-theme="forest"] { --p: #388E3C; --s: #8BC34A; --bg: #E8F5E8; --card: #fff; --txt: #1B5E20; --border: #C8E6C9; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: var(--bg); color: var(--txt); font-family: Georgia, serif;
-            padding: 2rem; max-width: 1200px; margin: 0 auto; line-height: 1.6; transition: all .3s;
+            padding: 2rem; max-width: 1200px; margin: 0 auto; line-height: 1.6;
         }
         .nav { text-align: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
         .nav a { color: var(--txt); text-decoration: none; margin: 0 1rem; font-size: .9rem; opacity: .8; transition: all .3s; }
@@ -55,7 +51,7 @@
         .cooldown-info, .unlock-req { display: block; margin-top: 0.5rem; }
 
         .btn { padding: .6rem 1.2rem; background: var(--p); color: var(--card); border: none; border-radius: 6px; cursor: pointer; font-size: .9rem; transition: all .3s; }
-        .btn:hover:not(:disabled) { background: var(--s); }
+        .btn:hover:not(:disabled) { background: var(--s); color: #000; }
         .btn:disabled { background: var(--border); color: var(--txt); opacity: .6; cursor: not-allowed; }
 
         .locked-badge, .cooldown-badge { font-size: .8rem; margin-left: .5rem; padding: .2rem .5rem; border-radius: 10px; }
@@ -135,17 +131,11 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            applyTheme();
             load();
             updateCategoryInfo();
             renderShop();
             setupEventListeners();
         });
-
-        function applyTheme() {
-            const settings = JSON.parse(localStorage.getItem('questSettings') || '{}');
-            if (settings.theme) document.documentElement.setAttribute('data-theme', settings.theme);
-        }
 
         function load() {
             shopItems = JSON.parse(localStorage.getItem('bq-shop') || '[]');
@@ -251,7 +241,7 @@
         }
 
         function buyItem(id) {
-            const itemIndex = shopItems.findIndex(i => i.id == id);
+            const itemIndex = shopItems.findIndex(i => i.id == id); 
             if (itemIndex === -1) return; 
             
             const item = shopItems[itemIndex];

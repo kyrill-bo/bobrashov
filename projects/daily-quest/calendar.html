@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalender - Daily Quest</title>
     <style>
-        :root{--p:#4CAF50;--s:#FFC107;--bg:#f5f5f5;--card:#fff;--txt:#333;--border:#ddd}
-        [data-theme="dark"]{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
-        [data-theme="minimal"]{--p:#000;--s:#666;--bg:#fff;--card:#fafafa;--txt:#000;--border:#eee}
-        [data-theme="ocean"]{--p:#2196F3;--s:#00BCD4;--bg:#E3F2FD;--card:#fff;--txt:#0D47A1;--border:#BBDEFB}
-        [data-theme="forest"]{--p:#388E3C;--s:#8BC34A;--bg:#E8F5E8;--card:#fff;--txt:#1B5E20;--border:#C8E6C9}
+        :root{--p:#66BB6A;--s:#FFD54F;--bg:#121212;--card:#1e1e1e;--txt:#fff;--border:#333}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1000px;margin:0 auto;line-height:1.6;transition:all .3s}
+        body{background:var(--bg);color:var(--txt);font-family:Georgia,serif;padding:2rem;max-width:1000px;margin:0 auto;line-height:1.6}
         .h{text-align:center;margin-bottom:3rem}.t{font-size:2.5rem;margin-bottom:.5rem;color:var(--p)}.st{opacity:.8;font-style:italic}
         .n{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
         .n a{color:var(--txt);text-decoration:none;margin:0 1rem;font-size:.9rem;opacity:.8;transition:all .3s}
@@ -93,7 +89,6 @@
     <div class="tooltip" id="tp"></div>
     <script>
         let cd=new Date(),dd={};
-        function at(){const s=JSON.parse(localStorage.getItem('questSettings')||'{}');if(s.theme)document.documentElement.setAttribute('data-theme',s.theme);}
         function ld(){
             const ch=JSON.parse(localStorage.getItem('completionHistory')||'[]'),dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}');
             dd={};
@@ -185,7 +180,7 @@
         }
         document.getElementById('pm').addEventListener('click',()=>{cd.setMonth(cd.getMonth()-1);gc();us();});
         document.getElementById('nm').addEventListener('click',()=>{cd.setMonth(cd.getMonth()+1);gc();us();});
-        function init(){at();ld();gc();us();gwc();gi();}
+        function init(){ld();gc();us();gwc();gi();}
         init();setInterval(init,60000);
     </script>
 </body>
