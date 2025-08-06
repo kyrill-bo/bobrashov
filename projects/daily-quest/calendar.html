@@ -89,12 +89,23 @@
     <script>
         let cd=new Date(),dd={};
         function ld(){
-            const ch=JSON.parse(localStorage.getItem('completionHistory')||'[]'),dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}');
+            const ch=JSON.parse(localStorage.getItem('completionHistory')||'[]');
+            const dp=JSON.parse(localStorage.getItem('dailyProgress')||'{}');
+            const userData=JSON.parse(localStorage.getItem('userData')||'{}');
+            console.log('Calendar Data Loaded:', {completionHistory: ch, dailyProgress: dp, userData: userData}); // Debug
+            
             dd={};
             Object.entries(dp).forEach(([d,data])=>{
                 const dob=new Date(d),k=dob.toISOString().split('T')[0];
-                dd[k]={date:dob,questsCompleted:data.questsCompleted||0,totalQuests:data.totalQuests||3,xpEarned:data.xpEarned||0,perfectDay:data.questsCompleted>=data.totalQuests};
+                dd[k]={
+                    date:dob,
+                    questsCompleted:data.questsCompleted||0,
+                    totalQuests:data.totalQuests||3,
+                    xpEarned:data.xpEarned||0,
+                    perfectDay:(data.questsCompleted||0)>=(data.totalQuests||1)
+                };
             });
+            console.log('Processed Calendar Data:', dd); // Debug
         }
         function gc(){
             const c=document.getElementById('cal'),mh=document.getElementById('cm');
@@ -134,12 +145,14 @@
         function us(){
             const cm=cd.getMonth(),cy=cd.getFullYear();
             let pd=0,tx=0,td=0,cq=0,tq=0;
+            console.log('Calendar Stats - Current month/year:', cm, cy); // Debug
             Object.values(dd).forEach(d=>{
                 if(d.date.getMonth()===cm&&d.date.getFullYear()===cy){
                     td++;if(d.perfectDay)pd++;tx+=d.xpEarned||0;cq+=d.questsCompleted;tq+=d.totalQuests;
                 }
             });
             const ax=td>0?Math.round(tx/td):0,cr=tq>0?Math.round((cq/tq)*100):0;
+            console.log('Calendar Stats:', {perfectDays: pd, totalXP: tx, totalDays: td, avgXP: ax, completionRate: cr}); // Debug
             document.getElementById('pd').textContent=pd;document.getElementById('tx').textContent=tx;
             document.getElementById('ax').textContent=ax;document.getElementById('cr').textContent=cr+'%';
         }
