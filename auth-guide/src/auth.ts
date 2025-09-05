@@ -14,6 +14,11 @@ export const {
       clientId: process.env.AUTH_KEYCLOAK_ID,
       clientSecret: process.env.AUTH_KEYCLOAK_SECRET,
       issuer: process.env.AUTH_KEYCLOAK_ISSUER,
+      authorization: {
+        params: {
+          prompt: "login",
+        },
+      },
     }),
   ],
 });

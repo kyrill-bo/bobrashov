@@ -27,7 +27,7 @@ export default function Home() {
           <div className="flex flex-col gap-4 items-center">
             <p>You are not signed in.</p>
             <button
-              onClick={() => signIn("keycloak")}
+              onClick={() => signIn("keycloak", undefined, { prompt: "login" })}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
               Sign In
