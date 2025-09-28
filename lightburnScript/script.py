@@ -2,12 +2,10 @@
 """
 lightburn_export.py
 
-Konvertiert eine LightBurn .lbrn / .lbrn2 (XML) Datei in:
-- SVG (Standard, schnell)
-- PNG (benötigt CairoSVG)
+Konvertiert eine LightBurn .lbrn / .lbrn2 (XML) Datei in PNG.
 
 Beispiele:
-    python script.py eingabe.lbrn2 ausgabe.svg
+    python script.py eingabe.lbrn2            # erzeugt eingabe.png neben der Eingabedatei
     python script.py eingabe.lbrn2 ausgabe.png
 
 Hinweise PNG:
@@ -231,10 +229,6 @@ def build_svg(infile: Path, out_dir: Path) -> tuple[str, bool, str | None]:
         thumb_b64 = thumb_node.get('Source')
     return svg_text, (len(svg_elems) > 0), thumb_b64
 
-def write_svg(svg_text: str, out_path: Path):
-    out_path.write_text(svg_text, encoding='utf-8')
-    print(f"SVG exportiert: {out_path}")
-
 def write_png(svg_text: str, out_path: Path, base_dir: Path):
     try:
         import cairosvg
@@ -251,36 +245,43 @@ def write_png(svg_text: str, out_path: Path, base_dir: Path):
     cairosvg.svg2png(bytestring=svg_text.encode('utf-8'), write_to=str(out_path), url=base_url)
     print(f"PNG exportiert: {out_path}")
 
-def main(infile, outfile):
+def main(infile, outfile=None):
     in_path = Path(infile)
-    out_path = Path(outfile)
+    # Wenn kein Output angegeben, verwende Eingabenamen mit .png in gleichem Ordner
+    if outfile is None:
+        out_path = in_path.with_suffix('.png')
+    else:
+        out_path = Path(outfile)
+    # Erzwinge PNG-Endung
+    if out_path.suffix.lower() != '.png':
+        out_path = out_path.with_suffix('.png')
+
     out_dir = out_path.parent
     out_dir.mkdir(parents=True, exist_ok=True)
 
     svg_text, has_elems, thumb_b64 = build_svg(in_path, out_dir)
 
-    if out_path.suffix.lower() == '.png':
-        if has_elems:
-            write_png(svg_text, out_path, out_dir)
-        elif thumb_b64:
-            # Fallback: write embedded LightBurn thumbnail PNG
-            try:
-                raw = base64.b64decode(''.join(thumb_b64.split()))
-                out_path.write_bytes(raw)
-                print(f"PNG exportiert (Thumbnail): {out_path}")
-            except Exception as e:
-                print(f"Konnte Thumbnail nicht schreiben: {e}")
-                print("Keine erkennbaren Vektorelemente gefunden.")
-                sys.exit(3)
-        else:
-            print("Keine erkennbaren Vektorelemente und kein Thumbnail gefunden.")
+    if has_elems:
+        write_png(svg_text, out_path, out_dir)
+    elif thumb_b64:
+        # Fallback: schreibe eingebettetes LightBurn-Thumbnail PNG
+        try:
+            raw = base64.b64decode(''.join(thumb_b64.split()))
+            out_path.write_bytes(raw)
+            print(f"PNG exportiert (Thumbnail): {out_path}")
+        except Exception as e:
+            print(f"Konnte Thumbnail nicht schreiben: {e}")
+            print("Keine erkennbaren Vektorelemente gefunden.")
             sys.exit(3)
     else:
-        # Standard: SVG schreiben (auch bei anderen Endungen als .png)
-        write_svg(svg_text, out_path)
+        print("Keine erkennbaren Vektorelemente und kein Thumbnail gefunden.")
+        sys.exit(3)
 
 if __name__ == '__main__':
-    if len(sys.argv) < 3:
-        print("Verwendung:\n  python script.py input.lbrn2 output.svg\n  python script.py input.lbrn2 output.png")
+    if len(sys.argv) < 2:
+        print("Verwendung:\n  python script.py input.lbrn2 [output.png]\n\nOhne output wird automatisch input.png erzeugt.")
         sys.exit(1)
-    main(sys.argv[1], sys.argv[2])
+    if len(sys.argv) == 2:
+        main(sys.argv[1])
+    else:
+        main(sys.argv[1], sys.argv[2])
