@@ -1,0 +1,10 @@
+build/
+test/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.egg-info/ 

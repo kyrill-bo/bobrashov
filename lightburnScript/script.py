@@ -118,42 +118,81 @@ def embed_image(elem, out_dir: Path, idx=0):
     data_text = elem.get('Data') or elem.findtext('Data')
     if not data_text:
         return None
-    # Some Data fields include xml header etc. Try to detect base64 (contains lots of '=' or '/')
+
     b64 = ''.join(data_text.split())
-    # try to decode
+
+    # try to decode to guess format
     try:
         raw = base64.b64decode(b64, validate=True)
-        # attempt to guess format by header
         if raw.startswith(b'\x89PNG'):
-            mime = 'image/png'; ext = '.png'
+            mime = 'image/png'
         elif raw[:3] == b'\xff\xd8\xff':
-            mime = 'image/jpeg'; ext = '.jpg'
+            mime = 'image/jpeg'
         else:
-            mime = 'application/octet-stream'; ext = '.bin'
-        fname = f'image_embedded_{idx}{ext}'
-        (out_dir / fname).write_bytes(raw)
-        # return reference to saved image
-        x = elem.get('X') or '0'; y = elem.get('Y') or '0'
-        w = elem.get('Width') or elem.findtext('Width') or 'auto'
-        h = elem.get('Height') or elem.findtext('Height') or 'auto'
-        t = parse_matrix(elem)
-        tr = f' transform="{t}"' if t else ''
-        # reference as relative path (same folder as output)
-        return f'<image href="{fname}" x="{x}" y="{y}" width="{w}" height="{h}"{tr} />'
+            mime = 'image/png'  # fallback
     except Exception:
-        return None
+        mime = 'image/png' # fallback
+
+    data_uri = f"data:{mime};base64,{b64}"
+
+    x = elem.get('X') or '0'
+    y = elem.get('Y') or '0'
+    w = elem.get('Width') or elem.findtext('Width') or 'auto'
+    h = elem.get('Height') or elem.findtext('Height') or 'auto'
+    t = parse_matrix(elem)
+    tr = f' transform="{t}"' if t else ''
+    return f'<image href="{data_uri}" x="{x}" y="{y}" width="{w}" height="{h}"{tr} />'
 
 def process_element(elem, out_dir, images_counter):
     tag = elem.tag.split('}')[-1]  # strip namespace
     svgs = []
-    if tag.lower() in ('path', 'svgpath', 'shape', 'item'):
-        # different projects use different child names
-        # try common attributes/text
+
+    # Handle <Shape Type="..."> elements
+    if tag.lower() == 'shape':
+        shape_type = elem.get('Type', '').lower()
+        if shape_type in ('rect', 'rectangle'):
+            svgs.append(svg_rect_from_elem(elem))
+        elif shape_type in ('ellipse', 'circle'):
+            svgs.append(svg_ellipse_from_elem(elem))
+        elif shape_type == 'text':
+            text = elem.get('Str', '')
+            if text:
+                style = add_style_from_cutsettings(elem)
+                t = parse_matrix(elem)
+                tr = f' transform="{t}"' if t else ''
+                font_size = elem.get('H')
+                if font_size:
+                    style += f';font-size:{font_size}px'
+                font_family_attr = elem.get('Font')
+                if font_family_attr:
+                    font_family = font_family_attr.split(',')[0]
+                    style += f';font-family:{font_family}'
+                style += ';text-anchor:middle'
+                
+                lines = escape(text).split('\n')
+                text_svg = f'<text x="0" y="0" style="{style}"{tr}>'
+                for i, line in enumerate(lines):
+                    dy = '1.2em' if i > 0 else '0'
+                    text_svg += f'<tspan x="0" dy="{dy}">{line}</tspan>'
+                text_svg += '</text>'
+                svgs.append(text_svg)
+
+        elif shape_type == 'bitmap':
+            img_tag = embed_image(elem, out_dir, images_counter[0])
+            if img_tag:
+                svgs.append(img_tag)
+                images_counter[0] += 1
+        elif shape_type == 'path':
+            d = elem.get('D') or elem.get('d')
+            if d:
+                svgs.append(svg_path_from_d(d, elem))
+
+    # Legacy handling for other formats
+    elif tag.lower() in ('path', 'svgpath', 'shape', 'item'):
         d = elem.get('D') or elem.get('d') or elem.findtext('D') or elem.findtext('d') or elem.findtext('Path')
         if d:
             svgs.append(svg_path_from_d(d, elem))
         else:
-            # maybe points
             pts = elem.get('Points') or elem.findtext('Points')
             if pts:
                 d2 = points_to_path(pts)
@@ -182,9 +221,11 @@ def process_element(elem, out_dir, images_counter):
         if img_tag:
             svgs.append(img_tag)
             images_counter[0] += 1
-    # recurse children
+    
+    # Recurse into children
     for c in list(elem):
         svgs.extend(process_element(c, out_dir, images_counter))
+        
     return svgs
 
 def build_svg(infile: Path, out_dir: Path) -> tuple[str, bool, str | None]:
@@ -196,9 +237,26 @@ def build_svg(infile: Path, out_dir: Path) -> tuple[str, bool, str | None]:
     tree = ET.parse(infile)
     root = tree.getroot()
 
-    # Try to find overall canvas size in root or top-level nodes
-    width = root.get('Width') or root.findtext('Width') or '1000'
-    height = root.get('Height') or root.findtext('Height') or '1000'
+    # Get original canvas size, default to 1000x1000
+    width_str = root.get('Width') or root.findtext('Width') or '1000'
+    height_str = root.get('Height') or root.findtext('Height') or '1000'
+    original_width = float(width_str)
+    original_height = float(height_str)
+
+    # Scale the output PNG size up to a minimum dimension
+    scaled_width = original_width
+    scaled_height = original_height
+    min_size = 1080
+    if scaled_width > scaled_height:
+        if scaled_width < min_size:
+            scale = min_size / scaled_width
+            scaled_width = min_size
+            scaled_height *= scale
+    else:
+        if scaled_height < min_size:
+            scale = min_size / scaled_height
+            scaled_height = min_size
+            scaled_width *= scale
 
     svg_elems = []
     images_counter = [0]
@@ -214,14 +272,23 @@ def build_svg(infile: Path, out_dir: Path) -> tuple[str, bool, str | None]:
     for node in candidates:
         svg_elems.extend(process_element(node, out_dir, images_counter))
 
+    # Use a fixed viewBox based on the original canvas size
+    viewbox_str = f'0 0 {original_width} {original_height}'
+
+    # Sort elements to draw images behind vectors
+    image_elems = [s for s in svg_elems if s.strip().startswith('<image')]
+    vector_elems = [s for s in svg_elems if not s.strip().startswith('<image')]
+    sorted_elems = image_elems + vector_elems
+    svg_body = '\n  '.join(sorted_elems)
+
     # Build SVG
-    svg_body = '\n  '.join(svg_elems)
     svg_text = (
         SVG_HEADER
-        + f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">\n'
+        + f'<svg xmlns="http://www.w3.org/2000/svg" width="{scaled_width}" height="{scaled_height}" viewBox="{viewbox_str}">\n'
         + f'  {svg_body}\n'
         + '</svg>\n'
     )
+    
     # Discover embedded thumbnail (PNG) as a fallback if no vector shapes were recognized
     thumb_b64 = None
     thumb_node = root.find('.//Thumbnail')
@@ -230,20 +297,47 @@ def build_svg(infile: Path, out_dir: Path) -> tuple[str, bool, str | None]:
     return svg_text, (len(svg_elems) > 0), thumb_b64
 
 def write_png(svg_text: str, out_path: Path, base_dir: Path):
-    try:
-        import cairosvg
-    except Exception:
-        print("Fehlender PNG-Export: Das Paket 'cairosvg' ist nicht installiert.\n"
-              "Installiere es z.B. mit:\n  pip install cairosvg")
-        sys.exit(2)
+    """Schreibt PNG aus SVG-Text.
 
-    # Ensure base directory exists for resolving relative image references
-    base_dir.mkdir(parents=True, exist_ok=True)
-    # CairoSVG nutzt den base URL Kontext, damit relative hrefs (z.B. eingebettete Bilder) gefunden werden
-    abs_base = base_dir.resolve()
-    base_url = abs_base.as_uri()
-    cairosvg.svg2png(bytestring=svg_text.encode('utf-8'), write_to=str(out_path), url=base_url)
-    print(f"PNG exportiert: {out_path}")
+    Primär via Qt (PySide6); falls nicht verfügbar, verwende CairoSVG als Fallback.
+    """
+    # 1) Versuch: Qt (PySide6)
+    try:
+        from PySide6.QtSvg import QSvgRenderer
+        from PySide6.QtGui import QImage, QPainter, QGuiApplication
+        from PySide6.QtCore import QByteArray, QSize
+
+        app = QGuiApplication.instance() or QGuiApplication([])
+        renderer = QSvgRenderer(QByteArray(svg_text.encode('utf-8')))
+        size = renderer.defaultSize()
+        if not size.isValid():
+            # Fallback-Größe, falls SVG keine Size anbietet
+            size = QSize(1000, 1000)
+        image = QImage(size, QImage.Format_ARGB32)
+        image.fill(0x00000000)
+        painter = QPainter(image)
+        renderer.render(painter)
+        painter.end()
+        if not image.save(str(out_path)):
+            raise RuntimeError("Konnte PNG nicht speichern")
+        print(f"PNG exportiert (Qt): {out_path}")
+        return
+    except Exception as e_qt:
+        # 2) Fallback: CairoSVG
+        try:
+            import cairosvg
+            base_dir.mkdir(parents=True, exist_ok=True)
+            abs_base = base_dir.resolve()
+            base_url = abs_base.as_uri()
+            cairosvg.svg2png(bytestring=svg_text.encode('utf-8'), write_to=str(out_path), url=base_url)
+            print(f"PNG exportiert (CairoSVG-Fallback): {out_path}")
+            return
+        except Exception as e_cairo:
+            print("Fehlender PNG-Export: Weder Qt noch 'cairosvg' konnten das Bild rendern.")
+            print(f"Qt-Fehler: {e_qt}")
+            print(f"CairoSVG-Fehler: {e_cairo}")
+            print("Installiere entweder 'PySide6' oder 'cairosvg'.")
+            sys.exit(2)
 
 def main(infile, outfile=None):
     in_path = Path(infile)
@@ -266,11 +360,45 @@ def main(infile, outfile=None):
     elif thumb_b64:
         # Fallback: schreibe eingebettetes LightBurn-Thumbnail PNG
         try:
+            from PySide6.QtGui import QImage, QGuiApplication
+            from PySide6.QtCore import QSize
+
+            app = QGuiApplication.instance() or QGuiApplication([])
+            
             raw = base64.b64decode(''.join(thumb_b64.split()))
-            out_path.write_bytes(raw)
-            print(f"PNG exportiert (Thumbnail): {out_path}")
+            image = QImage()
+            image.loadFromData(raw)
+
+            width = image.width()
+            height = image.height()
+            
+            min_size = 1080
+
+            if width > height:
+                if width < min_size:
+                    scale = min_size / width
+                    new_width = min_size
+                    new_height = int(height * scale)
+                else:
+                    new_width = width
+                    new_height = height
+            else:
+                if height < min_size:
+                    scale = min_size / height
+                    new_height = min_size
+                    new_width = int(width * scale)
+                else:
+                    new_width = width
+                    new_height = height
+            
+            resized_image = image.scaled(QSize(new_width, new_height))
+            
+            if not resized_image.save(str(out_path)):
+                raise RuntimeError("Konnte skaliertes Thumbnail nicht speichern")
+
+            print(f"PNG exportiert (skaliertes Thumbnail): {out_path}")
         except Exception as e:
-            print(f"Konnte Thumbnail nicht schreiben: {e}")
+            print(f"Konnte Thumbnail nicht schreiben oder skalieren: {e}")
             print("Keine erkennbaren Vektorelemente gefunden.")
             sys.exit(3)
     else:

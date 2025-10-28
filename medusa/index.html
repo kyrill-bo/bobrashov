@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Content Viewer</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .input-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        input[type="url"] {
+            flex: 1;
+            min-width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        button:hover {
+            background-color: #005a9e;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .presets {
+            margin-top: 15px;
+        }
+        .preset-btn {
+            background-color: #28a745;
+            font-size: 12px;
+            padding: 5px 10px;
+            margin: 2px;
+        }
+        .preset-btn:hover {
+            background-color: #218838;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #007acc;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .source-link {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .source-link a {
+            color: #007acc;
+            text-decoration: none;
+        }
+        .source-link a:hover {
+            text-decoration: underline;
+        }
+        .loading {
+            color: #007acc;
+            font-style: italic;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #f5c6cb;
+        }
+        .content-section {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dynamic Content Viewer</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <input type="url" id="urlInput" placeholder="https://raw.githubusercontent.com/user/repo/branch/file.md" 
+                       value="https://raw.githubusercontent.com/kyrill-bo/scoreboard-minigolf/main/README.md">
+                <button onclick="fetchContent()" id="fetchBtn">Inhalt laden</button>
+            </div>
+            
+            <div class="presets">
+                <strong>Beispiel URLs:</strong><br>
+                <button class="preset-btn" onclick="setUrl('https://raw.githubusercontent.com/kyrill-bo/scoreboard-minigolf/main/README.md')">
+                    Scoreboard README
+                </button>
+                <button class="preset-btn" onclick="setUrl('https://raw.githubusercontent.com/torvalds/linux/master/README')">
+                    Linux README
+                </button>
+                <button class="preset-btn" onclick="setUrl('https://raw.githubusercontent.com/microsoft/vscode/main/README.md')">
+                    VS Code README
+                </button>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="source-link" id="sourceLink" style="display: none;">
+                Quelle: <a href="#" target="_blank" id="sourceUrl"></a>
+            </div>
+            
+            <div id="content">
+                <p>Gib eine URL ein und klicke auf "Inhalt laden", um den Inhalt hier anzuzeigen.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lade beim Start automatisch die Standard-URL
+        window.addEventListener('load', function() {
+            fetchContent();
+        });
+
+        function setUrl(url) {
+            document.getElementById('urlInput').value = url;
+            fetchContent();
+        }
+
+        async function fetchContent() {
+            const url = document.getElementById('urlInput').value.trim();
+            const contentDiv = document.getElementById('content');
+            const sourceLink = document.getElementById('sourceLink');
+            const sourceUrl = document.getElementById('sourceUrl');
+            const fetchBtn = document.getElementById('fetchBtn');
+
+            if (!url) {
+                contentDiv.innerHTML = '<p class="error">Bitte gib eine gültige URL ein.</p>';
+                return;
+            }
+
+            // Loading state
+            contentDiv.innerHTML = '<p class="loading">Lade Inhalt...</p>';
+            fetchBtn.disabled = true;
+            fetchBtn.textContent = 'Lädt...';
+
+            try {
+                // Verwende einen CORS Proxy für GitHub raw URLs oder andere URLs
+                const proxyUrl = url.startsWith('https://raw.githubusercontent.com') ? url : `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                
+                const response = await fetch(proxyUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const text = await response.text();
+                
+                // Zeige den Inhalt an
+                contentDiv.innerHTML = `<pre>${escapeHtml(text)}</pre>`;
+                
+                // Zeige Source Link
+                sourceUrl.href = url;
+                sourceUrl.textContent = url;
+                sourceLink.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Fehler beim Laden des Inhalts:', error);
+                contentDiv.innerHTML = `
+                    <div class="error">
+                        <strong>Fehler beim Laden des Inhalts:</strong><br>
+                        ${escapeHtml(error.message)}<br><br>
+                        <strong>Mögliche Lösungen:</strong>
+                        <ul>
+                            <li>Stelle sicher, dass die URL korrekt ist</li>
+                            <li>Verwende raw.githubusercontent.com URLs für GitHub Dateien</li>
+                            <li>Überprüfe, ob die Datei öffentlich zugänglich ist</li>
+                        </ul>
+                    </div>
+                `;
+                sourceLink.style.display = 'none';
+            } finally {
+                fetchBtn.disabled = false;
+                fetchBtn.textContent = 'Inhalt laden';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Enter-Taste im URL-Input
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                fetchContent();
+            }
+        });
+    </script>
+</body>
+</html>

